@@ -97,8 +97,8 @@ project.tasks['sonarqube'].dependsOn test, integration
 
 sonarqube {
   properties {
-    property "sonar.projectName", "Reform :: spring-boot-template"
-    property "sonar.projectKey", "uk.gov.hmcts.reform:spring-boot-template"
+    property "sonar.projectName", "Reform :: CTSC-work-allocation"
+    property "sonar.projectKey", "uk.gov.hmcts.reform:ctsc-work-allocation"
     property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
     property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
 
@@ -197,7 +197,7 @@ test {
 mainClassName = 'uk.gov.hmcts.reform.workallocation.Application'
 
 bootJar {
-  archiveName = 'spring-boot-template.jar'
+  archiveName = 'ctsc-work-allocation.jar'
 
   manifest {
     attributes('Implementation-Version': project.version.toString())
