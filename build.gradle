@@ -193,8 +193,7 @@ dependencies {
 }
 
 test {
-  useJUnitPlatform()
-  failFast = true
+
 }
 
 mainClassName = 'uk.gov.hmcts.reform.workallocation.Application'
