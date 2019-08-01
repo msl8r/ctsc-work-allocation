@@ -95,6 +95,8 @@ jacocoTestReport {
 
 project.tasks['sonarqube'].dependsOn test, integration
 
+def sonarExclusions = []
+
 sonarqube {
   properties {
     property "sonar.host.url", "https://sonar.reform.hmcts.net/"
