@@ -1,0 +1,20 @@
+#!groovy
+
+properties(
+    [[$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ctsc-work-allocation.git'],
+     pipelineTriggers([[$class: 'GitHubPushTrigger']])]
+)
+
+@Library('Infrastructure')
+
+def type = "java"
+
+def product = "ctsc"
+
+def app = "work-allocation"
+
+withPipeline(type, product, app) {
+    enableDockerBuild()
+    installCharts()
+    enableSlackNotifications('#ctstc-tech-internal')
+}
