@@ -95,7 +95,10 @@ jacocoTestReport {
 
 project.tasks['sonarqube'].dependsOn test, integration
 
-def sonarExclusions = []
+def sonarExclusions = [
+  '**/Application.java',
+  '**/config/*.java',
+]
 
 sonarqube {
   properties {
