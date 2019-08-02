@@ -1,5 +1,6 @@
 variable "product" {
   type    = "string"
+  default = "ctsc-work-allocation"
 }
 
 variable "component" {
@@ -26,3 +27,8 @@ variable "capacity" {
 variable "common_tags" {
   type = "map"
 }
+
+variable "idam_s2s_url_prefix" {
+  default = "rpe-service-auth-provider"
+}
+

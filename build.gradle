@@ -95,13 +95,18 @@ jacocoTestReport {
 
 project.tasks['sonarqube'].dependsOn test, integration
 
+def sonarExclusions = []
+
 sonarqube {
   properties {
-    property "sonar.projectName", "Reform :: spring-boot-template"
-    property "sonar.projectKey", "uk.gov.hmcts.reform:spring-boot-template"
-    property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
-    property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
-
+    property "sonar.host.url", "https://sonar.reform.hmcts.net/"
+    property "sonar.dynamicAnalysis", "reuseReports"
+    property "sonar.java.coveragePlugin", "jacoco"
+    property "sonar.jacoco.reportPaths", "${project.buildDir}/jacoco/test.exec"
+    property "sonar.dependencyCheck.reportPath", "${project.buildDir}/reports/dependency-check-report.xml"
+    property "sonar.exclusions", sonarExclusions.join(", ")
+    property "sonar.test.exclusions", sonarExclusions.join(", ")
+    property "sonar.coverage.exclusions", sonarExclusions.join(", ")
   }
 }
 
@@ -175,10 +180,6 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging', version: versions.reformLogging
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.1.2.RELEASE'
 
-  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-  testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
-  testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
-
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 
   integrationTestCompile sourceSets.main.runtimeClasspath
@@ -187,17 +188,20 @@ dependencies {
   functionalTestCompile sourceSets.main.runtimeClasspath
 
   smokeTestCompile sourceSets.main.runtimeClasspath
+
+  testCompile 'junit:junit:4.12'
+  testCompile 'org.assertj:assertj-core:3.8.0'
+  testCompile 'com.tngtech.java:junit-dataprovider:1.13.1'
 }
 
 test {
-  useJUnitPlatform()
-  failFast = true
+
 }
 
-mainClassName = 'uk.gov.hmcts.reform.demo.Application'
+mainClassName = 'uk.gov.hmcts.reform.workallocation.Application'
 
 bootJar {
-  archiveName = 'spring-boot-template.jar'
+  archiveName = 'ctsc-work-allocation.jar'
 
   manifest {
     attributes('Implementation-Version': project.version.toString())
