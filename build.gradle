@@ -102,6 +102,8 @@ def sonarExclusions = [
 
 sonarqube {
   properties {
+    property "sonar.projectKey", "CTSC-WORK-ALLOCATION"
+    property "sonar.projectName", "CTSC-Work-Allocation-app"
     property "sonar.host.url", "https://sonar.reform.hmcts.net/"
     property "sonar.dynamicAnalysis", "reuseReports"
     property "sonar.java.coveragePlugin", "jacoco"
