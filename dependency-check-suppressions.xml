@@ -17,5 +17,9 @@
         <notes>jackson-databind-2.9.9 issues although there is a newer one (2.9.9.1) none of the libraries using the currently </notes>
         <cve>CVE-2019-12814</cve>
     </suppress>
+    <suppress>
+      <notes>rest assured grrovy library issues, using only for tests</notes>
+      <cve>CVE-2016-6497</cve>
+    </suppress>
 </suppressions>
 
