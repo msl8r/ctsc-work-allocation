@@ -25,6 +25,13 @@ sourceSets {
     }
     resources.srcDir file('src/functionalTest/resources')
   }
+  smokeTest {
+    java {
+      compileClasspath += main.output
+      runtimeClasspath += main.output
+      srcDir file('src/smokeTest/java')
+    }
+  }
 
   integrationTest {
     java {
@@ -184,19 +191,25 @@ dependencies {
 
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging', version: versions.reformLogging
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.1.2.RELEASE'
+  // https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+  testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.0'
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 
   integrationTestCompile sourceSets.main.runtimeClasspath
   integrationTestCompile sourceSets.test.runtimeClasspath
 
-  functionalTestCompile sourceSets.main.runtimeClasspath
+  // smoke
+  smokeTestCompile sourceSets.test.runtimeClasspath
 
-  smokeTestCompile sourceSets.main.runtimeClasspath
+  // functional
+  functionalTestCompile sourceSets.test.runtimeClasspath
 
   testCompile 'junit:junit:4.12'
   testCompile 'org.assertj:assertj-core:3.11.1'
   testCompile 'com.tngtech.java:junit-dataprovider:1.13.1'
+
+  compile group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
 }
 
 test {
@@ -211,4 +224,19 @@ bootJar {
   manifest {
     attributes('Implementation-Version': project.version.toString())
   }
+}
+
+apply plugin: 'idea'
+idea {
+  module {
+    testSourceDirs += project.sourceSets.smokeTest.java.srcDirs
+    testSourceDirs += project.sourceSets.smokeTest.resources.srcDirs
+    testSourceDirs += project.sourceSets.functionalTest.java.srcDirs
+    testSourceDirs += project.sourceSets.functionalTest.resources.srcDirs
+  }
+}
+
+task smokeTest(type: Test, description: 'Runs the smoke tests', group: 'Verification') {
+  testClassesDirs = sourceSets.smokeTest.output.classesDirs
+  classpath = sourceSets.smokeTest.runtimeClasspath
 }
