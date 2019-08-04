@@ -1,13 +1,13 @@
 plugins {
   id 'application'
   id 'checkstyle'
-  id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.8.RELEASE'
   id 'org.springframework.boot' version '2.1.6.RELEASE'
   id 'org.owasp.dependencycheck' version '5.2.0'
   id 'com.github.ben-manes.versions' version '0.21.0'
   id 'org.sonarqube' version '2.7.1'
+  id "io.freefair.lombok" version "3.8.2"
 }
 
 group = 'uk.gov.hmcts.reform'
@@ -24,6 +24,13 @@ sourceSets {
       srcDir file('src/functionalTest/java')
     }
     resources.srcDir file('src/functionalTest/resources')
+  }
+  smokeTest {
+    java {
+      compileClasspath += main.output
+      runtimeClasspath += main.output
+      srcDir file('src/smokeTest/java')
+    }
   }
 
   integrationTest {
@@ -73,15 +80,6 @@ checkstyle {
   toolVersion = '8.18'
   // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
   configDir = new File(rootDir, 'config/checkstyle')
-}
-
-pmd {
-  toolVersion = "6.16.0"
-  sourceSets = [sourceSets.main, sourceSets.test, sourceSets.functionalTest, sourceSets.integrationTest, sourceSets.smokeTest]
-  reportsDir = file("$project.buildDir/reports/pmd")
-  // https://github.com/pmd/pmd/issues/876
-  ruleSets = []
-  ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
 jacocoTestReport {
@@ -173,7 +171,13 @@ configurations.all {
   }
 }
 
+def javaLoggingVersion = '5.0.1'
+
 dependencies {
+  compile group: 'uk.gov.hmcts.reform', name: 'java-logging', version: javaLoggingVersion
+  compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: javaLoggingVersion
+  compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
+
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -184,19 +188,29 @@ dependencies {
 
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging', version: versions.reformLogging
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.1.2.RELEASE'
+  // https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+  testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.0'
 
-  testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+  testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
+    exclude(module: 'commons-logging')
+  }
 
   integrationTestCompile sourceSets.main.runtimeClasspath
   integrationTestCompile sourceSets.test.runtimeClasspath
 
-  functionalTestCompile sourceSets.main.runtimeClasspath
-
+  // smoke
+  smokeTestCompile sourceSets.test.runtimeClasspath
   smokeTestCompile sourceSets.main.runtimeClasspath
+
+  // functional
+  functionalTestCompile sourceSets.test.runtimeClasspath
+  functionalTestCompile sourceSets.main.runtimeClasspath
 
   testCompile 'junit:junit:4.12'
   testCompile 'org.assertj:assertj-core:3.11.1'
   testCompile 'com.tngtech.java:junit-dataprovider:1.13.1'
+
+  compileOnly 'com.google.code.findbugs:annotations:3.0.1'
 }
 
 test {
@@ -205,10 +219,39 @@ test {
 
 mainClassName = 'uk.gov.hmcts.reform.workallocation.Application'
 
+jar {
+  enabled = true
+}
+
 bootJar {
   archiveName = 'ctsc-work-allocation.jar'
 
   manifest {
     attributes('Implementation-Version': project.version.toString())
   }
+}
+
+springBoot {
+  mainClassName = 'uk.gov.hmcts.reform.workallocation.Application'
+  buildInfo()
+}
+
+dependencyCheck {
+  failBuildOnCVSS = 0
+  suppressionFile = 'dependency-check-suppressions.xml'
+}
+
+apply plugin: 'idea'
+idea {
+  module {
+    testSourceDirs += project.sourceSets.smokeTest.java.srcDirs
+    testSourceDirs += project.sourceSets.smokeTest.resources.srcDirs
+    testSourceDirs += project.sourceSets.functionalTest.java.srcDirs
+    testSourceDirs += project.sourceSets.functionalTest.resources.srcDirs
+  }
+}
+
+task smokeTest(type: Test, description: 'Runs the smoke tests', group: 'Verification') {
+  testClassesDirs = sourceSets.smokeTest.output.classesDirs
+  classpath = sourceSets.smokeTest.runtimeClasspath
 }
