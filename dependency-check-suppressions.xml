@@ -21,5 +21,9 @@
       <notes>rest assured grrovy library issues, using only for tests</notes>
       <cve>CVE-2016-6497</cve>
     </suppress>
+    <suppress>
+      <notes>currently jackson-databind is not updated in the libraries so suppressing for now</notes>
+      <cve>CVE-2019-14379</cve>
+    </suppress>
 </suppressions>
 
