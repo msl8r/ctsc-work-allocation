@@ -11,7 +11,6 @@ import static org.springframework.http.ResponseEntity.ok;
  * Default endpoints per application.
  */
 @RestController
-@Slf4j
 public class RootController {
 
     /**
@@ -25,7 +24,6 @@ public class RootController {
      */
     @GetMapping("/")
     public ResponseEntity<String> welcome() {
-        log.info("test controller called");
         return ok("Welcome to ctsc-work-allocation");
     }
 }

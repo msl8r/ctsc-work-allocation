@@ -10,6 +10,8 @@ management:
 spring:
   application:
     name: CTSC Work Allocation
+  main:
+    allow-bean-definition-overriding: true
 #  datasource:
 #    driver-class-name: org.postgresql.Driver
 #    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}${DB_OPTIONS:}
@@ -31,3 +33,16 @@ spring:
 #          lob:
 #            # silence the 'wall-of-text' - unnecessary exception throw about blob types
 #            non_contextual_creation: true
+idam:
+  s2s-auth:
+    totp_secret: ${S2S_SECRET:ABCD1F2BABCD1F2B}
+    microservice: ctsc_work_allocation
+    url: ${S2S_AUTH_URL:http://localhost:23443}
+
+auth:
+  idam:
+    client:
+      baseUrl: ${IDAM_CLIENT_BASE_URL:http://localhost:23443}
+http:
+  client:
+    timeout: 5
