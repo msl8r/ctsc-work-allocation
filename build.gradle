@@ -69,10 +69,9 @@ task integration(type: Test, description: 'Runs the integration tests.', group: 
   // environment("APPINSIGHTS_INSTRUMENTATIONKEY", "test-key")
 }
 
-task smoke(type: Test) {
-  description = "Runs Smoke Tests"
-  testClassesDirs = sourceSets.smokeTest.output.classesDirs
-  classpath = sourceSets.smokeTest.runtimeClasspath
+task smoke(type: GradleBuild, description: 'Runs smoke tests', group: 'Verification') {
+  buildFile = './build.gradle'
+  tasks = ['smokeTest']
 }
 
 checkstyle {
