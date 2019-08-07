@@ -32,8 +32,3 @@ variable "idam_s2s_url_prefix" {
   default = "rpe-service-auth-provider"
 }
 
-variable "service_user_email" {
-  type = "string"
-  default = "ctsc_workallocation_demo@mailnesia.com"
-}
-
