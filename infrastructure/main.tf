@@ -3,6 +3,7 @@ provider "azurerm" {}
 locals {
   ase_name               = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
   vaultName              = "${var.product}-${var.env}"
+  asp_name               = "${var.product}-${var.env}"
 }
 
 data "azurerm_key_vault" "workallocation_key_vault" {
@@ -35,6 +36,8 @@ module "ctsc-work-allocation" {
   subscription        = "${var.subscription}"
   capacity            = "${var.capacity}"
   common_tags         = "${var.common_tags}"
+  asp_name            = "${local.asp_name}"
+  asp_rg              = "${local.asp_name}"
 
   app_settings = {
     LOGBACK_REQUIRE_ALERT_LEVEL = "false"
