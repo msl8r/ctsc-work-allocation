@@ -38,6 +38,9 @@ idam:
     totp_secret: ${S2S_SECRET:ABCD1F2BABCD1F2B}
     microservice: ctsc_work_allocation
     url: ${S2S_AUTH_URL:http://localhost:23443}
+  service-user:
+    email: ${SERVICE_USER_EMAIL:service.user@mail.com}
+    password: ${SERVICE_USER_PASSWORD:password123}
 
 auth:
   idam:

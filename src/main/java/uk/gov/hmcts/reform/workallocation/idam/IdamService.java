@@ -19,16 +19,16 @@ public class IdamService {
     private final AuthTokenGenerator authTokenGenerator;
     private final IdamApiClient idamApiClient;
 
-    @Value("${idam.oauth2.user.email}")
+    @Value("${idam.service-user.email}")
     private String idamOauth2UserEmail;
 
-    @Value("${idam.oauth2.user.password}")
+    @Value("${idam.service-user.password}")
     private String idamOauth2UserPassword;
 
-    @Value("${idam.oauth2.client.id}")
+    @Value("${idam.s2s-auth.microservice}")
     private String idamOauth2ClientId;
 
-    @Value("${idam.oauth2.client.secret}")
+    @Value("${idam.s2s-auth.totp_secret}")
     private String idamOauth2ClientSecret;
 
     @Value("${idam.oauth2.redirectUrl}")
