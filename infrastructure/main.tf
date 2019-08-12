@@ -26,6 +26,25 @@ data "azurerm_key_vault_secret" "service_user_email" {
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
+# Make sure the resource group exists
+resource "azurerm_resource_group" "rg" {
+  name     = "${local.asp_name}"
+  location = "${var.location_app}"
+}
+
+module "servicebus-namespace" {
+  source                = "git@github.com:hmcts/terraform-module-servicebus-namespace.git"
+  name                  = "${var.product}-servicebus-${var.env}"
+  location              = "${var.location_app}"
+  resource_group_name   = "${azurerm_resource_group.rg.name}"
+}
+
+module "work-allocation-queue" {
+  source = "git@github.com:hmcts/terraform-module-servicebus-queue.git"
+  name = "${var.product}-work-allocation-queue-${var.env}"
+  namespace_name = "${module.servicebus-namespace.name}"
+  resource_group_name = "${azurerm_resource_group.rg.name}"
+}
 
 module "ctsc-work-allocation" {
   source              = "git@github.com:hmcts/cnp-module-webapp?ref=master"
