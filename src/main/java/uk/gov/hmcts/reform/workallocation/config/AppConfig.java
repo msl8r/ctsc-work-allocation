@@ -11,7 +11,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @EnableScheduling
-@EnableFeignClients(basePackages = {"uk.gov.hmcts.reform.workallocation.idam", "uk.gov.hmcts.reform.workallocation.ccd"})
+@EnableFeignClients(basePackages = {"uk.gov.hmcts.reform.workallocation.idam",
+    "uk.gov.hmcts.reform.workallocation.ccd"})
 public class AppConfig {
 
     @Bean

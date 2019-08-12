@@ -9,7 +9,12 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.workallocation.ccd.CcdClient;
 import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -33,30 +38,8 @@ public class CcdPollingService {
     @Value("${last-run-log}")
     private String logFileName;
 
-    /**
-     * {
-     * 	"query": {
-     *       "bool":{
-     *          "must":[
-     *            {
-     *             	"range":{
-     *                	"last_modified":{
-     *                   	"gte":"[TIME]"
-     *                    }
-     *                }
-     *            },
-     *            {
-     * 				"match": {
-     *          		"state":"Submitted"
-     *          	}
-     *            }
-     *         ]
-     *    }
-     * 	}
-     * }
-     */
-    private String queryTemplate = "{\"query\":{\"bool\":{\"must\":[{\"range\":{\"last_modified\":{\"gte\":\"" +
-        TIME_PLACE_HOLDER + "\"}}},{\"match\":{\"state\":\"Submitted\"}}]}}}";
+    private String queryTemplate = "{\"query\":{\"bool\":{\"must\":[{\"range\":{\"last_modified\":{\"gte\":\""
+        + TIME_PLACE_HOLDER + "\"}}},{\"match\":{\"state\":\"Submitted\"}}]}}}";
 
     public CcdPollingService(IdamService idamService, CcdClient ccdClient) {
         this.idamService = idamService;
@@ -64,7 +47,7 @@ public class CcdPollingService {
     }
 
     @Scheduled(fixedDelay = POLL_INTERVAL)
-    public void pollCCDEndpoint() throws IOException {
+    public void pollCcdEndpoint() throws IOException {
         log.info("poll started");
 
         // 0. get last run time
@@ -79,7 +62,8 @@ public class CcdPollingService {
 
         // 3. connect to CCD, and get the data
         String queryDateTime = lastRunTime.minusMinutes(30).toString();
-        Map<String, Object> response = ccdClient.searchCases(userAuthToken, serviceToken, ctids, queryTemplate.replace("[TIME]", queryDateTime));
+        Map<String, Object> response = ccdClient.searchCases(userAuthToken, serviceToken, ctids,
+            queryTemplate.replace("[TIME]", queryDateTime));
         log.info("Connecting to CCD was successful");
         log.info("total number of cases: " + response.get("total").toString());
 
@@ -96,7 +80,9 @@ public class CcdPollingService {
         logFile.createNewFile();
         BufferedReader br = new BufferedReader(new FileReader(logFile));
         String formattedDate = br.readLine();
-        return StringUtils.isEmpty(formattedDate) ? LocalDateTime.of(1980, 1, 1, 11, 0) : LocalDateTime.parse(formattedDate);
+        return StringUtils.isEmpty(formattedDate)
+            ? LocalDateTime.of(1980, 1, 1, 11, 0)
+            : LocalDateTime.parse(formattedDate);
     }
 
     private void writeLastRuntime() throws IOException {
