@@ -37,6 +37,8 @@ module "servicebus-namespace" {
   name                  = "${var.product}-servicebus-${var.env}"
   location              = "${var.location_app}"
   resource_group_name   = "${azurerm_resource_group.rg.name}"
+  common_tags           = "${var.common_tags}"
+  env                   = "${var.env}"
 }
 
 module "work-allocation-queue" {
