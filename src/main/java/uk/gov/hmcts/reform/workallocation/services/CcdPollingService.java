@@ -24,7 +24,7 @@ public class CcdPollingService {
 
     public static final String TIME_PLACE_HOLDER = "[TIME]";
 
-    public static final long POLL_INTERVAL = 1000 * 60 * 30; // 30 minutes
+    public static final long POLL_INTERVAL = 1000 * 60 * 30L; // 30 minutes
 
     @Autowired
     private final IdamService idamService;
@@ -63,7 +63,7 @@ public class CcdPollingService {
         // 3. connect to CCD, and get the data
         String queryDateTime = lastRunTime.minusMinutes(30).toString();
         Map<String, Object> response = ccdClient.searchCases(userAuthToken, serviceToken, ctids,
-            queryTemplate.replace("[TIME]", queryDateTime));
+            queryTemplate.replace(TIME_PLACE_HOLDER, queryDateTime));
         log.info("Connecting to CCD was successful");
         log.info("total number of cases: " + response.get("total").toString());
 
@@ -78,11 +78,12 @@ public class CcdPollingService {
     private LocalDateTime readLastRunTime() throws IOException {
         File logFile = new File(logFileName);
         logFile.createNewFile();
-        BufferedReader br = new BufferedReader(new FileReader(logFile));
-        String formattedDate = br.readLine();
-        return StringUtils.isEmpty(formattedDate)
-            ? LocalDateTime.of(1980, 1, 1, 11, 0)
-            : LocalDateTime.parse(formattedDate);
+        try (BufferedReader br = new BufferedReader(new FileReader(logFile))) {
+            String formattedDate = br.readLine();
+            return StringUtils.isEmpty(formattedDate)
+                ? LocalDateTime.of(1980, 1, 1, 11, 0)
+                : LocalDateTime.parse(formattedDate);
+        }
     }
 
     private void writeLastRuntime() throws IOException {
