@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
@@ -31,8 +30,11 @@ public class IdamService {
     @Value("${idam.s2s-auth.totp_secret}")
     private String idamOauth2ClientSecret;
 
-    @Value("${idam.oauth2.redirectUrl}")
+    @Value("${idam.s2s-auth.redirect_uri}")
     private String idamOauth2RedirectUrl;
+
+    @Value("${server-url}")
+    private String serverUrl;
 
     // Tactical idam token caching solution implemented
     // SSCS-5895 - will deliver the strategic caching solution
@@ -48,13 +50,12 @@ public class IdamService {
         return authTokenGenerator.generate();
     }
 
-    @Retryable
     public String getUserId(String oauth2Token) {
         return idamApiClient.getUserDetails(oauth2Token).getId();
     }
 
     public String getIdamOauth2Token() {
-
+        String redirectUrl = serverUrl + idamOauth2RedirectUrl;
         try {
             log.info("Requesting idam token");
             String authorisation = idamOauth2UserEmail + ":" + idamOauth2UserPassword;
@@ -64,7 +65,7 @@ public class IdamService {
                 "Basic " + base64Authorisation,
                 "code",
                 idamOauth2ClientId,
-                idamOauth2RedirectUrl,
+                redirectUrl,
                 " "
             );
 

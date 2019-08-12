@@ -46,6 +46,9 @@ module "ctsc-work-allocation" {
     S2S_AUTH_URL = "http://${var.idam_s2s_url_prefix}-${var.env}.service.${local.ase_name}.internal"
     SERVICE_USER_EMAIL = "${data.azurerm_key_vault_secret.service_user_email.value}"
     SERVICE_USER_PASSWORD = "${data.azurerm_key_vault_secret.service_user_password.value}"
+    SERVER_URL = "https://ctsc-work-allocation-${var.env}.service.${local.ase_name}.internal"
+    CCD_API_URL = "https://ccd-data-store-api-${var.env}.service.${local.ase_name}.internal"
+    LAST_RUN_LOG = "${var.last_run_log_file}"
   }
 }
 

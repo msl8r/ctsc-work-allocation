@@ -38,6 +38,7 @@ idam:
     totp_secret: ${S2S_SECRET:ABCD1F2BABCD1F2B}
     microservice: ctsc_work_allocation
     url: ${S2S_AUTH_URL:http://localhost:23443}
+    redirect_uri: /auth/callback
   service-user:
     email: ${SERVICE_USER_EMAIL:service.user@mail.com}
     password: ${SERVICE_USER_PASSWORD:password123}
@@ -46,6 +47,13 @@ auth:
   idam:
     client:
       baseUrl: ${IDAM_CLIENT_BASE_URL:http://localhost:23443}
+ccd:
+  baseUrl: ${CCD_API_URL:http://localhost:23443}
+  ctids: DIVORCE
+
+server-url: ${SERVER_URL:http://localhost:8080}
+last-run-log: ${LAST_RUN_LOG:./last_run.log}
+
 http:
   client:
     timeout: 5
