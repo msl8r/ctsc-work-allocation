@@ -32,3 +32,7 @@ variable "idam_s2s_url_prefix" {
   default = "rpe-service-auth-provider"
 }
 
+variable "last_run_log_file" {
+  default = "%HOME%\\LogFiles\\last_run.log"
+}
+
