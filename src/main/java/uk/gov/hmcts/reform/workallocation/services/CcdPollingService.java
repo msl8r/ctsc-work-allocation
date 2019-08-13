@@ -51,7 +51,12 @@ public class CcdPollingService {
         log.info("poll started");
 
         // 0. get last run time
-        LocalDateTime lastRunTime = readLastRunTime();
+        LocalDateTime lastRunTime = LocalDateTime.of(1980, 1, 1, 11, 0);
+        try {
+            lastRunTime = readLastRunTime();
+        } catch (Exception e) {
+            log.error("Failed read last run time: ", e);
+        }
         log.info("last run time: " + lastRunTime);
 
         // 1. Create service token
