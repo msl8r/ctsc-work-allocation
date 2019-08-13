@@ -74,7 +74,7 @@ public class IdamService {
             Authorize authorizeToken = idamApiClient.authorizeToken(
                 authorize.getCode(),
                 "authorization_code",
-                idamOauth2RedirectUrl,
+                redirectUrl,
                 idamOauth2ClientId,
                 idamOauth2ClientSecret,
                 " "
