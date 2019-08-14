@@ -74,6 +74,7 @@ public class CcdPollingService {
         log.info("total number of cases: " + response.get("total").toString());
 
         // 4. Process data
+        @SuppressWarnings("unchecked")
         List<Map> cases = (List<Map>) response.get("cases");
         List<Task> tasks = cases.stream().map(o -> {
             LocalDateTime lastModifiedDate = LocalDateTime.parse(o.get("last_modified").toString());
