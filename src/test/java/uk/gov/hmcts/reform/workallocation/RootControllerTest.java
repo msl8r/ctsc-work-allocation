@@ -28,8 +28,6 @@ public class RootControllerTest {
 
     @Test
     public void testWelcomeEndpoint() throws Exception {
-        MvcResult response = mockMvc.perform(get("/")).andExpect(status().isOk()).andReturn();
-
-        assertThat(response.getResponse().getContentAsString()).startsWith("Welcome");
+        mockMvc.perform(get("/")).andExpect(status().is3xxRedirection()).andReturn();
     }
 }

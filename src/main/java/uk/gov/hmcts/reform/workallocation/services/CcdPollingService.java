@@ -1,17 +1,22 @@
 package uk.gov.hmcts.reform.workallocation.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.workallocation.ccd.CcdClient;
 import uk.gov.hmcts.reform.workallocation.idam.IdamService;
+import uk.gov.hmcts.reform.workallocation.model.Task;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 @Service
@@ -69,6 +74,16 @@ public class CcdPollingService {
         log.info("total number of cases: " + response.get("total").toString());
 
         // 4. Process data
+        List<Map> cases = (List<Map>) response.get("cases");
+        List<Task> tasks = cases.stream().map(o -> {
+            LocalDateTime lastModifiedDate = LocalDateTime.parse(o.get("last_modified").toString());
+            return Task.builder()
+                .id(((Long)o.get("id")).toString())
+                .state((String) o.get("state"))
+                .lastModifiedDate(lastModifiedDate)
+                .build();
+        }).collect(Collectors.toList());
+        log.info("total number of tasks: " + tasks.size());
 
         // 5. send to azure service bus
 
