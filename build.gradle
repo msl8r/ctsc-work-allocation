@@ -97,10 +97,13 @@ def sonarExclusions = [
   '**/Application.java',
   '**/config/*.java',
   '**/CcdPollingService.java',
+  '**/CcdPollingController.java',
+  '**/LastRunTimeService.java',
   '**/AuthController.java',
   '**/Authorize.java',
   '**/IdamService.java',
-  '**/UserDetails.java'
+  '**/UserDetails.java',
+  '**/Task.java',
 ]
 
 sonarqube {

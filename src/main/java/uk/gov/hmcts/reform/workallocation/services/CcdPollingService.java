@@ -10,13 +10,8 @@ import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.Map;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import java.util.Optional;
 import javax.transaction.Transactional;
 
 @Service
@@ -28,14 +23,14 @@ public class CcdPollingService {
 
     public static final long POLL_INTERVAL = 1000 * 60 * 30L; // 30 minutes
 
-    @PersistenceContext
-    private EntityManager em;
-
     @Autowired
     private final IdamService idamService;
 
     @Autowired
     private final CcdClient ccdClient;
+
+    @Autowired
+    private final LastRunTimeService lastRunTimeService;
 
     @Value("${ccd.ctids}")
     private String ctids;
@@ -46,9 +41,10 @@ public class CcdPollingService {
     private String queryTemplate = "{\"query\":{\"bool\":{\"must\":[{\"range\":{\"last_modified\":{\"gte\":\""
         + TIME_PLACE_HOLDER + "\"}}},{\"match\":{\"state\":\"Submitted\"}}]}}}";
 
-    public CcdPollingService(IdamService idamService, CcdClient ccdClient) {
+    public CcdPollingService(IdamService idamService, CcdClient ccdClient, LastRunTimeService lastRunTimeService) {
         this.idamService = idamService;
         this.ccdClient = ccdClient;
+        this.lastRunTimeService = lastRunTimeService;
     }
 
     @Scheduled(fixedDelay = POLL_INTERVAL)
@@ -77,29 +73,16 @@ public class CcdPollingService {
         // 5. send to azure service bus
 
         // 6. write last poll time to file
-        updateLastRuntime();
+        lastRunTimeService.updateLastRuntime(LocalDateTime.now());
     }
 
-    private LocalDateTime readLastRunTime() throws IOException {
-        Query q = em.createNativeQuery("select last_run from last_run_time where id = :id").setParameter("id", 1);
-        LocalDateTime lastRunTime = null;
-        try {
-            Date lastRun = (Date) q.getSingleResult();
-            lastRunTime = LocalDateTime.ofInstant(lastRun.toInstant(), ZoneId.systemDefault());
-        } catch (NoResultException e) {
-            q = em.createNativeQuery("insert into last_run_time (id, last_run) values (:id, :lastRun)")
-                .setParameter("id", 1)
-                .setParameter("lastRun", LocalDateTime.now());
-            q.executeUpdate();
-            log.info("Can't find last run in db");
-        }
-        return lastRunTime == null ? LocalDateTime.of(1980, 1, 1, 11, 0) : lastRunTime;
+    private LocalDateTime readLastRunTime() {
+        Optional<LocalDateTime> lastRunTime = lastRunTimeService.getLastRunTime();
+        return lastRunTime.orElseGet(() -> {
+            LocalDateTime defaultLastRun = LastRunTimeService.getMinDate();
+            lastRunTimeService.insertLastRunTime(defaultLastRun);
+            return defaultLastRun;
+        });
     }
 
-    private void updateLastRuntime() {
-        Query q = em.createNativeQuery("update last_run_time set last_run = :lastRun where id = :id")
-            .setParameter("lastRun", LocalDateTime.now())
-            .setParameter("id", 1);
-        q.executeUpdate();
-    }
 }

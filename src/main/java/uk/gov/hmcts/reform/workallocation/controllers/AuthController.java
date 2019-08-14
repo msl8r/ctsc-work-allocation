@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController {
 
-    @GetMapping("/auth/callback")
+    @GetMapping("/oauth2/callback")
     public ResponseEntity<String> callback() {
         return ResponseEntity.ok("callback called");
     }
