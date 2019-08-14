@@ -48,3 +48,17 @@ variable "last_run_log_file" {
   default = "%HOME%\\LogFiles\\last_run.log"
 }
 
+variable "database_name" {
+  type    = "string"
+  default = "workallocation"
+}
+
+variable "postgresql_user" {
+  type    = "string"
+  default = "workallocation"
+}
+
+variable "liquibase_enabled" {
+  default = "true"
+}
+

@@ -48,7 +48,21 @@ module "work-allocation-queue" {
   resource_group_name = "${azurerm_resource_group.rg.name}"
 }
 
+module "bar-database" {
+  source = "git@github.com:hmcts/moj-module-postgres?ref=master"
+  product = "${var.product}-postgres-db"
+  location = "${var.location_app}"
+  env = "${var.env}"
+  postgresql_user = "${var.postgresql_user}"
+  database_name = "${var.database_name}"
+  sku_name = "GP_Gen5_2"
+  sku_tier = "GeneralPurpose"
+  common_tags     = "${var.common_tags}"
+  subscription = "${var.subscription}"
+}
+
 module "ctsc-work-allocation" {
+
   source              = "git@github.com:hmcts/cnp-module-webapp?ref=master"
   product             = "${var.product}-${var.component}"
   location            = "${var.location_app}"
@@ -61,6 +75,12 @@ module "ctsc-work-allocation" {
   asp_rg              = "${local.asp_name}"
 
   app_settings = {
+    # db
+    SPRING_DATASOURCE_USERNAME = "${module.bar-database.user_name}"
+    SPRING_DATASOURCE_PASSWORD = "${module.bar-database.postgresql_password}"
+    SPRING_DATASOURCE_URL      = "jdbc:postgresql://${module.bar-database.host_name}:${module.bar-database.postgresql_listen_port}/${module.bar-database.postgresql_database}?sslmode=require"
+    SPRING_LIQUIBASE_ENABLED   = "${var.liquibase_enabled}"
+
     LOGBACK_REQUIRE_ALERT_LEVEL = "false"
     LOGBACK_REQUIRE_ERROR_CODE  = "false"
     S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"

@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: akiss
+      changes:
+        - createTable:
+            tableName: last_run_time
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: last_run
+                  type: timestamp
+                  constraints:
+                    nullable: false

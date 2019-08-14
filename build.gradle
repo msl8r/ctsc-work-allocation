@@ -1,4 +1,5 @@
 plugins {
+  id 'idea'
   id 'application'
   id 'checkstyle'
   id 'jacoco'
@@ -186,6 +187,7 @@ dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
+  compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
   compile group: 'uk.gov.hmcts.reform', name: 'health-spring-boot-starter', version: '0.0.4'
 
   compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
@@ -194,6 +196,10 @@ dependencies {
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.1.2.RELEASE'
   compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '2.0.0'
   compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.4.RELEASE'
+
+  compile group: 'org.liquibase', name: 'liquibase-core', version: '3.7.0'
+  compile group: 'org.postgresql', name: 'postgresql', version: '42.2.6'
+
   testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.0'
 
   testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
