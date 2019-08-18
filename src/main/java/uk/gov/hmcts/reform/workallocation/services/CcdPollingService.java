@@ -9,13 +9,13 @@ import uk.gov.hmcts.reform.workallocation.ccd.CcdClient;
 import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 
 @Service
 @Slf4j
@@ -35,6 +35,9 @@ public class CcdPollingService {
     @Autowired
     private final LastRunTimeService lastRunTimeService;
 
+    @Autowired
+    private final EmailSendingService emailSendingService;
+
     @Value("${ccd.ctids}")
     private String ctids;
 
@@ -44,10 +47,11 @@ public class CcdPollingService {
     private String queryTemplate = "{\"query\":{\"bool\":{\"must\":[{\"range\":{\"last_modified\":{\"gte\":\""
         + TIME_PLACE_HOLDER + "\"}}},{\"match\":{\"state\":\"Submitted\"}}]}}}";
 
-    public CcdPollingService(IdamService idamService, CcdClient ccdClient, LastRunTimeService lastRunTimeService) {
+    public CcdPollingService(IdamService idamService, CcdClient ccdClient, LastRunTimeService lastRunTimeService, EmailSendingService emailSendingService) {
         this.idamService = idamService;
         this.ccdClient = ccdClient;
         this.lastRunTimeService = lastRunTimeService;
+        this.emailSendingService = emailSendingService;
     }
 
     @Scheduled(fixedDelay = POLL_INTERVAL)
@@ -84,7 +88,14 @@ public class CcdPollingService {
         }).collect(Collectors.toList());
         log.info("total number of tasks: " + tasks.size());
 
-        // 5. send to azure service bus
+        // 5. send to azure service bus (send email straight from here for now)
+        tasks.forEach(task -> {
+            try {
+                emailSendingService.sendEmail(task);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        });
 
         // 6. write last poll time to file
         lastRunTimeService.updateLastRuntime(LocalDateTime.now());

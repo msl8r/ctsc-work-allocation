@@ -53,3 +53,13 @@ last-run-log: ${LAST_RUN_LOG:./last_run.log}
 http:
   client:
     timeout: 5
+
+service:
+  email: 'ctsc.workallocation.service@hmcts.net'
+
+smtp:
+  host: 'mail.hmcts.dcbp.co.uk'
+  port: 25
+  user: 'hmcts@hmcts.dcbp.co.uk'
+  password: 'password12'
+  from: 'hmcts@hmcts.dcbp.co.uk'
