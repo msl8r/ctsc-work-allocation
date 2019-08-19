@@ -42,10 +42,10 @@ spring:
       output:
         encoding: UTF-8
   mail:
-    host: 'smtp.office365.com'
-    port: 587
-    username: 'ctsc-email-channel@HMCTS.NET'
-    password: 'London123'
+    host: ${SMTP_HOST:smtp.mail.com}
+    port: ${SMTP_PORT:25}
+    username: ${SMTP_USER:from@mail.com}
+    password: ${SMTP_PASSWORD:password}
     properties:
       mail:
         smtp:
@@ -69,22 +69,27 @@ auth:
       baseUrl: ${IDAM_CLIENT_BASE_URL:http://localhost:23443}
 ccd:
   baseUrl: ${CCD_API_URL:http://localhost:23443}
-  deeplinkBaseUrl: https://www-ccd.demo.platform.hmcts.net/case/
+  deeplinkBaseUrl: ${DEEPLINK_BASE_URL:https://www-ccd.demo.platform.hmcts.net/case/}
   ctids: DIVORCE
 
 server-url: ${SERVER_URL:http://localhost:8080}
-last-run-log: ${LAST_RUN_LOG:./last_run.log}
 
 http:
   client:
     timeout: 5
 
 service:
-  email: 'ctsc.workallocation.service@hmcts.net'
+  email: ${SERVICE_EMAIL_ADDRESS:service_email@mail.com}
 
 smtp:
-  host: 'smtp.office365.com'
-  port: 587
-  user: 'ctsc-email-channel@HMCTS.NET'
-  password: 'London123'
-  from: 'hmcts@hmcts.dcbp.co.uk'
+  from: ${SMTP_FROM:from@mail.com}
+  host: ${SMTP_HOST:smtp.mail.com}
+  password: ${SMTP_PASSWORD:password}
+  port: ${SMTP_PORT:25}
+  user: ${SMTP_USER:from@mail.com}
+
+servicebus:
+  queue:
+    connectionString: ${SERVICE_BUS_CONNECTION_STRING:your_service_bus_connection_string}
+    entityPath: work-allocation
+    messageTTLInDays: 5

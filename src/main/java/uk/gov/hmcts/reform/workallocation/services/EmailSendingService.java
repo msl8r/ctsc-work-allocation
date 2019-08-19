@@ -8,7 +8,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.workallocation.model.Task;
+import uk.gov.hmcts.reform.workallocation.email.TypedVelocityContext;
+import uk.gov.hmcts.reform.workallocation.email.VelocityContextFactory;
 
 import java.io.StringWriter;
 import java.util.Properties;
@@ -23,7 +24,7 @@ import javax.mail.internet.MimeMessage;
 
 @Service
 @Slf4j
-public class EmailSendingService implements InitializingBean {
+public class EmailSendingService<T> implements InitializingBean {
 
     @Value("${smtp.host}")
     private String smtpHost;
@@ -48,16 +49,14 @@ public class EmailSendingService implements InitializingBean {
 
     private Session session;
 
-    public void sendEmail(Task task, String deeplinkBaseUrl) throws Exception {
+    public void sendEmail(T task, String deeplinkBaseUrl) throws Exception {
         log.info("Sending Email");
 
-        VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put("jurisdiction", task.getJurisdiction());
-        velocityContext.put("lastModifiedDate", task.getLastModifiedDate());
-        velocityContext.put("deepLinkUrl", deeplinkBaseUrl + task.getJurisdiction()
-            +  "/" + task.getCaseTypeId() + "/" + task.getId());
-        String jurisdiction = task.getJurisdiction() != null ? task.getJurisdiction().toLowerCase() : "divorce";
-        String templateFileName = jurisdiction + ".vm";
+        TypedVelocityContext<T> typedVelocityContext = VelocityContextFactory.getContext(task.getClass());
+
+        VelocityContext velocityContext = typedVelocityContext.getVelocityContext(task, deeplinkBaseUrl);
+
+        String templateFileName = typedVelocityContext.getTemplateFileName(task);
 
         StringWriter stringWriter = new StringWriter();
         final Template template = velocityEngine.getTemplate("templates/" + templateFileName);
@@ -68,7 +67,7 @@ public class EmailSendingService implements InitializingBean {
 
         MimeMessage msg = creatMimeMessage();
         msg.setReplyTo(InternetAddress.parse(smtpFrom, false));
-        msg.setSubject(task.getId() + " - " + task.getState() + " - " + jurisdiction.toUpperCase(), "UTF-8");
+        typedVelocityContext.setMimeMessageSubject(task, msg);
         msg.setText(stringWriter.toString(), "UTF-8", "html");
 
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(serviceEmail, false));

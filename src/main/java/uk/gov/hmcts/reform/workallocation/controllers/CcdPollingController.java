@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.workallocation.controllers;
 
+import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.hmcts.reform.workallocation.services.CcdPollingService;
 import uk.gov.hmcts.reform.workallocation.services.LastRunTimeService;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 /**
@@ -26,7 +26,7 @@ public class CcdPollingController {
     }
 
     @GetMapping("/get-cases")
-    public ResponseEntity<String> pollCcd() throws IOException {
+    public ResponseEntity<String> pollCcd() throws ServiceBusException, InterruptedException {
         LocalDateTime lastRunTime = LastRunTimeService.getMinDate();
         lastRunTimeService.updateLastRuntime(lastRunTime);
         ccdPollingService.pollCcdEndpoint();
@@ -34,7 +34,7 @@ public class CcdPollingController {
     }
 
     @GetMapping("/get-cases/{time}")
-    public ResponseEntity<String> pollCcd(@PathVariable("time") String time) throws IOException {
+    public ResponseEntity<String> pollCcd(@PathVariable("time") String time) throws ServiceBusException, InterruptedException {
         LocalDateTime lastRunTime = LocalDateTime.parse(time);
         lastRunTimeService.updateLastRuntime(lastRunTime);
         ccdPollingService.pollCcdEndpoint();

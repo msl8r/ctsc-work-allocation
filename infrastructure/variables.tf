@@ -62,3 +62,7 @@ variable "liquibase_enabled" {
   default = "true"
 }
 
+variable "deeplink_base_url" {
+  default = "https://www-ccd.demo.platform.hmcts.net/case/"
+}
+
