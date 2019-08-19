@@ -41,7 +41,7 @@ public class EmailSendingService implements InitializingBean {
 
     private Session session;
 
-    public void sendEmail(Task task, String deeplinkBaseURL) throws Exception {
+    public void sendEmail(Task task, String deeplinkBaseUrl) throws Exception {
         log.info("Sending Email");
 
         MimeMessage msg = creatMimeMessage();
@@ -53,7 +53,7 @@ public class EmailSendingService implements InitializingBean {
             .append("\n")
             .append(task.getLastModifiedDate())
             .append("\n")
-            .append(deeplinkBaseURL + task.getJurisdiction() +  "\\" + task.getCaseTypeId() + "\\" + task.getId());
+            .append(deeplinkBaseUrl + task.getJurisdiction() +  "\\" + task.getCaseTypeId() + "\\" + task.getId());
         msg.setText(builder.toString(), "UTF-8");
 
         msg.setSentDate(new Date());
