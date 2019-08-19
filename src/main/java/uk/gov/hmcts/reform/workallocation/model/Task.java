@@ -11,6 +11,8 @@ public class Task {
 
     private String id;
     private String state;
+    private String jurisdiction;
+    private String caseTypeId;
     private LocalDateTime lastModifiedDate;
 
 }

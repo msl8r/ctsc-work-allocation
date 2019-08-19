@@ -86,6 +86,8 @@ public class CcdPollingService {
             return Task.builder()
                 .id(((Long)o.get("id")).toString())
                 .state((String) o.get("state"))
+                .jurisdiction((String) o.get("jurisdiction"))
+                .caseTypeId((String) o.get("case_type_id"))
                 .lastModifiedDate(lastModifiedDate)
                 .build();
         }).collect(Collectors.toList());

@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.workallocation.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.workallocation.model.Task;
@@ -18,7 +19,7 @@ import javax.mail.internet.MimeMessage;
 
 @Service
 @Slf4j
-public class EmailSendingService {
+public class EmailSendingService implements InitializingBean {
 
     @Value("${smtp.host}")
     private String smtpHost;
@@ -38,11 +39,7 @@ public class EmailSendingService {
     @Value("${service.email}")
     private String serviceEmail;
 
-    private final Session session;
-
-    public EmailSendingService() {
-        this.session = createSession();
-    }
+    private Session session;
 
     public void sendEmail(Task task) throws Exception {
         log.info("Sending Email");
@@ -88,4 +85,8 @@ public class EmailSendingService {
         return Session.getInstance(props, auth);
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.session = createSession();
+    }
 }
