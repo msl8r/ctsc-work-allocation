@@ -9,13 +9,13 @@ import uk.gov.hmcts.reform.workallocation.ccd.CcdClient;
 import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 
 @Service
 @Slf4j
@@ -47,7 +47,10 @@ public class CcdPollingService {
     private String queryTemplate = "{\"query\":{\"bool\":{\"must\":[{\"range\":{\"last_modified\":{\"gte\":\""
         + TIME_PLACE_HOLDER + "\"}}},{\"match\":{\"state\":\"Submitted\"}}]}}}";
 
-    public CcdPollingService(IdamService idamService, CcdClient ccdClient, LastRunTimeService lastRunTimeService, EmailSendingService emailSendingService) {
+    public CcdPollingService(IdamService idamService,
+                             CcdClient ccdClient,
+                             LastRunTimeService lastRunTimeService,
+                             EmailSendingService emailSendingService) {
         this.idamService = idamService;
         this.ccdClient = ccdClient;
         this.lastRunTimeService = lastRunTimeService;
