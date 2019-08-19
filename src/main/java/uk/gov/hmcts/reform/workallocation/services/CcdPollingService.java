@@ -41,6 +41,9 @@ public class CcdPollingService {
     @Value("${ccd.ctids}")
     private String ctids;
 
+    @Value("${ccd.deeplinkBaseUrl}")
+    private String deeplinkBaseUrl;
+
     @Value("${last-run-log}")
     private String logFileName;
 
@@ -96,7 +99,7 @@ public class CcdPollingService {
         // 5. send to azure service bus (send email straight from here for now)
         tasks.forEach(task -> {
             try {
-                emailSendingService.sendEmail(task);
+                emailSendingService.sendEmail(task, deeplinkBaseUrl);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }

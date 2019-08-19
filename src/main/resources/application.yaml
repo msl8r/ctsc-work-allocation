@@ -45,6 +45,7 @@ auth:
       baseUrl: ${IDAM_CLIENT_BASE_URL:http://localhost:23443}
 ccd:
   baseUrl: ${CCD_API_URL:http://localhost:23443}
+  deeplinkBaseUrl: https://www-ccd.demo.platform.hmcts.net/case/
   ctids: DIVORCE
 
 server-url: ${SERVER_URL:http://localhost:8080}
