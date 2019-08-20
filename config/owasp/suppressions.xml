@@ -8,4 +8,11 @@
     <cpe>cpe:/a:pivotal_software:spring_security</cpe>
     <cve>CVE-2018-1258</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+        Suppressing as it seems a false positive
+        ]]></notes>
+    <packageUrl regex="true">^pkg:maven/commons-collections/commons-collections@.*$</packageUrl>
+    <cpe>cpe:2.3:a:apache:commons_collections:3.2.1:*:*:*:*:*:*:*</cpe>
+  </suppress>
 </suppressions>
