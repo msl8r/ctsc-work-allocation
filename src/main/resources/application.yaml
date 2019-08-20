@@ -83,8 +83,4 @@ service:
   email: 'ctsc.workallocation.service@hmcts.net'
 
 smtp:
-  host: 'smtp.office365.com'
-  port: 587
-  user: 'ctsc-email-channel@HMCTS.NET'
-  password: 'London123'
   from: 'hmcts@hmcts.dcbp.co.uk'
