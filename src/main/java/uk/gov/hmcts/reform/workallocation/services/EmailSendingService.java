@@ -31,20 +31,21 @@ public class EmailSendingService {
 
     private static final String ENCODING = "UTF-8";
 
-    public void sendEmail(Task task, String deeplinkBaseURL) throws Exception {
+    public void sendEmail(Task task, String deeplinkBaseUrl) throws Exception {
         log.info("Sending Email");
 
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("jurisdiction", task.getJurisdiction());
         velocityContext.put("lastModifiedDate", task.getLastModifiedDate());
-        velocityContext.put("deepLinkURL", deeplinkBaseURL + task.getJurisdiction()
-            +  "\\" + task.getCaseTypeId() + "\\" + task.getId());
+        velocityContext.put("deepLinkUrl", deeplinkBaseUrl + task.getJurisdiction()
+            +  "/" + task.getCaseTypeId() + "/" + task.getId());
 
         String templateFileName = task.getJurisdiction() != null
             ? task.getJurisdiction().toLowerCase() + ".vm" :  "divorce.vm";
 
         StringWriter stringWriter = new StringWriter();
-        boolean templateMerged = velocityEngine.mergeTemplate(templateFileName, ENCODING, velocityContext, stringWriter);
+        boolean templateMerged = velocityEngine
+            .mergeTemplate(templateFileName, ENCODING, velocityContext, stringWriter);
 
         if (templateMerged) {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
