@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 
 import java.io.StringWriter;
-import java.util.Date;
 import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -57,9 +56,8 @@ public class EmailSendingService implements InitializingBean {
         velocityContext.put("lastModifiedDate", task.getLastModifiedDate());
         velocityContext.put("deepLinkUrl", deeplinkBaseUrl + task.getJurisdiction()
             +  "/" + task.getCaseTypeId() + "/" + task.getId());
-
-        String templateFileName = task.getJurisdiction() != null
-            ? task.getJurisdiction().toLowerCase() + ".vm" :  "divorce.vm";
+        String jurisdiction = task.getJurisdiction() != null ? task.getJurisdiction().toLowerCase() : "divorce";
+        String templateFileName = jurisdiction + ".vm";
 
         StringWriter stringWriter = new StringWriter();
         final Template template = velocityEngine.getTemplate("templates/" + templateFileName);
@@ -70,9 +68,8 @@ public class EmailSendingService implements InitializingBean {
 
         MimeMessage msg = creatMimeMessage();
         msg.setReplyTo(InternetAddress.parse(smtpFrom, false));
-        msg.setSubject("Service: " + task.getJurisdiction() + ",State:" + task.getState(), "UTF-8");
-        msg.setText(stringWriter.toString(), "UTF-8");
-        msg.setSentDate(new Date());
+        msg.setSubject(task.getId() + " - " + task.getState() + " - " + templateFileName.toUpperCase(), "UTF-8");
+        msg.setText(stringWriter.toString(), "UTF-8", "html");
 
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(serviceEmail, false));
         Transport.send(msg);
