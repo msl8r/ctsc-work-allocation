@@ -8,8 +8,9 @@
 
     </br>
     <p>
-      <a>${deepLinkUrl}</a>
+      <a href="${deepLinkUrl}">${deepLinkUrl}</a>
     </p>
+    </br>
 </body>
 
 </html>

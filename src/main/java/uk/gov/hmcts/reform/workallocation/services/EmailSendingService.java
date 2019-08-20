@@ -68,7 +68,7 @@ public class EmailSendingService implements InitializingBean {
 
         MimeMessage msg = creatMimeMessage();
         msg.setReplyTo(InternetAddress.parse(smtpFrom, false));
-        msg.setSubject(task.getId() + " - " + task.getState() + " - " + templateFileName.toUpperCase(), "UTF-8");
+        msg.setSubject(task.getId() + " - " + task.getState() + " - " + jurisdiction.toUpperCase(), "UTF-8");
         msg.setText(stringWriter.toString(), "UTF-8", "html");
 
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(serviceEmail, false));
