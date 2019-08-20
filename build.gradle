@@ -192,6 +192,7 @@ dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+  compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
   compile group: 'uk.gov.hmcts.reform', name: 'health-spring-boot-starter', version: '0.0.4'
 
   compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
@@ -203,6 +204,8 @@ dependencies {
 
   compile group: 'org.liquibase', name: 'liquibase-core', version: '3.7.0'
   compile group: 'org.postgresql', name: 'postgresql', version: '42.2.6'
+
+  compile group: 'org.apache.velocity', name: 'velocity', version: '1.6.2'
 
   testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.0'
 

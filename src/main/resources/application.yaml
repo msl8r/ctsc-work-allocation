@@ -29,6 +29,30 @@ spring:
           lob:
             # silence the 'wall-of-text' - unnecessary exception throw about blob types
             non_contextual_creation: true
+  velocity:
+    resourceLoaderPath: 'classpath:/templates/'
+    suffix: .vm
+    cache: false
+    check-template-location: true
+    content-type: text/html
+    charset: UTF-8
+    properties:
+      input:
+        encoding: UTF-8
+      output:
+        encoding: UTF-8
+  mail:
+    host: 'smtp.office365.com'
+    port: 587
+    username: 'ctsc-email-channel@HMCTS.NET'
+    password: 'London123'
+    properties:
+      mail:
+        smtp:
+          auth: true
+        starttls:
+          enable: true
+
 idam:
   s2s-auth:
     totp_secret: ${S2S_SECRET:ABCD1F2BABCD1F2B}
