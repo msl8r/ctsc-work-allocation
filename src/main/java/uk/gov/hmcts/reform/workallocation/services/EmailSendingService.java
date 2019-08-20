@@ -53,7 +53,7 @@ public class EmailSendingService implements InitializingBean {
             .append("\n")
             .append(task.getLastModifiedDate())
             .append("\n")
-            .append(deeplinkBaseUrl + task.getJurisdiction() +  "\\" + task.getCaseTypeId() + "\\" + task.getId());
+            .append(deeplinkBaseUrl + task.getJurisdiction() +  "/" + task.getCaseTypeId() + "/" + task.getId());
         msg.setText(builder.toString(), "UTF-8");
 
         msg.setSentDate(new Date());
