@@ -1,0 +1,15 @@
+<html>
+
+<head></head>
+
+<body>
+    <p>Jurisdiction: ${jurisdiction} </p>
+    <p>Last Modified Date: ${lastModifiedDate}</p>
+
+    </br>
+    <p>
+      <a>${deepLinkURL}</a>
+    </p>
+</body>
+
+</html>
