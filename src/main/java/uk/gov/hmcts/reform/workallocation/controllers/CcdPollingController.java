@@ -34,7 +34,8 @@ public class CcdPollingController {
     }
 
     @GetMapping("/get-cases/{time}")
-    public ResponseEntity<String> pollCcd(@PathVariable("time") String time) throws ServiceBusException, InterruptedException {
+    public ResponseEntity<String> pollCcd(@PathVariable("time") String time) throws ServiceBusException,
+        InterruptedException {
         LocalDateTime lastRunTime = LocalDateTime.parse(time);
         lastRunTimeService.updateLastRuntime(lastRunTime);
         ccdPollingService.pollCcdEndpoint();

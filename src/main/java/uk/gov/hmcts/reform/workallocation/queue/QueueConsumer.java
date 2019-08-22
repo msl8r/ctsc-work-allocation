@@ -1,15 +1,17 @@
 package uk.gov.hmcts.reform.workallocation.queue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.servicebus.*;
+import com.microsoft.azure.servicebus.ExceptionPhase;
+import com.microsoft.azure.servicebus.IMessage;
+import com.microsoft.azure.servicebus.IMessageHandler;
+import com.microsoft.azure.servicebus.IQueueClient;
+import com.microsoft.azure.servicebus.MessageHandlerOptions;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.services.EmailSendingService;
 
-import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;

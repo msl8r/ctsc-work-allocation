@@ -12,4 +12,4 @@ public interface TypedVelocityContext<T> {
     String getTemplateFileName(T objectToSend);
 
     void setMimeMessageSubject(T objectToSend, MimeMessage msg) throws MessagingException;
- }
+}
