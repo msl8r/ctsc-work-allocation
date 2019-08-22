@@ -11,8 +11,6 @@
       <a href="${deepLinkUrl}">${deepLinkUrl}</a>
     </p>
     </br>
-    </br>
-    </br>
 </body>
 
 </html>

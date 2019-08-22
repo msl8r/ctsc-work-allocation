@@ -48,6 +48,10 @@ public class EmailSendingService implements InitializingBean {
 
     private Session session;
 
+    private static final String TEMPLATE_DIR = "templates/";
+
+    private static final String NO_JURISDICTION = "No Jurisdiction";
+
     public void sendEmail(Task task, String deeplinkBaseUrl) throws Exception {
         log.info("Sending Email");
 
@@ -56,14 +60,11 @@ public class EmailSendingService implements InitializingBean {
         velocityContext.put("lastModifiedDate", task.getLastModifiedDate());
         velocityContext.put("deepLinkUrl", deeplinkBaseUrl + task.getJurisdiction()
             +  "/" + task.getCaseTypeId() + "/" + task.getId());
-        String jurisdiction = task.getJurisdiction() != null ? task.getJurisdiction().toLowerCase() : "divorce";
-        String templateFileName = jurisdiction + ".vm";
+        String jurisdiction = task.getJurisdiction() != null ? task.getJurisdiction() : NO_JURISDICTION;
+        String templateFileName = jurisdiction.equalsIgnoreCase(NO_JURISDICTION) ? "default.vm" : jurisdiction + ".vm";
 
         StringWriter stringWriter = new StringWriter();
-        final Template template = velocityEngine.getTemplate("templates/" + templateFileName);
-        if (template == null) {
-            throw new RuntimeException("Template " + templateFileName + " not found ");
-        }
+        Template template = velocityEngine.getTemplate(TEMPLATE_DIR + templateFileName);
         template.merge(velocityContext, stringWriter);
 
         MimeMessage msg = creatMimeMessage();
