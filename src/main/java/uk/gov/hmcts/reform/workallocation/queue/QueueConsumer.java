@@ -7,6 +7,7 @@ import com.microsoft.azure.servicebus.IMessageHandler;
 import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.MessageHandlerOptions;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,15 +25,19 @@ public class QueueConsumer<T> {
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Autowired
+    @Setter
     private ObjectMapper objectMapper;
 
     @Autowired
+    @Setter
     private Supplier<IQueueClient> queueClientSupplier;
 
     @Autowired
+    @Setter
     private EmailSendingService<T> emailSendingService;
 
     @Value("${ccd.deeplinkBaseUrl}")
+    @Setter
     private String deeplinkBaseUrl;
 
     private final Class<T> clazz;
