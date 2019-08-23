@@ -66,7 +66,7 @@ public class QueueProducer<T> {
         message.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         message.setMessageId(messageId);
         message.setTimeToLive(Duration.ofDays(messageTtl));
-        message.setLabel(task.getClass().getName());
+        message.setLabel(task.getClass().getSimpleName());
 
         return message;
     }

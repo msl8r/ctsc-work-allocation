@@ -72,7 +72,7 @@ public class QueueConsumerTest {
             // Test happy path
             IMessage message = mock(IMessage.class);
             when(message.getContentType()).thenReturn("application/json;charset=UTF-8");
-            when(message.getLabel()).thenReturn(Task.class.getName());
+            when(message.getLabel()).thenReturn(Task.class.getSimpleName());
             when(message.getMessageBody()).thenReturn(createMessageBody());
             IMessageHandler handler = invocation.getArgument(0);
             CompletableFuture future = handler.onMessageAsync(message);
@@ -82,9 +82,17 @@ public class QueueConsumerTest {
             // Test when exception
             message = mock(IMessage.class);
             when(message.getContentType()).thenReturn("application/json;charset=UTF-8");
-            when(message.getLabel()).thenReturn(Task.class.getName());
+            when(message.getLabel()).thenReturn(Task.class.getSimpleName());
             future = handler.onMessageAsync(message);
             Assert.assertTrue(future.isCancelled());
+            verify(emailSendingService, times(1)).sendEmail(any(), any());
+
+            // Test when label is wrong
+            message = mock(IMessage.class);
+            when(message.getContentType()).thenReturn("application/json;charset=UTF-8");
+            when(message.getLabel()).thenReturn("SomeOtherClass");
+            future = handler.onMessageAsync(message);
+            Assert.assertTrue(future.isDone());
             verify(emailSendingService, times(1)).sendEmail(any(), any());
 
             return null;

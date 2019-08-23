@@ -53,7 +53,7 @@ public class QueueConsumer<T> {
                     public CompletableFuture<Void> onMessageAsync(IMessage message) {
                         if (message.getLabel() != null
                             && message.getContentType() != null
-                            && message.getLabel().contentEquals(clazz.getName())
+                            && message.getLabel().contentEquals(clazz.getSimpleName())
                             && message.getContentType().contentEquals("application/json;charset=UTF-8")) {
 
                             T messageObject = null;
