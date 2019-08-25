@@ -67,7 +67,7 @@ data "azurerm_key_vault_secret" "smtp_is_spoofed" {
 }
 
 data "azurerm_key_vault_secret" "service_email_address" {
-  name      = "service-email-address"
+  name      = "wa-service-email-address"
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
