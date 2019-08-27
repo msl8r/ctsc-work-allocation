@@ -67,7 +67,7 @@ public class EmailSendingService implements InitializingBean {
         Template template = velocityEngine.getTemplate(TEMPLATE_DIR + templateFileName);
         template.merge(velocityContext, stringWriter);
 
-        MimeMessage msg = creatMimeMessage();
+        MimeMessage msg = createMimeMessage(deeplinkBaseUrl);
         msg.setReplyTo(InternetAddress.parse(smtpFrom, false));
         msg.setSubject(task.getId() + " - " + task.getState() + " - " + jurisdiction.toUpperCase(), "UTF-8");
         msg.setText(stringWriter.toString(), "UTF-8", "html");
@@ -77,11 +77,12 @@ public class EmailSendingService implements InitializingBean {
         log.info("Email sending successful");
     }
 
-    private MimeMessage creatMimeMessage() throws MessagingException {
+    private MimeMessage createMimeMessage(String deepLinkUrl) throws MessagingException {
         MimeMessage msg = new MimeMessage(this.session);
         msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
         msg.addHeader("format", "flowed");
         msg.addHeader("Content-Transfer-Encoding", "8bit");
+        msg.addHeader("Case_URL", deepLinkUrl);
         return msg;
     }
 
