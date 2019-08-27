@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.workallocation.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,8 +10,9 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.workallocation.ccd.CcdClient;
 import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
+import uk.gov.hmcts.reform.workallocation.queue.QueueConsumer;
+import uk.gov.hmcts.reform.workallocation.queue.QueueProducer;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +29,8 @@ public class CcdPollingService {
 
     public static final long POLL_INTERVAL = 1000 * 60 * 30L; // 30 minutes
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Autowired
     private final IdamService idamService;
 
@@ -38,31 +43,38 @@ public class CcdPollingService {
     @Autowired
     private final EmailSendingService emailSendingService;
 
+    @Autowired
+    private final QueueProducer<Task> queueProducer;
+
+    @Autowired
+    private final QueueConsumer<Task> queueConsumer;
+
     @Value("${ccd.ctids}")
     private String ctids;
 
     @Value("${ccd.deeplinkBaseUrl}")
     private String deeplinkBaseUrl;
 
-    @Value("${last-run-log}")
-    private String logFileName;
-
     private String queryTemplate = "{\"query\":{\"bool\":{\"must\":[{\"range\":{\"last_modified\":{\"gte\":\""
         + TIME_PLACE_HOLDER + "\"}}},{\"match\":{\"state\":\"Submitted\"}}]}}}";
 
-    public CcdPollingService(IdamService idamService,
-                             CcdClient ccdClient,
-                             LastRunTimeService lastRunTimeService,
-                             EmailSendingService emailSendingService) {
+    public CcdPollingService(IdamService idamService, CcdClient ccdClient, LastRunTimeService lastRunTimeService,
+                             EmailSendingService emailSendingService, QueueProducer<Task> queueProducer,
+                             QueueConsumer<Task> queueConsumer) {
         this.idamService = idamService;
         this.ccdClient = ccdClient;
         this.lastRunTimeService = lastRunTimeService;
+        this.queueProducer = queueProducer;
         this.emailSendingService = emailSendingService;
+        this.queueConsumer = queueConsumer;
     }
 
     @Scheduled(fixedDelay = POLL_INTERVAL)
-    public void pollCcdEndpoint() throws IOException {
+    public void pollCcdEndpoint() throws ServiceBusException, InterruptedException {
         log.info("poll started");
+
+        // -1. Start queue client
+        queueConsumer.registerReceiver();
 
         // 0. get last run time
         LocalDateTime lastRunTime = readLastRunTime();
@@ -96,14 +108,8 @@ public class CcdPollingService {
         }).collect(Collectors.toList());
         log.info("total number of tasks: " + tasks.size());
 
-        // 5. send to azure service bus (send email straight from here for now)
-        tasks.forEach(task -> {
-            try {
-                emailSendingService.sendEmail(task, deeplinkBaseUrl);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        });
+        // 5. send to azure service bus
+        queueProducer.placeItemsInQueue(tasks, Task::getId);
 
         // 6. write last poll time to file
         lastRunTimeService.updateLastRuntime(LocalDateTime.now());

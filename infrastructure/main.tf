@@ -26,6 +26,51 @@ data "azurerm_key_vault_secret" "service_user_email" {
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
+data "azurerm_key_vault_secret" "servicebus_connection_string" {
+  name      = "CTSC-SERVICEBUS-CONNECTION-STRING"
+  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "smtp_host" {
+  name      = "smtp_host"
+  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "smtp_port" {
+  name      = "smtp_port"
+  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "smtp_user" {
+  name      = "smtp_user"
+  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "smtp_password" {
+  name      = "smtp_password"
+  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "smtp_from" {
+  name      = "smtp_from"
+  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "smtp_is_secure" {
+  name      = "smtp_is_secure"
+  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "smtp_is_spoofed" {
+  name      = "smtp_is_spoofed"
+  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "service_email_address" {
+  name      = "service_email_address"
+  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+}
+
 # Make sure the resource group exists
 resource "azurerm_resource_group" "rg" {
   name     = "${local.asp_name}"
@@ -91,6 +136,19 @@ module "ctsc-work-allocation" {
     LAST_RUN_LOG = "${var.last_run_log_file}"
     SERVICE_USER_EMAIL = "${data.azurerm_key_vault_secret.service_user_email.value}"
     SERVICE_USER_PASSWORD = "${data.azurerm_key_vault_secret.service_user_password.value}"
+    SERVICE_BUS_CONNECTION_STRING = "${data.azurerm_key_vault_secret.servicebus_connection_string}"
+
+    #SMTP
+    SMTP_HOST = "${data.azurerm_key_vault_secret.smtp_host}"
+    SMTP_PORT = "${data.azurerm_key_vault_secret.smtp_port}"
+    SMTP_USER = "${data.azurerm_key_vault_secret.smtp_user}"
+    SMTP_PASSWORD = "${data.azurerm_key_vault_secret.smtp_password}"
+    SMTP_FROM = "${data.azurerm_key_vault_secret.smtp_from}"
+    SMTP_IS_SECURE = "${data.azurerm_key_vault_secret.smtp_is_secure}"
+    SMTP_IS_SPOOFED = "${data.azurerm_key_vault_secret.smtp_is_spoofed}"
+
+    SERVICE_EMAIL_ADDRESS = "${data.azurerm_key_vault_secret.service_email_address}"
+    DEEPLINK_BASE_URL = "${var.deeplink_base_url}"
   }
 }
 
