@@ -33,7 +33,7 @@ public class QueueConsumerTest {
 
     private ObjectMapper mapper;
 
-    private EmailSendingService<Task> emailSendingService;
+    private EmailSendingService emailSendingService;
 
     @Before
     public void setUp() {

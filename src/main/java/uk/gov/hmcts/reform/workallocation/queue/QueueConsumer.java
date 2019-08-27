@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.services.EmailSendingService;
 
 import java.time.Duration;
@@ -34,7 +35,7 @@ public class QueueConsumer<T> {
 
     @Autowired
     @Setter
-    private EmailSendingService<T> emailSendingService;
+    private EmailSendingService emailSendingService;
 
     @Value("${ccd.deeplinkBaseUrl}")
     @Setter
@@ -61,7 +62,8 @@ public class QueueConsumer<T> {
                                 byte[] body = message.getMessageBody().getBinaryData().get(0);
                                 messageObject = objectMapper.readValue(body, clazz);
                                 log.info("Received message: " + messageObject);
-                                emailSendingService.sendEmail(messageObject, deeplinkBaseUrl);
+                                // TODO: make email sending generic
+                                emailSendingService.sendEmail((Task)messageObject, deeplinkBaseUrl);
                             } catch (Exception e) {
                                 log.error("failed to retrieve message: ", e);
                                 CompletableFuture<Void> completableFuture = new CompletableFuture<>();
