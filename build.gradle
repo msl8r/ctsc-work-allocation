@@ -105,6 +105,8 @@ def sonarExclusions = [
   '**/UserDetails.java',
   '**/Task.java',
   '**/EmailSendingService.java',
+  '**/QueueClientSupplier.java',
+  '**/*Exception.java'
 ]
 
 sonarqube {

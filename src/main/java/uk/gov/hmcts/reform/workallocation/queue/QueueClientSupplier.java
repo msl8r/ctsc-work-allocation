@@ -4,7 +4,6 @@ import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.QueueClient;
 import com.microsoft.azure.servicebus.ReceiveMode;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
-import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.workallocation.exception.ConnectionException;
 
@@ -28,7 +27,7 @@ public class QueueClientSupplier implements Supplier<IQueueClient> {
                 new ConnectionStringBuilder(connectionString, entityPath),
                 ReceiveMode.PEEKLOCK
             );
-        } catch (InterruptedException | ServiceBusException exception) {
+        } catch (Exception exception) {
             throw new ConnectionException("Unable to connect to Azure service bus", exception);
         }
     }

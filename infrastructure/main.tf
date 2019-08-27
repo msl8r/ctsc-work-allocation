@@ -32,42 +32,42 @@ data "azurerm_key_vault_secret" "servicebus_connection_string" {
 }
 
 data "azurerm_key_vault_secret" "smtp_host" {
-  name      = "smtp_host"
+  name      = "smtp-host"
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
 data "azurerm_key_vault_secret" "smtp_port" {
-  name      = "smtp_port"
+  name      = "smtp-port"
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
 data "azurerm_key_vault_secret" "smtp_user" {
-  name      = "smtp_user"
+  name      = "smtp-user"
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
 data "azurerm_key_vault_secret" "smtp_password" {
-  name      = "smtp_password"
+  name      = "smtp-password"
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
 data "azurerm_key_vault_secret" "smtp_from" {
-  name      = "smtp_from"
+  name      = "smtp-from"
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
 data "azurerm_key_vault_secret" "smtp_is_secure" {
-  name      = "smtp_is_secure"
+  name      = "smtp-is-secure"
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
 data "azurerm_key_vault_secret" "smtp_is_spoofed" {
-  name      = "smtp_is_spoofed"
+  name      = "smtp-is-spoofed"
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
 data "azurerm_key_vault_secret" "service_email_address" {
-  name      = "service_email_address"
+  name      = "wa-service-email-address"
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
@@ -136,18 +136,18 @@ module "ctsc-work-allocation" {
     LAST_RUN_LOG = "${var.last_run_log_file}"
     SERVICE_USER_EMAIL = "${data.azurerm_key_vault_secret.service_user_email.value}"
     SERVICE_USER_PASSWORD = "${data.azurerm_key_vault_secret.service_user_password.value}"
-    SERVICE_BUS_CONNECTION_STRING = "${data.azurerm_key_vault_secret.servicebus_connection_string}"
+    SERVICE_BUS_CONNECTION_STRING = "${data.azurerm_key_vault_secret.servicebus_connection_string.value}"
 
     #SMTP
-    SMTP_HOST = "${data.azurerm_key_vault_secret.smtp_host}"
-    SMTP_PORT = "${data.azurerm_key_vault_secret.smtp_port}"
-    SMTP_USER = "${data.azurerm_key_vault_secret.smtp_user}"
-    SMTP_PASSWORD = "${data.azurerm_key_vault_secret.smtp_password}"
-    SMTP_FROM = "${data.azurerm_key_vault_secret.smtp_from}"
-    SMTP_IS_SECURE = "${data.azurerm_key_vault_secret.smtp_is_secure}"
-    SMTP_IS_SPOOFED = "${data.azurerm_key_vault_secret.smtp_is_spoofed}"
+    SMTP_HOST = "${data.azurerm_key_vault_secret.smtp_host.value}"
+    SMTP_PORT = "${data.azurerm_key_vault_secret.smtp_port.value}"
+    SMTP_USER = "${data.azurerm_key_vault_secret.smtp_user.value}"
+    SMTP_PASSWORD = "${data.azurerm_key_vault_secret.smtp_password.value}"
+    SMTP_FROM = "${data.azurerm_key_vault_secret.smtp_from.value}"
+    SMTP_IS_SECURE = "${data.azurerm_key_vault_secret.smtp_is_secure.value}"
+    SMTP_IS_SPOOFED = "${data.azurerm_key_vault_secret.smtp_is_spoofed.value}"
 
-    SERVICE_EMAIL_ADDRESS = "${data.azurerm_key_vault_secret.service_email_address}"
+    SERVICE_EMAIL_ADDRESS = "${data.azurerm_key_vault_secret.service_email_address.value}"
     DEEPLINK_BASE_URL = "${var.deeplink_base_url}"
   }
 }
