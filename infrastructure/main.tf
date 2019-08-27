@@ -137,6 +137,7 @@ module "ctsc-work-allocation" {
     SERVICE_USER_EMAIL = "${data.azurerm_key_vault_secret.service_user_email.value}"
     SERVICE_USER_PASSWORD = "${data.azurerm_key_vault_secret.service_user_password.value}"
     SERVICE_BUS_CONNECTION_STRING = "${data.azurerm_key_vault_secret.servicebus_connection_string.value}"
+    SERVICE_BUS_QUEUE_NAME = "${var.service_bus_queue_name}"
 
     #SMTP
     SMTP_HOST = "${data.azurerm_key_vault_secret.smtp_host.value}"

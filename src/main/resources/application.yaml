@@ -91,5 +91,5 @@ smtp:
 servicebus:
   queue:
     connectionString: ${SERVICE_BUS_CONNECTION_STRING:your_service_bus_connection_string}
-    entityPath: work-allocation
+    entityPath: ${SERVICE_BUS_QUEUE_NAME:work-allocation}
     messageTTLInDays: 5
