@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.workallocation.idam;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;
 
 @Builder
 @Value
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Authorize {
     private String defaultUrl;
     private String code;
