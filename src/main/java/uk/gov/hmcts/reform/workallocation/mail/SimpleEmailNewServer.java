@@ -1,11 +1,15 @@
 package uk.gov.hmcts.reform.workallocation.mail;
 
+import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import java.util.Properties;
 
 public class SimpleEmailNewServer {
+
+    private SimpleEmailNewServer() {
+        super();
+    }
 
     /**
      Outgoing Mail (SMTP) Server
@@ -26,7 +30,7 @@ public class SimpleEmailNewServer {
         props.put("mail.smtp.from", toEmail);
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.ssl.trust", "*");
-//        props.put("mail.smtp.ssl.enable", "true");
+        //  props.put("mail.smtp.ssl.enable", "true");
 
         //create Authenticator object to pass in Session.getInstance argument
         Authenticator auth = new Authenticator() {

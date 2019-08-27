@@ -61,7 +61,9 @@ public class EmailSendingService implements InitializingBean {
         velocityContext.put("deepLinkUrl", deeplinkBaseUrl + task.getJurisdiction()
             +  "/" + task.getCaseTypeId() + "/" + task.getId());
         String jurisdiction = task.getJurisdiction() != null ? task.getJurisdiction() : NO_JURISDICTION;
-        String templateFileName = jurisdiction.equalsIgnoreCase(NO_JURISDICTION) ? "default.vm" : jurisdiction + ".vm";
+        String templateFileName = jurisdiction.equalsIgnoreCase(NO_JURISDICTION)
+            ? "default.vm"
+            : jurisdiction.toLowerCase() + ".vm";
 
         StringWriter stringWriter = new StringWriter();
         Template template = velocityEngine.getTemplate(TEMPLATE_DIR + templateFileName);

@@ -1,11 +1,15 @@
 package uk.gov.hmcts.reform.workallocation.mail;
 
+import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import java.util.Properties;
 
 public class SimpleEmail {
+
+    private SimpleEmail() {
+        super();
+    }
 
     /**
      Outgoing Mail (SMTP) Server
@@ -16,12 +20,12 @@ public class SimpleEmail {
     public static void main(String[] args) {
         final String fromEmail = "ctsc-email-channel@HMCTS.NET";
         final String password = "London123";
-//        final String toEmail = "sscs@hmcts.dcbp.co.uk";
+        //  final String toEmail = "sscs@hmcts.dcbp.co.uk";
         final String userName = "ctsc-email-channel@HMCTS.NET";
-//        final String password = "Hungary123";
-//        final String fromEmail = "ctsc.workallocation.service@hmcts.net";
+        //  final String password = "Hungary123";
+        //  final String fromEmail = "ctsc.workallocation.service@hmcts.net";
         final String toEmail = "ctsc.workallocation.service@hmcts.net";
-//        final String userName = "ctsc.workallocation.service@hmcts.net";
+        //  final String userName = "ctsc.workallocation.service@hmcts.net";
 
         System.out.println("TLSEmail Start");
         Properties props = new Properties();
