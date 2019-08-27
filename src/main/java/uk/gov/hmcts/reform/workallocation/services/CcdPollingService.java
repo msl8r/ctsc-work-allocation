@@ -109,13 +109,7 @@ public class CcdPollingService {
         log.info("total number of tasks: " + tasks.size());
 
         // 5. send to azure service bus
-        tasks.forEach(task -> {
-            try {
-                emailSendingService.sendEmail(task, deeplinkBaseUrl);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        });
+        queueProducer.placeItemsInQueue(tasks, Task::getId);
 
         // 6. write last poll time to file
         lastRunTimeService.updateLastRuntime(LocalDateTime.now());
