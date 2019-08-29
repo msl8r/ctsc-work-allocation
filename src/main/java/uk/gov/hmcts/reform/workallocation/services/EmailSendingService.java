@@ -53,7 +53,8 @@ public class EmailSendingService implements InitializingBean {
     private static final String NO_JURISDICTION = "No Jurisdiction";
 
     public void sendEmail(Task task, String deeplinkBaseUrl) throws Exception {
-        log.info("Sending Email for Task {} With Deep Link URL {} to Email address {}", task, deeplinkBaseUrl, serviceEmail);
+        log.info("Sending Email for Task {} With Deep Link URL {} to Email address {}",
+            task, deeplinkBaseUrl, serviceEmail);
 
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("jurisdiction", task.getJurisdiction());
