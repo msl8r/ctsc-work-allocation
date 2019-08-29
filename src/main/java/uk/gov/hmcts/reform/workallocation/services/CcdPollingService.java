@@ -27,7 +27,7 @@ public class CcdPollingService {
 
     public static final String TIME_PLACE_HOLDER = "[TIME]";
 
-    public static final long POLL_INTERVAL = 1000 * 60 * 30L; // 30 minutes
+    public static final long POLL_INTERVAL = 1000 * 60 * 3L; // 3 minutes
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -56,7 +56,8 @@ public class CcdPollingService {
     private String deeplinkBaseUrl;
 
     private String queryTemplate = "{\"query\":{\"bool\":{\"must\":[{\"range\":{\"last_modified\":{\"gte\":\""
-        + TIME_PLACE_HOLDER + "\"}}},{\"match\":{\"state\":\"Submitted\"}}]}}}";
+        + TIME_PLACE_HOLDER + "\"}}},{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested\""
+        + "\"operator\": \"or\"}}}]}},\"size\": 500}";
 
     public CcdPollingService(IdamService idamService, CcdClient ccdClient, LastRunTimeService lastRunTimeService,
                              EmailSendingService emailSendingService, QueueProducer<Task> queueProducer,
@@ -87,7 +88,8 @@ public class CcdPollingService {
         String userAuthToken = this.idamService.getIdamOauth2Token();
 
         // 3. connect to CCD, and get the data
-        String queryDateTime = lastRunTime.minusMinutes(30).toString();
+        // TODO To make some overlap between the runs
+        String queryDateTime = lastRunTime.toString();
         Map<String, Object> response = ccdClient.searchCases(userAuthToken, serviceToken, ctids,
             queryTemplate.replace(TIME_PLACE_HOLDER, queryDateTime));
         log.info("Connecting to CCD was successful");
