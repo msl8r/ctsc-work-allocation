@@ -2,7 +2,8 @@ package uk.gov.hmcts.reform.workallocation.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,13 +22,14 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 @Service
-@Slf4j
 @Transactional
 public class CcdPollingService {
 
+    private static final Logger log = LoggerFactory.getLogger(CcdPollingService.class);
+
     public static final String TIME_PLACE_HOLDER = "[TIME]";
 
-    public static final long POLL_INTERVAL = 1000 * 60 * 3L; // 3 minutes
+    public static final long POLL_INTERVAL = 1000 * 60 * 60L; // 60 minutes
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -79,7 +81,7 @@ public class CcdPollingService {
 
         // 0. get last run time
         LocalDateTime lastRunTime = readLastRunTime();
-        log.info("last run time: " + lastRunTime);
+        log.info("last run time: {}", lastRunTime);
 
         // 1. Create service token
         String serviceToken = this.idamService.generateServiceAuthorization();
@@ -93,7 +95,7 @@ public class CcdPollingService {
         Map<String, Object> response = ccdClient.searchCases(userAuthToken, serviceToken, ctids,
             queryTemplate.replace(TIME_PLACE_HOLDER, queryDateTime));
         log.info("Connecting to CCD was successful");
-        log.info("total number of cases: " + response.get("total").toString());
+        log.info("total number of cases: {}", response.get("total"));
 
         // 4. Process data
         @SuppressWarnings("unchecked")
@@ -108,7 +110,7 @@ public class CcdPollingService {
                 .lastModifiedDate(lastModifiedDate)
                 .build();
         }).collect(Collectors.toList());
-        log.info("total number of tasks: " + tasks.size());
+        log.info("total number of tasks: {}", tasks.size());
 
         // 5. send to azure service bus
         queueProducer.placeItemsInQueue(tasks, Task::getId);
