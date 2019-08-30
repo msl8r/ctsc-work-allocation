@@ -5,12 +5,9 @@
 <body>
     <p>Jurisdiction: ${jurisdiction} </p>
     <p>Last Modified Date: ${lastModifiedDate}</p>
-
-    </br>
     <p>
-      <a href="${deepLinkUrl}">${deepLinkUrl}</a>
+      <a href="${deepLinkUrl}" target="_blank">${deepLinkUrl}</a>
     </p>
-    </br>
 </body>
 
 </html>
