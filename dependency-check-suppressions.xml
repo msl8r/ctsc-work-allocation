@@ -32,5 +32,9 @@
       <cve>CVE-2015-6420</cve>
       <cve>CVE-2017-15708</cve>
     </suppress>
+    <suppress>
+      <notes>commons-beanutils-1.9.3.jar issues</notes>
+      <cve>CVE-2019-10086</cve>
+    </suppress>
 </suppressions>
 
