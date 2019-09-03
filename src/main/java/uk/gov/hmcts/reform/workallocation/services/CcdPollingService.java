@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.workallocation.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +28,7 @@ public class CcdPollingService {
 
     public static final String TIME_PLACE_HOLDER = "[TIME]";
 
-    public static final long POLL_INTERVAL = 1000 * 60 * 60L; // 60 minutes
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    public static final long POLL_INTERVAL = 1000 * 60 * 30L; // 30 minutes
 
     @Autowired
     private final IdamService idamService;
@@ -41,9 +38,6 @@ public class CcdPollingService {
 
     @Autowired
     private final LastRunTimeService lastRunTimeService;
-
-    @Autowired
-    private final EmailSendingService emailSendingService;
 
     @Autowired
     private final QueueProducer<Task> queueProducer;
@@ -62,13 +56,11 @@ public class CcdPollingService {
         + "\"operator\": \"or\"}}}]}},\"size\": 500}";
 
     public CcdPollingService(IdamService idamService, CcdClient ccdClient, LastRunTimeService lastRunTimeService,
-                             EmailSendingService emailSendingService, QueueProducer<Task> queueProducer,
-                             QueueConsumer<Task> queueConsumer) {
+                             QueueProducer<Task> queueProducer, QueueConsumer<Task> queueConsumer) {
         this.idamService = idamService;
         this.ccdClient = ccdClient;
         this.lastRunTimeService = lastRunTimeService;
         this.queueProducer = queueProducer;
-        this.emailSendingService = emailSendingService;
         this.queueConsumer = queueConsumer;
     }
 
