@@ -3,9 +3,9 @@
 <head></head>
 
 <body>
-    <p>Jurisdiction: ${jurisdiction} </p>
-    <p>Last Modified Date: ${lastModifiedDate}</p>
     <p>
+      Jurisdiction: ${jurisdiction} </br>
+      Last Modified Date: ${lastModifiedDate} </br> </br>
       <a href="${deepLinkUrl}" target="_blank">${deepLinkUrl}</a>
     </p>
 </body>
