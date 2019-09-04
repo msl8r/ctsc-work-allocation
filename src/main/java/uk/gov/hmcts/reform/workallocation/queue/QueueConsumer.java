@@ -16,14 +16,12 @@ import uk.gov.hmcts.reform.workallocation.services.EmailSendingService;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
-@Slf4j
-public class QueueConsumer<T> {
+import static java.time.LocalDateTime.now;
 
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+@Slf4j
+public class QueueConsumer<T> extends BaseQueueConsumer {
 
     @Autowired
     @Setter
@@ -31,7 +29,7 @@ public class QueueConsumer<T> {
 
     @Autowired
     @Setter
-    private Supplier<IQueueClient> queueClientSupplier;
+    private CtscQueueSupplier queueClientSupplier;
 
     @Autowired
     @Setter
@@ -47,11 +45,17 @@ public class QueueConsumer<T> {
         this.clazz = clazz;
     }
 
-    public void registerReceiver() throws ServiceBusException, InterruptedException {
-        queueClientSupplier.get()
+
+    @Override
+    public Supplier<CompletableFuture<Void>> registerReceiver(DelayedExecutor executorService)
+        throws ServiceBusException, InterruptedException {
+        IQueueClient receiver = queueClientSupplier.getQueue();
+
+        receiver
             .registerMessageHandler(
                 new IMessageHandler() {
                     public CompletableFuture<Void> onMessageAsync(IMessage message) {
+                        setLastMessageTime(now());
                         if (message.getLabel() != null
                             && message.getContentType() != null
                             && message.getLabel().contentEquals(clazz.getSimpleName())
@@ -63,12 +67,12 @@ public class QueueConsumer<T> {
                                 messageObject = objectMapper.readValue(body, clazz);
                                 log.info("Received message: " + messageObject);
                                 // TODO: make email sending generic
-                                emailSendingService.sendEmail((Task)messageObject, deeplinkBaseUrl);
+                                emailSendingService.sendEmail((Task) messageObject, deeplinkBaseUrl);
                             } catch (Exception e) {
                                 log.error("failed to retrieve message: ", e);
-                                CompletableFuture<Void> completableFuture = new CompletableFuture<>();
-                                completableFuture.cancel(true);
-                                return completableFuture;
+                                CompletableFuture<Void> failure = new CompletableFuture<>();
+                                failure.cancel(true);
+                                return failure;
                             }
                         }
                         return CompletableFuture.completedFuture(null);
@@ -79,6 +83,8 @@ public class QueueConsumer<T> {
                     }
                 },
                 new MessageHandlerOptions(1, true, Duration.ofMinutes(2)),
-                executorService);
+                executorService.getExecutorService());
+
+        return receiver::closeAsync;
     }
 }

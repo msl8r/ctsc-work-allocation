@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import uk.gov.hmcts.reform.workallocation.model.Task;
+import uk.gov.hmcts.reform.workallocation.queue.CtscQueueSupplier;
 import uk.gov.hmcts.reform.workallocation.queue.QueueClientSupplier;
 import uk.gov.hmcts.reform.workallocation.queue.QueueConsumer;
 
@@ -52,7 +53,7 @@ public class AppConfig {
     }
 
     @Bean
-    public QueueClientSupplier getQueueClientSupplier(
+    public CtscQueueSupplier getQueueClientSupplier(
         @Value("${servicebus.queue.connectionString}") String connectionString,
         @Value("${servicebus.queue.entityPath}") String entityPath) {
         return new QueueClientSupplier(connectionString, entityPath);

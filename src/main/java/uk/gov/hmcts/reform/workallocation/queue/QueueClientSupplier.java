@@ -7,9 +7,7 @@ import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.workallocation.exception.ConnectionException;
 
-import java.util.function.Supplier;
-
-public class QueueClientSupplier implements Supplier<IQueueClient> {
+public class QueueClientSupplier implements CtscQueueSupplier {
 
     private final String connectionString;
     private final String entityPath;
@@ -21,7 +19,16 @@ public class QueueClientSupplier implements Supplier<IQueueClient> {
     }
 
     @Override
-    public IQueueClient get() {
+    public IQueueClient getQueue() {
+        return getServiceBusQueue(entityPath);
+    }
+
+    @Override
+    public IQueueClient getDeadQueue() {
+        return getServiceBusQueue(entityPath + "/$deadletterqueue");
+    }
+
+    private IQueueClient getServiceBusQueue(String entityPath) {
         try {
             return new QueueClient(
                 new ConnectionStringBuilder(connectionString, entityPath),

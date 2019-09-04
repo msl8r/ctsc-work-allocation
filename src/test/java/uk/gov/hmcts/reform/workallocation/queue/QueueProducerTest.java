@@ -30,7 +30,7 @@ public class QueueProducerTest {
         mapper = new ObjectMapper();
         mapper.registerModule(new Jdk8Module()).registerModule(new JavaTimeModule());
         QueueClientSupplier supplier = mock(QueueClientSupplier.class);
-        doAnswer(invocation -> createClient()).when(supplier).get();
+        doAnswer(invocation -> createClient()).when(supplier).getQueue();
         queueProducer = new QueueProducer<>(supplier, mapper);
     }
 

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 @Service
 @Slf4j
@@ -23,18 +22,18 @@ public class QueueProducer<T> {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    private final Supplier<IQueueClient> queueClientSupplier;
+    private final CtscQueueSupplier queueClientSupplier;
 
     @Value("${servicebus.queue.messageTTLInDays}")
     private int messageTtl;
 
-    public QueueProducer(QueueClientSupplier queueClientSupplier, ObjectMapper objectMapper) {
+    public QueueProducer(CtscQueueSupplier queueClientSupplier, ObjectMapper objectMapper) {
         this.queueClientSupplier = queueClientSupplier;
         this.objectMapper = objectMapper;
     }
 
     public void placeItemsInQueue(List<T> items, Function<T, String> extractId) {
-        IQueueClient sendClient = queueClientSupplier.get();
+        IQueueClient sendClient = queueClientSupplier.getQueue();
         try {
             items.forEach(item -> {
                 String messageId = extractId.apply(item);

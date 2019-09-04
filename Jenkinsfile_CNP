@@ -13,7 +13,20 @@ def product = "ctsc"
 
 def app = "work-allocation"
 
+def onMasterNotificationsChannel = '#ctsc-master-builds'
+def onDemoNotificationsChannel = '#ctsc-demo-builds'
+def onPRNotificationsChannel = '#ctsc-pr-builds'
+
 withPipeline(type, product, app) {
+    onMaster {
+      enableSlackNotifications(onMasterNotificationsChannel)
+    }
+    onDemo {
+      enableSlackNotifications(onDemoNotificationsChannel)
+    }
+    onPR {
+      enableSlackNotifications(onPRNotificationsChannel)
+    }
     enableDockerBuild()
     installCharts()
     enableSlackNotifications('#ctstc-tech-internal')

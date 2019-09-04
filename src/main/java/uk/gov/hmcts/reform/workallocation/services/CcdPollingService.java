@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.workallocation.ccd.CcdClient;
+import uk.gov.hmcts.reform.workallocation.exception.QueueClientException;
 import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
+import uk.gov.hmcts.reform.workallocation.queue.DeadQueueConsumer;
+import uk.gov.hmcts.reform.workallocation.queue.DelayedExecutor;
 import uk.gov.hmcts.reform.workallocation.queue.QueueConsumer;
 import uk.gov.hmcts.reform.workallocation.queue.QueueProducer;
 
@@ -17,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
@@ -29,6 +33,8 @@ public class CcdPollingService {
     public static final String TIME_PLACE_HOLDER = "[TIME]";
 
     public static final long POLL_INTERVAL = 1000 * 60 * 30L; // 30 minutes
+
+    public static final int LAST_MODIFIED_TIME_MINUS_MINUTES = 5;
 
     @Autowired
     private final IdamService idamService;
@@ -45,6 +51,9 @@ public class CcdPollingService {
     @Autowired
     private final QueueConsumer<Task> queueConsumer;
 
+    @Autowired
+    private final DeadQueueConsumer deadQueueConsumer;
+
     @Value("${ccd.ctids}")
     private String ctids;
 
@@ -56,20 +65,34 @@ public class CcdPollingService {
         + "\"operator\": \"or\"}}}]}},\"size\": 500}";
 
     public CcdPollingService(IdamService idamService, CcdClient ccdClient, LastRunTimeService lastRunTimeService,
-                             QueueProducer<Task> queueProducer, QueueConsumer<Task> queueConsumer) {
+                             QueueProducer<Task> queueProducer, QueueConsumer<Task> queueConsumer,
+                             DeadQueueConsumer deadQueueConsumer) {
         this.idamService = idamService;
         this.ccdClient = ccdClient;
         this.lastRunTimeService = lastRunTimeService;
         this.queueProducer = queueProducer;
         this.queueConsumer = queueConsumer;
+        this.deadQueueConsumer = deadQueueConsumer;
     }
 
     @Scheduled(fixedDelay = POLL_INTERVAL)
     public void pollCcdEndpoint() throws ServiceBusException, InterruptedException {
-        log.info("poll started");
 
-        // -1. Start queue client
-        queueConsumer.registerReceiver();
+        final DelayedExecutor delayedExecutor = new DelayedExecutor(Executors.newScheduledThreadPool(1));
+
+        // Handling dead letters
+        log.info("collecting dead letters");
+        deadQueueConsumer.runConsumer(delayedExecutor)
+            .thenCompose(aVoid -> {
+                // Start queue client
+                try {
+                    log.info("poll started");
+                    return queueConsumer.runConsumer(delayedExecutor);
+                } catch (Exception e) {
+                    throw new QueueClientException("Failed to start queue client!", e);
+                }
+            }).thenRun(delayedExecutor::shutdown);
+
 
         // 0. get last run time
         LocalDateTime lastRunTime = readLastRunTime();
@@ -82,8 +105,8 @@ public class CcdPollingService {
         String userAuthToken = this.idamService.getIdamOauth2Token();
 
         // 3. connect to CCD, and get the data
-        // TODO To make some overlap between the runs
-        String queryDateTime = lastRunTime.toString();
+        // TODO  Properly setup overlap between the runs
+        String queryDateTime = lastRunTime.minusSeconds(LAST_MODIFIED_TIME_MINUS_MINUTES).toString();
         Map<String, Object> response = ccdClient.searchCases(userAuthToken, serviceToken, ctids,
             queryTemplate.replace(TIME_PLACE_HOLDER, queryDateTime));
         log.info("Connecting to CCD was successful");

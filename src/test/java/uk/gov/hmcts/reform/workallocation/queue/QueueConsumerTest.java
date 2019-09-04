@@ -19,8 +19,10 @@ import uk.gov.hmcts.reform.workallocation.services.EmailSendingService;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -46,16 +48,29 @@ public class QueueConsumerTest {
     public void testRegisterReceiver() throws ServiceBusException, InterruptedException {
         this.emailSendingService = mock(EmailSendingService.class);
         QueueConsumer<Task> consumer = new QueueConsumer<>(Task.class);
-        consumer.setQueueClientSupplier(() -> {
-            try {
-                return getQueueClient();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        consumer.setQueueClientSupplier(new CtscQueueSupplier() {
+            @Override
+            public IQueueClient getQueue() {
+                try {
+                    return getQueueClient();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public IQueueClient getDeadQueue() {
+                try {
+                    return getQueueClient();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         consumer.setObjectMapper(mapper);
         consumer.setEmailSendingService(emailSendingService);
-        consumer.registerReceiver();
+        DelayedExecutor executor = new DelayedExecutor(Executors.newScheduledThreadPool(1));
+        consumer.registerReceiver(executor);
 
     }
 
@@ -74,6 +89,7 @@ public class QueueConsumerTest {
             when(message.getContentType()).thenReturn("application/json;charset=UTF-8");
             when(message.getLabel()).thenReturn(Task.class.getSimpleName());
             when(message.getMessageBody()).thenReturn(createMessageBody());
+            when(message.getLockToken()).thenReturn(UUID.randomUUID());
             IMessageHandler handler = invocation.getArgument(0);
             CompletableFuture future = handler.onMessageAsync(message);
             Assert.assertFalse(future.isCancelled());
@@ -99,6 +115,7 @@ public class QueueConsumerTest {
         }).when(client).registerMessageHandler(any(IMessageHandler.class), any(MessageHandlerOptions.class),
             any(ExecutorService.class));
 
+        when(client.completeAsync(any(UUID.class))).thenReturn(CompletableFuture.completedFuture(null));
         return client;
     }
 
