@@ -29,7 +29,6 @@ public class CcdPollingController {
     public ResponseEntity<String> pollCcd() throws ServiceBusException, InterruptedException {
         LocalDateTime lastRunTime = LastRunTimeService.getMinDate();
         lastRunTimeService.updateLastRuntime(lastRunTime);
-        ccdPollingService.pollCcdEndpoint();
         return ResponseEntity.ok(ccdPollingService.pollCcdEndpoint());
     }
 
@@ -44,7 +43,6 @@ public class CcdPollingController {
 
     @GetMapping("/get-cases/now")
     public ResponseEntity<String> pollCcdNow() throws ServiceBusException, InterruptedException {
-        ccdPollingService.pollCcdEndpoint();
         return ResponseEntity.ok(ccdPollingService.pollCcdEndpoint());
     }
 
