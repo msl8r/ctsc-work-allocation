@@ -20,7 +20,7 @@ spring:
     properties:
       charSet: UTF-8
   liquibase:
-    enabled: ${SPRING_LIQUIBASE_ENABLED:true}
+    enabled: ${SPRING_LIQUIBASE_ENABLED:false}
     change-log: classpath:/db/changelog/db.changelog-master.yaml
   jpa:
     properties:
