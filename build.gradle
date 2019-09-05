@@ -210,6 +210,8 @@ dependencies {
 
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.9.9'
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.9'
+  
+  compile group: 'io.vavr', name: 'vavr', version: '0.10.2'
 
 
   testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.0'

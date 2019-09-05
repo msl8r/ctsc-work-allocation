@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.workallocation.services;
 
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
+import io.vavr.control.Either;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+
 
 @Service
 @Transactional
@@ -40,6 +42,9 @@ public class CcdPollingService {
     private final LastRunTimeService lastRunTimeService;
 
     @Autowired
+    private final EmailSendingService emailSendingService;
+
+    @Autowired
     private final QueueProducer<Task> queueProducer;
 
     @Autowired
@@ -56,11 +61,13 @@ public class CcdPollingService {
         + "\"operator\": \"or\"}}}]}},\"size\": 500}";
 
     public CcdPollingService(IdamService idamService, CcdClient ccdClient, LastRunTimeService lastRunTimeService,
-                             QueueProducer<Task> queueProducer, QueueConsumer<Task> queueConsumer) {
+                             EmailSendingService emailSendingService, QueueProducer<Task> queueProducer,
+                             QueueConsumer<Task> queueConsumer) {
         this.idamService = idamService;
         this.ccdClient = ccdClient;
         this.lastRunTimeService = lastRunTimeService;
         this.queueProducer = queueProducer;
+        this.emailSendingService = emailSendingService;
         this.queueConsumer = queueConsumer;
     }
 
@@ -92,7 +99,7 @@ public class CcdPollingService {
         // 4. Process data
         @SuppressWarnings("unchecked")
         List<Map> cases = (List<Map>) response.get("cases");
-        List<Task> tasks = cases.stream().map(o -> {
+        List<Either> results = cases.stream().map(o -> {
             LocalDateTime lastModifiedDate = LocalDateTime.parse(o.get("last_modified").toString());
             return Task.builder()
                 .id(((Long)o.get("id")).toString())
@@ -101,11 +108,22 @@ public class CcdPollingService {
                 .caseTypeId((String) o.get("case_type_id"))
                 .lastModifiedDate(lastModifiedDate)
                 .build();
+        }).map(task -> {
+            try {
+                emailSendingService.sendEmail(task, deeplinkBaseUrl);
+                return Either.right(task);
+            } catch (Exception e) {
+                return Either.left(task);
+            }
         }).collect(Collectors.toList());
-        log.info("total number of tasks: {}", tasks.size());
+        log.info("total number of tasks successfully sent: {}",
+            results.stream().filter(Either::isRight).count());
+        log.info("total number of tasks failed to send: {}",
+            results.stream().filter(Either::isLeft).count());
 
         // 5. send to azure service bus
-        queueProducer.placeItemsInQueue(tasks, Task::getId);
+        // disable for now and use directly the mailservice
+        // queueProducer.placeItemsInQueue(tasks, Task::getId);
 
         // 6. write last poll time to file
         lastRunTimeService.updateLastRuntime(LocalDateTime.now());
