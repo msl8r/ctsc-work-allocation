@@ -1,0 +1,8 @@
+<included>
+  <appender name="MAP" class="uk.gov.hmcts.reform.workallocation.util.MapAppender">
+  </appender>
+
+  <logger name="uk.gov.hmcts.reform.workallocation">
+    <appender-ref ref="MAP" />
+  </logger>
+</included>

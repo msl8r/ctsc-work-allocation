@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.queue.QueueConsumer;
 import uk.gov.hmcts.reform.workallocation.queue.QueueProducer;
+import uk.gov.hmcts.reform.workallocation.util.MapAppender;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -72,7 +73,7 @@ public class CcdPollingService {
 
     @Scheduled(fixedDelay = POLL_INTERVAL)
     public String pollCcdEndpoint() {
-
+        MapAppender.resetLogger();
         StringBuilder resp = new StringBuilder("<html>");
 
         info("Polling started", resp);

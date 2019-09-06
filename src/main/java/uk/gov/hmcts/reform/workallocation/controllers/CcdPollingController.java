@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.hmcts.reform.workallocation.services.CcdPollingService;
 import uk.gov.hmcts.reform.workallocation.services.LastRunTimeService;
+import uk.gov.hmcts.reform.workallocation.util.MapAppender;
 
 import java.time.LocalDateTime;
 
@@ -44,6 +45,15 @@ public class CcdPollingController {
     @GetMapping("/get-cases/now")
     public ResponseEntity<String> pollCcdNow() throws ServiceBusException, InterruptedException {
         return ResponseEntity.ok(ccdPollingService.pollCcdEndpoint());
+    }
+
+    @GetMapping("/logs")
+    public ResponseEntity<String> getLogs() {
+        String log = MapAppender.getEventMap().entrySet().stream()
+            .map(s -> s.getKey()).sorted()
+            .map(s -> s + ": " + MapAppender.getEventMap().get(s))
+            .reduce("", (o, o2) -> o + o2 + "<br/>");
+        return ResponseEntity.ok("<html>" + log + "</html>");
     }
 
     private String generateResponse(LocalDateTime lastRunTime) {
