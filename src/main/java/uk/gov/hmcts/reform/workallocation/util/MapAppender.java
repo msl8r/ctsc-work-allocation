@@ -4,21 +4,20 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapAppender extends AppenderBase<ILoggingEvent> {
 
-    private static ConcurrentMap<String, ILoggingEvent> EVENT_MAP
-        = new ConcurrentHashMap<>();
+    private static List<String> EVENT_MAP
+        = new ArrayList<>();
 
     @Override
     protected void append(ILoggingEvent event) {
-        EVENT_MAP.put(LocalDateTime.now().toString(), event);
+        EVENT_MAP.add(LocalDateTime.now() + ": " + event);
     }
 
-    public static Map<String, ILoggingEvent> getEventMap() {
+    public static List<String> getEventMap() {
         return EVENT_MAP;
     }
 

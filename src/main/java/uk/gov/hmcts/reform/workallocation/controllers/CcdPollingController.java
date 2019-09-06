@@ -49,10 +49,10 @@ public class CcdPollingController {
 
     @GetMapping("/logs")
     public ResponseEntity<String> getLogs() {
-        String log = MapAppender.getEventMap().entrySet().stream()
-            .map(s -> s.getKey()).sorted()
-            .map(s -> s + ": " + MapAppender.getEventMap().get(s))
-            .reduce("", (o, o2) -> o + o2 + "<br/>");
+        String log = MapAppender.getEventMap()
+            .stream()
+            .reduce("", (iLoggingEvent, iLoggingEvent2) ->
+                iLoggingEvent + "<br/>" + iLoggingEvent2);
         return ResponseEntity.ok("<html>" + log + "</html>");
     }
 
