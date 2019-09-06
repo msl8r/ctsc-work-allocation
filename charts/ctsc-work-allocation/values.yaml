@@ -1,3 +1,50 @@
+postgresql:
+  initdbScripts:
+    init.sql: |-
+      CREATE USER workallocation WITH PASSWORD 'workallocation';
+      CREATE DATABASE workallocation WITH OWNER = workallocation ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+  nameOverride: workallocation-db
+  persistence:
+    enabled: false
+
 java:
   applicationPort: 8080
+  keyVaults:
+    "ctsc":
+      resourceGroup: ctsc
+      secrets:
+        - AppInsightsInstrumentationKey
+        - CTSC-S2S-SECRET
+        - CTSC-SERVICE-USER-EMAIL
+        - CTSC-SERVICE-USER-PASSWORD
+        - CTSC-SERVICEBUS-CONNECTION-STRING
+        - service-email-addresses
+        - smtp-from
+        - smtp-host
+        - smtp-is-secure
+        - smtp-is-spoofed
+        - smtp-password
+        - smtp-port
+        - smtp-user
+        - wa-service-email-address
   environment:
+    SPRING_DATASOURCE_URL: "jdbc:postgresql://{{ .Release.Name }}-workallocation-db:5432/workallocation"
+    SPRING_DATASOURCE_USERNAME: workallocation
+    SPRING_DATASOURCE_PASSWORD: workallocation
+
+    SPRING_LIQUIBASE_ENABLED: true
+
+    S2S_AUTH_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
+    IDAM_CLIENT_BASE_URL: https://idam-api.aat.platform.hmcts.net
+    PAYMENT_API_URL: http://payment-api-aat.service.core-compute-aat.internal
+
+    APPINSIGHTS_INSTRUMENTATIONKEY: fake-key
+
+    LOGBACK_REQUIRE_ALERT_LEVEL: false
+    LOGBACK_REQUIRE_ERROR_CODE: false
+    SERVER_URL: https://ccpay-bubble-frontend-aat.service.core-compute-aat.internal
+    CCD_API_URL: http://ccd-data-store-api-aat.service.aat.internal
+
+    SERVICE_BUS_QUEUE_NAME: ctsc-work-allocation-queue-preview
+    DEEPLINK_BASE_URL: https://www-ccd.demo.platform.hmcts.net/case/
+    S2S_MICROSERVICE_NAME: ccpay_bubble

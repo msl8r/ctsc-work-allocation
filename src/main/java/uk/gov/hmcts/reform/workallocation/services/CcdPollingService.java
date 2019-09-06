@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.workallocation.queue.DeadQueueConsumer;
 import uk.gov.hmcts.reform.workallocation.queue.DelayedExecutor;
 import uk.gov.hmcts.reform.workallocation.queue.QueueConsumer;
 import uk.gov.hmcts.reform.workallocation.queue.QueueProducer;
+import uk.gov.hmcts.reform.workallocation.util.MemoryAppender;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -77,7 +78,7 @@ public class CcdPollingService {
 
     @Scheduled(fixedDelay = POLL_INTERVAL)
     public void pollCcdEndpoint() throws ServiceBusException, InterruptedException {
-
+        MemoryAppender.resetLogger();
         final DelayedExecutor delayedExecutor = new DelayedExecutor(Executors.newScheduledThreadPool(1));
 
         // Handling dead letters

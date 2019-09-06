@@ -5,8 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import uk.gov.hmcts.reform.workallocation.model.AuditLog;
 import uk.gov.hmcts.reform.workallocation.services.CcdPollingService;
 import uk.gov.hmcts.reform.workallocation.services.LastRunTimeService;
+import uk.gov.hmcts.reform.workallocation.services.LoggingService;
+import uk.gov.hmcts.reform.workallocation.util.MemoryAppender;
 
 import java.time.LocalDateTime;
 
@@ -19,10 +22,14 @@ public class CcdPollingController {
 
     private final CcdPollingService ccdPollingService;
     private final LastRunTimeService lastRunTimeService;
+    private final LoggingService loggingService;
 
-    public CcdPollingController(CcdPollingService ccdPollingService, LastRunTimeService lastRunTimeService) {
+    public CcdPollingController(CcdPollingService ccdPollingService,
+                                LastRunTimeService lastRunTimeService,
+                                LoggingService loggingService) {
         this.ccdPollingService = ccdPollingService;
         this.lastRunTimeService = lastRunTimeService;
+        this.loggingService = loggingService;
     }
 
     @GetMapping("/get-cases")
@@ -47,6 +54,22 @@ public class CcdPollingController {
         LocalDateTime lastRunTime = lastRunTimeService.getLastRunTime().orElse(LastRunTimeService.getMinDate());
         ccdPollingService.pollCcdEndpoint();
         return ResponseEntity.ok(generateResponse(lastRunTime));
+    }
+
+    @GetMapping("/last-run-log")
+    public ResponseEntity<String> getMemoryLogs() {
+        String log = MemoryAppender.getEventLog()
+            .stream()
+            .reduce("", (iLoggingEvent, iLoggingEvent2) ->
+                iLoggingEvent + "<br/>" + iLoggingEvent2);
+        return ResponseEntity.ok("<html>" + log + "</html>");
+    }
+
+    @GetMapping("/logs")
+    public ResponseEntity<String> getDbLogs() {
+        return ResponseEntity.ok("<html>" + loggingService.getLogs().stream()
+            .map(AuditLog::toString)
+            .reduce("", (s, s2) -> s + "<br/>" + s2) + "</html>");
     }
 
     private String generateResponse(LocalDateTime lastRunTime) {

@@ -44,10 +44,6 @@ variable "idam_api_url" {
   default = "https://idam-api.aat.platform.hmcts.net"
 }
 
-variable "last_run_log_file" {
-  default = "%HOME%\\LogFiles\\last_run.log"
-}
-
 variable "database_name" {
   type    = "string"
   default = "workallocation"
@@ -68,5 +64,9 @@ variable "deeplink_base_url" {
 
 variable "service_bus_queue_name" {
   default = "ctsc-work-allocation-queue-demo"
+}
+
+variable "s2s_microservice_name" {
+  default = "ctsc_work_allocation"
 }
 
