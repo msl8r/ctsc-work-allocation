@@ -1,9 +1,13 @@
 package uk.gov.hmcts.reform.workallocation.model;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
+import static org.junit.Assert.assertEquals;
 
 public class AuditLogTest {
 
@@ -11,7 +15,11 @@ public class AuditLogTest {
     public void testGetTime() {
         AuditLog log = new AuditLog();
         log.setTime(1568129762000L);
-        Assert.assertEquals(LocalDateTime.of(2019, 9, 10, 16, 36, 02), log.getTime());
+        LocalDateTime logTime = log.getTime();
+        ZonedDateTime logTimeZoned = logTime.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC);
+        assertEquals(
+            LocalDateTime.of(2019, 9, 10, 15, 36, 02),
+            logTimeZoned.toLocalDateTime());
     }
 
     @Test
@@ -22,6 +30,9 @@ public class AuditLogTest {
         log.setLevel("INFO");
         log.setMessage("test message");
 
-        Assert.assertEquals("2019-09-10T16:36:02 - INFO - test message", log.toString());
+        LocalDateTime logTime = log.getTime();
+        ZonedDateTime logTimeZoned = logTime.atZone(ZoneId.systemDefault());
+
+        assertEquals(logTimeZoned.toLocalDateTime().toString() + " - INFO - test message", log.toString());
     }
 }
