@@ -17,6 +17,12 @@ def onMasterNotificationsChannel = '#ctsc-master-builds'
 def onDemoNotificationsChannel = '#ctsc-demo-builds'
 def onPRNotificationsChannel = '#ctsc-pr-builds'
 
+def vaultOverrides = [
+    'preview': 'aat',
+    'hmctsdemo': 'aat',
+
+]
+
 withPipeline(type, product, app) {
     onMaster {
       enableSlackNotifications(onMasterNotificationsChannel)
