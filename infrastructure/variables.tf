@@ -55,7 +55,7 @@ variable "postgresql_user" {
 }
 
 variable "liquibase_enabled" {
-  default = "false"
+  default = "true"
 }
 
 variable "deeplink_base_url" {
