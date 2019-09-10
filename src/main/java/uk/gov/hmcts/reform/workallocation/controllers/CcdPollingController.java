@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.workallocation.services.LoggingService;
 import uk.gov.hmcts.reform.workallocation.util.MemoryAppender;
 
 import java.time.LocalDateTime;
+import java.util.stream.StreamSupport;
 
 /**
  * Created just for the prototype to be able to test.
