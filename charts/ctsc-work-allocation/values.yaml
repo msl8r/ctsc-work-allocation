@@ -28,7 +28,7 @@ java:
         - smtp-user
         - wa-service-email-address
   environment:
-    SPRING_DATASOURCE_URL: "jdbc:postgresql://{{ .Release.Name }}-workallocation-db:5432/workallocation"
+    SPRING_DATASOURCE_URL: "jdbc:postgresql://{{ .Release.Name }}-workallocation-db:5432/workallocation?sslmode=require"
     SPRING_DATASOURCE_USERNAME: workallocation
     SPRING_DATASOURCE_PASSWORD: workallocation
 
