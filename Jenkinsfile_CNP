@@ -33,6 +33,7 @@ withPipeline(type, product, app) {
     onPR {
       enableSlackNotifications(onPRNotificationsChannel)
     }
+    overrideVaultEnvironments(vaultOverrides)
     enableDockerBuild()
     installCharts()
     enableSlackNotifications('#ctstc-tech-internal')
