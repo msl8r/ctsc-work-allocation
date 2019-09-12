@@ -36,5 +36,9 @@
       <notes>commons-beanutils-1.9.3.jar issues</notes>
       <cve>CVE-2019-10086</cve>
     </suppress>
+    <suppress>
+      <notes>applicationinsights-core-2.0.2.jar issues</notes>
+      <cve>CVE-2018-10237</cve>
+    </suppress>
 </suppressions>
 
