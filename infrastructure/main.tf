@@ -150,6 +150,7 @@ module "ctsc-work-allocation" {
 
     SERVICE_EMAIL_ADDRESS = "${data.azurerm_key_vault_secret.service_email_address.value}"
     DEEPLINK_BASE_URL = "${var.deeplink_base_url}"
+    SMTP_ENABLED = "${var.smtp_enabled}"
   }
 }
 

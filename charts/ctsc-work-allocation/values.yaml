@@ -48,3 +48,4 @@ java:
     SERVICE_BUS_QUEUE_NAME: ctsc-work-allocation-queue-preview
     DEEPLINK_BASE_URL: https://www-ccd.demo.platform.hmcts.net/case/
     S2S_MICROSERVICE_NAME: ccpay_bubble
+    SMTP_ENABLED: false

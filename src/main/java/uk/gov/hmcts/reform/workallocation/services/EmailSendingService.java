@@ -7,7 +7,9 @@ import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.workallocation.email.IEmailSendingService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 
 import java.io.StringWriter;
@@ -23,7 +25,8 @@ import javax.mail.internet.MimeMessage;
 
 @Service
 @Slf4j
-public class EmailSendingService implements InitializingBean {
+@ConditionalOnProperty(name = "smtp.enabled", havingValue = "true")
+public class EmailSendingService implements IEmailSendingService, InitializingBean {
 
     @Value("${smtp.host}")
     private String smtpHost;
@@ -52,6 +55,7 @@ public class EmailSendingService implements InitializingBean {
 
     private static final String NO_JURISDICTION = "No Jurisdiction";
 
+    @Override
     public void sendEmail(Task task, String deeplinkBaseUrl) throws Exception {
         log.info("Sending Email for Task {} With Deep Link URL {} to Email address {}",
             task, deeplinkBaseUrl, serviceEmail);

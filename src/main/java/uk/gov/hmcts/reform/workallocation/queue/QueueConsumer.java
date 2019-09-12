@@ -11,8 +11,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import uk.gov.hmcts.reform.workallocation.email.IEmailSendingService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
-import uk.gov.hmcts.reform.workallocation.services.EmailSendingService;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
@@ -33,7 +33,7 @@ public class QueueConsumer<T> extends BaseQueueConsumer {
 
     @Autowired
     @Setter
-    private EmailSendingService emailSendingService;
+    private IEmailSendingService emailSendingService;
 
     @Value("${ccd.deeplinkBaseUrl}")
     @Setter

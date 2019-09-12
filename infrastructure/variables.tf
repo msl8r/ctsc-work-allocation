@@ -70,3 +70,7 @@ variable "s2s_microservice_name" {
   default = "ctsc_work_allocation"
 }
 
+variable "smtp_enabled" {
+  default = "false"
+}
+
