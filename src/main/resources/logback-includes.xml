@@ -10,8 +10,14 @@
     </connectionSource>
   </appender>
 
+  <appender name="WORK_ALLOCATION_API_APPENDER"
+            class="com.microsoft.applicationinsights.logback.ApplicationInsightsAppender">
+    <instrumentationKey>${APPLICATION_INSIGHTS_IKEY:false}</instrumentationKey>
+  </appender>
+
   <logger name="uk.gov.hmcts.reform.workallocation">
     <appender-ref ref="WORK_ALLOCATION_AUDIT_MEM" />
     <appender-ref ref="WORK_ALLOCATION_AUDIT_DB" />
+    <appender-ref ref="WORK_ALLOCATION_API_APPENDER" />
   </logger>
 </included>
