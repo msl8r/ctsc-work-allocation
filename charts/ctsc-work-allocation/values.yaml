@@ -9,7 +9,26 @@ postgresql:
 
 java:
   applicationPort: 8080
+  keyVaults:
+    "ctsc":
+      resourceGroup: ctsc
+      secrets:
+        - AppInsightsInstrumentationKey
+        - CTSC-S2S-SECRET
+        - CTSC-SERVICE-USER-EMAIL
+        - CTSC-SERVICE-USER-PASSWORD
+        - CTSC-SERVICEBUS-CONNECTION-STRING
+        - service-email-addresses
+        - smtp-from
+        - smtp-host
+        - smtp-is-secure
+        - smtp-is-spoofed
+        - smtp-password
+        - smtp-port
+        - smtp-user
+        - wa-service-email-address
   environment:
+    SPRING_DATASOURCE_URL: "jdbc:postgresql://{{ .Release.Name }}-workallocation-db:5432/workallocation"
     SPRING_DATASOURCE_USERNAME: workallocation
     SPRING_DATASOURCE_PASSWORD: workallocation
 
