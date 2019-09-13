@@ -26,13 +26,6 @@ sourceSets {
     }
     resources.srcDir file('src/functionalTest/resources')
   }
-  smokeTest {
-    java {
-      compileClasspath += main.output
-      runtimeClasspath += main.output
-      srcDir file('src/smokeTest/java')
-    }
-  }
 
   integrationTest {
     java {
@@ -216,6 +209,10 @@ dependencies {
 
 
   testCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.1.1'
+  testCompile group: 'io.rest-assured', name: 'json-path', version: '4.1.1'
+  testCompile group: 'io.rest-assured', name: 'xml-path', version: '4.1.1'
+
+
 
   testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
     exclude(module: 'commons-logging')
