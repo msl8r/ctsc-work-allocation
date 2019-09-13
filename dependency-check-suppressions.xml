@@ -40,5 +40,10 @@
       <notes>applicationinsights-core-2.0.2.jar issues</notes>
       <cve>CVE-2018-10237</cve>
     </suppress>
+    <suppress>
+      <notes>restassured issues, only effects test</notes>
+      <cve>CVE-2016-5394</cve>
+      <cve>CVE-2016-6798</cve>
+    </suppress>
 </suppressions>
 
