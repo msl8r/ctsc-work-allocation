@@ -4,9 +4,11 @@ import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.QueueClient;
 import com.microsoft.azure.servicebus.ReceiveMode;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.workallocation.exception.ConnectionException;
 
+@Slf4j
 public class QueueClientSupplier implements CtscQueueSupplier {
 
     private final String connectionString;
@@ -29,6 +31,7 @@ public class QueueClientSupplier implements CtscQueueSupplier {
     }
 
     private IQueueClient getServiceBusQueue(String entityPath) {
+        log.info("service bus connection string: {}", connectionString);
         try {
             return new QueueClient(
                 new ConnectionStringBuilder(connectionString, entityPath),
