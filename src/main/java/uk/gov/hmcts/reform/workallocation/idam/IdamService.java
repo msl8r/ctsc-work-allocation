@@ -57,12 +57,9 @@ public class IdamService {
     public String getIdamOauth2Token() {
         String redirectUrl = serverUrl + idamOauth2RedirectUrl;
         try {
-            log.info("Requesting idam token with {}, {}", idamOauth2UserEmail, idamOauth2UserPassword);
+            log.info("Requesting idam token...");
             String authorisation = idamOauth2UserEmail + ":" + idamOauth2UserPassword;
             String base64Authorisation = Base64.getEncoder().encodeToString(authorisation.getBytes());
-            log.info("the generated string: {}", base64Authorisation);
-            log.info("client_id: {}", idamOauth2ClientId);
-            log.info("Redirect: {}", redirectUrl);
 
             Authorize authorize = idamApiClient.authorizeCodeType(
                 "Basic " + base64Authorisation,
