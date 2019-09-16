@@ -24,8 +24,11 @@ public class IdamService {
     @Value("${idam.service-user.password}")
     private String idamOauth2UserPassword;
 
-    @Value("${idam.s2s-auth.microservice}")
+    @Value("${idam.s2s-auth.client_id}")
     private String idamOauth2ClientId;
+
+    @Value("${idam.s2s-auth.microservice}")
+    private String microserviceName;
 
     @Value("${idam.s2s-auth.totp_secret}")
     private String idamOauth2ClientSecret;
@@ -57,9 +60,12 @@ public class IdamService {
     public String getIdamOauth2Token() {
         String redirectUrl = serverUrl + idamOauth2RedirectUrl;
         try {
-            log.info("Requesting idam token...");
+            log.info("Requesting idam token with {}, {}", idamOauth2UserEmail, idamOauth2UserPassword);
             String authorisation = idamOauth2UserEmail + ":" + idamOauth2UserPassword;
             String base64Authorisation = Base64.getEncoder().encodeToString(authorisation.getBytes());
+            log.info("the generated string: {}", base64Authorisation);
+            log.info("client_id: {}", idamOauth2ClientId);
+            log.info("Redirect: {}", redirectUrl);
 
             Authorize authorize = idamApiClient.authorizeCodeType(
                 "Basic " + base64Authorisation,
@@ -70,12 +76,12 @@ public class IdamService {
             );
 
             log.info("Passing authorization code to IDAM to get a token");
-
+            log.info("microservice name: {}", microserviceName);
             Authorize authorizeToken = idamApiClient.authorizeToken(
                 authorize.getCode(),
                 "authorization_code",
                 redirectUrl,
-                idamOauth2ClientId,
+                microserviceName,
                 idamOauth2ClientSecret,
                 " "
             );

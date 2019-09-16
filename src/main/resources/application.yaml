@@ -57,6 +57,7 @@ idam:
   s2s-auth:
     totp_secret: ${S2S_SECRET:ABCD1F2BABCD1F2B}
     microservice: ${S2S_MICROSERVICE_NAME:ctsc_work_allocation}
+    client_id: ${S2S_CLIENT_ID:ctsc_work_allocation}
     url: ${S2S_AUTH_URL:http://localhost:23443}
     redirect_uri: /oauth2/callback
   service-user:
