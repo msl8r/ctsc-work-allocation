@@ -2,9 +2,16 @@ server:
   port: 8080
 
 management:
+  endpoint:
+    health:
+      show-details: "always"
+      mail:
+        enabled: false
   endpoints:
     web:
-      base-path: /
+      base-path: "/"
+      exposure:
+        include: health,info
 
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:
