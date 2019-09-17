@@ -14,11 +14,11 @@ java:
     LOGBACK_REQUIRE_ALERT_LEVEL: false
     LOGBACK_REQUIRE_ERROR_CODE: false
     SERVER_URL: https://ccpay-bubble-frontend-aat.service.core-compute-aat.internal
-    CCD_API_URL: http://ccd-data-store-api-aat.service.aat.internal
+    CCD_API_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
 
     SERVICE_BUS_QUEUE_NAME: ctsc-work-allocation-queue-preview
     DEEPLINK_BASE_URL: https://www-ccd.demo.platform.hmcts.net/case/
-    S2S_CLIENT_ID: paybubble
+    IDAM_CLIENT_ID: paybubble
     S2S_MICROSERVICE_NAME: ccpay_bubble
     SMTP_ENABLED: false
   # Don't modify below here
