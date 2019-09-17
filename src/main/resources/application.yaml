@@ -57,9 +57,7 @@ idam:
   s2s-auth:
     totp_secret: ${S2S_SECRET:ABCD1F2BABCD1F2B}
     microservice: ${S2S_MICROSERVICE_NAME:ctsc_work_allocation}
-    client_id: ${S2S_CLIENT_ID:ctsc_work_allocation}
     url: ${S2S_AUTH_URL:http://localhost:23443}
-    redirect_uri: /oauth2/callback
   service-user:
     email: ${SERVICE_USER_EMAIL:service.user@mail.com}
     password: ${SERVICE_USER_PASSWORD:password123}
@@ -68,6 +66,9 @@ auth:
   idam:
     client:
       baseUrl: ${IDAM_CLIENT_BASE_URL:http://localhost:23443}
+      client_id: ${IDAM_CLIENT_ID:ctsc_work_allocation}
+      client_secret: ${IDAM_CLIENT_SECRET:ABCD1F2BABCD1F2B}
+      redirect_uri: /oauth2/callback
 ccd:
   baseUrl: ${CCD_API_URL:http://localhost:23443}
   deeplinkBaseUrl: ${DEEPLINK_BASE_URL:https://www-ccd.demo.platform.hmcts.net/case/}

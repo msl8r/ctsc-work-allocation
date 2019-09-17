@@ -44,6 +44,10 @@ variable "idam_api_url" {
   default = "https://idam-api.aat.platform.hmcts.net"
 }
 
+variable "idam_client_id" {
+  default = "ctsc_work_allocation"
+}
+
 variable "database_name" {
   type    = "string"
   default = "workallocation"
