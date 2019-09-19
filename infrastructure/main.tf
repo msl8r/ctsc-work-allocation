@@ -139,7 +139,7 @@ module "ctsc-work-allocation" {
     SERVER_URL = "https://${var.ctsc_server_url_prefix}-${var.env}-staging.service.${local.ase_name}.internal"
     CCD_API_URL = "http://${var.ccd_api_url_prefix}-${var.env}.service.${local.ase_name}.internal"
     IDAM_CLIENT_ID = "${var.idam_client_id}"
-    IDAM_CLIENT_SECRET = "${data.azurerm_key_vault_secret.idam_client_secret}"
+    IDAM_CLIENT_SECRET = "${data.azurerm_key_vault_secret.idam_client_secret.value}"
     IDAM_CLIENT_BASE_URL = "${var.idam_api_url}"
     SERVICE_USER_EMAIL = "${data.azurerm_key_vault_secret.service_user_email.value}"
     SERVICE_USER_PASSWORD = "${data.azurerm_key_vault_secret.service_user_password.value}"
