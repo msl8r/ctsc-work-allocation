@@ -138,7 +138,7 @@ public class CcdPollingService {
     private LocalDateTime readLastRunTime() {
         Optional<LocalDateTime> lastRunTime = lastRunTimeService.getLastRunTime();
         return lastRunTime.orElseGet(() -> {
-            LocalDateTime defaultLastRun = LastRunTimeService.getMinDate();
+            LocalDateTime defaultLastRun = lastRunTimeService.getMinDate();
             lastRunTimeService.insertLastRunTime(defaultLastRun);
             return defaultLastRun;
         });

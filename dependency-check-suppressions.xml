@@ -14,10 +14,6 @@
         <cve>CVE-2018-1258</cve>
     </suppress>
     <suppress>
-        <notes>jackson-databind-2.9.9 issues although there is a newer one (2.9.9.1) none of the libraries using the currently </notes>
-        <cve>CVE-2019-12814</cve>
-    </suppress>
-    <suppress>
       <notes>rest assured grrovy library issues, using only for tests</notes>
       <cve>CVE-2016-6497</cve>
     </suppress>
@@ -25,7 +21,8 @@
       <notes>currently jackson-databind is not updated in the libraries so suppressing for now</notes>
       <cve>CVE-2019-14439</cve>
       <cve>CVE-2019-14379</cve>
-      <cve>CVE-2019-12384</cve>
+      <cve>CVE-2019-14540</cve>
+      <cve>CVE-2019-16335</cve>
     </suppress>
     <suppress>
       <notes>currently commons collections is not updated in the libraries so suppressing for now</notes>
@@ -46,4 +43,3 @@
       <cve>CVE-2016-6798</cve>
     </suppress>
 </suppressions>
-

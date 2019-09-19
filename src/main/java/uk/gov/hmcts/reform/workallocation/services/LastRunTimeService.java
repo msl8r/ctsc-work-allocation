@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.workallocation.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,8 +23,11 @@ public class LastRunTimeService {
     @PersistenceContext
     private EntityManager em;
 
-    public static LocalDateTime getMinDate() {
-        return LocalDateTime.of(1980, 1, 1, 11, 0);
+    @Value("${ccd.minus_time_from_current}")
+    private long minusTimeFromCurrent;
+
+    public LocalDateTime getMinDate() {
+        return LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).minusDays(minusTimeFromCurrent);
     }
 
     public Optional<LocalDateTime> getLastRunTime() {

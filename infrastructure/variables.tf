@@ -78,3 +78,7 @@ variable "smtp_enabled" {
   default = "false"
 }
 
+variable "minus_time_from_current" {
+  default = "0"
+}
+

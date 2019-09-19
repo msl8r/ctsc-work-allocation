@@ -80,6 +80,7 @@ ccd:
   baseUrl: ${CCD_API_URL:http://localhost:23443}
   deeplinkBaseUrl: ${DEEPLINK_BASE_URL:https://www-ccd.demo.platform.hmcts.net/case/}
   ctids: DIVORCE
+  minus_time_from_current: ${MINUS_TIME_FROM_CURRENT:7}
 
 server-url: ${SERVER_URL:http://localhost:8080}
 
