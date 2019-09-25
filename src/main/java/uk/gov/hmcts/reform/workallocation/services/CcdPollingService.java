@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.workallocation.services;
 
-import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.workallocation.ccd.CcdClient;
-import uk.gov.hmcts.reform.workallocation.exception.QueueClientException;
 import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.queue.DeadQueueConsumer;
@@ -77,22 +75,24 @@ public class CcdPollingService {
     }
 
     @Scheduled(fixedDelay = POLL_INTERVAL)
-    public void pollCcdEndpoint() throws ServiceBusException, InterruptedException {
+    public void pollCcdEndpoint() {
         MemoryAppender.resetLogger();
         final DelayedExecutor delayedExecutor = new DelayedExecutor(Executors.newScheduledThreadPool(1));
 
         // Handling dead letters
         log.info("collecting dead letters");
-        deadQueueConsumer.runConsumer(delayedExecutor)
+        deadQueueConsumer
+            .runConsumer(delayedExecutor)
             .thenCompose(aVoid -> {
                 // Start queue client
-                try {
-                    log.info("poll started");
-                    return queueConsumer.runConsumer(delayedExecutor);
-                } catch (Exception e) {
-                    throw new QueueClientException("Failed to start queue client!", e);
+                log.info("poll started");
+                return queueConsumer.runConsumer(delayedExecutor);
+            }).whenComplete((aVoid, throwable) -> {
+                if (throwable != null) {
+                    log.error("There was an error running queue client", throwable);
                 }
-            }).thenRun(delayedExecutor::shutdown);
+                delayedExecutor.shutdown();
+            });
 
 
         // 0. get last run time

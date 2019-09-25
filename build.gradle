@@ -89,7 +89,6 @@ project.tasks['sonarqube'].dependsOn test, integration
 def sonarExclusions = [
   '**/Application.java',
   '**/config/*.java',
-  '**/CcdPollingService.java',
   '**/CcdPollingController.java',
   '**/LastRunTimeService.java',
   '**/AuthController.java',

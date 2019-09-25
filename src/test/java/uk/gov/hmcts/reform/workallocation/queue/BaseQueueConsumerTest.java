@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.workallocation.queue;
 
-import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -16,11 +15,10 @@ public class BaseQueueConsumerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testrunConsumer() throws ServiceBusException, InterruptedException {
+    public void testrunConsumer() {
         BaseQueueConsumer consumer = new BaseQueueConsumer() {
             @Override
-            public Supplier<CompletableFuture<Void>> registerReceiver(DelayedExecutor executorService)
-                throws ServiceBusException, InterruptedException {
+            public Supplier<CompletableFuture<Void>> registerReceiver(DelayedExecutor executorService) {
                 return () -> CompletableFuture.completedFuture(null);
             }
         };

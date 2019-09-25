@@ -18,12 +18,18 @@ public abstract class BaseQueueConsumer {
     @Setter
     private LocalDateTime lastMessageTime = now();
 
-    public CompletableFuture<Void> runConsumer(DelayedExecutor executorService)
-        throws ServiceBusException, InterruptedException {
-        setLastMessageTime(now());
-        Supplier<CompletableFuture<Void>> job = registerReceiver(executorService);
-        Supplier<LocalDateTime> getLastMessageTimeFunc = this::getLastMessageTime;
-        return executorService.schedule(getLastMessageTimeFunc, CLIENT_TIMEOUT_SECONDS, job);
+    public CompletableFuture<Void> runConsumer(DelayedExecutor executorService) {
+
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        try {
+            setLastMessageTime(now());
+            Supplier<CompletableFuture<Void>> job = registerReceiver(executorService);
+            Supplier<LocalDateTime> getLastMessageTimeFunc = this::getLastMessageTime;
+            future = executorService.schedule(getLastMessageTimeFunc, CLIENT_TIMEOUT_SECONDS, job);
+        } catch (Exception e) {
+            future.completeExceptionally(e);
+        }
+        return future;
     }
 
     public abstract Supplier<CompletableFuture<Void>> registerReceiver(DelayedExecutor executorService)
