@@ -99,7 +99,7 @@ module "work-allocation-queue" {
 }
 
 module "bar-database" {
-  source = "git@github.com:hmcts/moj-module-postgres?ref=master"
+  source = "git@github.com:hmcts/cnp-module-postgres?ref=master"
   product = "${var.product}-postgres-db"
   location = "${var.location_app}"
   env = "${var.env}"
