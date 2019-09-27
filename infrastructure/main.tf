@@ -83,7 +83,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 module "servicebus-namespace" {
-  source                = "git@github.com:hmcts/terraform-module-servicebus-namespace.git"
+  source                = "git@github.com:hmcts/terraform-module-servicebus-namespace?ref=master"
   name                  = "${var.product}-servicebus-${var.env}"
   location              = "${var.location_app}"
   resource_group_name   = "${azurerm_resource_group.rg.name}"
@@ -92,7 +92,7 @@ module "servicebus-namespace" {
 }
 
 module "work-allocation-queue" {
-  source = "git@github.com:hmcts/terraform-module-servicebus-queue.git"
+  source = "git@github.com:hmcts/terraform-module-servicebus-queue?ref=master"
   name = "${var.product}-work-allocation-queue-${var.env}"
   namespace_name = "${module.servicebus-namespace.name}"
   resource_group_name = "${azurerm_resource_group.rg.name}"
