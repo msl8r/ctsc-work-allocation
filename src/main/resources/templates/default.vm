@@ -1,0 +1,13 @@
+<html>
+
+<head></head>
+
+<body>
+    <p>
+      Jurisdiction: ${jurisdiction} </br>
+      Last Modified Date: ${lastModifiedDate} </br> </br>
+      <a href="${deepLinkUrl}" target="_blank">${deepLinkUrl}</a>
+    </p>
+</body>
+
+</html>

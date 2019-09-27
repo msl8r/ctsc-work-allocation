@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.workallocation;
 
 import io.restassured.RestAssured;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +12,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 @RunWith(SpringRunner.class)
-@Slf4j
 public class SmokeTest {
     @Value("${TEST_URL:http://localhost:8080}")
     private String testUrl;
@@ -21,7 +19,6 @@ public class SmokeTest {
     @Before
     public void setUp() {
         RestAssured.baseURI = testUrl;
-        log.info("Bar-Api base url is :{}", testUrl);
     }
 
     @Test

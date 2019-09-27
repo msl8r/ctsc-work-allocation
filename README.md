@@ -1,4 +1,4 @@
-# CTSC Work Allocation Serice
+# CTSC Work Allocation Service
 
 [![Build Status](https://travis-ci.org/hmcts/spring-boot-template.svg?branch=master)](https://travis-ci.org/hmcts/spring-boot-template)
 

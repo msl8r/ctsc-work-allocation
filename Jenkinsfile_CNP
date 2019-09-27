@@ -13,7 +13,43 @@ def product = "ctsc"
 
 def app = "work-allocation"
 
+def onMasterNotificationsChannel = '#ctsc-master-builds'
+def onDemoNotificationsChannel = '#ctsc-demo-builds'
+def onPRNotificationsChannel = '#ctsc-pr-builds'
+
+
+def secrets = [
+  's2s-${env}': [
+    secret('microservicekey-ctsc-work-allocation', 'S2S_SECRET')
+  ]
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+    [$class     : 'AzureKeyVaultSecret',
+     secretType : 'Secret',
+     name       : secretName,
+     version    : '',
+     envVariable: envVar
+    ]
+}
+
+def vaultOverrides = [
+    'preview': 'aat',
+    'hmctsdemo': 'aat',
+
+]
+
 withPipeline(type, product, app) {
+    onMaster {
+      enableSlackNotifications(onMasterNotificationsChannel)
+    }
+    onDemo {
+      enableSlackNotifications(onDemoNotificationsChannel)
+    }
+    onPR {
+      enableSlackNotifications(onPRNotificationsChannel)
+    }
+    overrideVaultEnvironments(vaultOverrides)
     enableDockerBuild()
     installCharts()
     enableSlackNotifications('#ctstc-tech-internal')

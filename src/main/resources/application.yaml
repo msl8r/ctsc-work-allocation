@@ -2,32 +2,105 @@ server:
   port: 8080
 
 management:
+  endpoint:
+    health:
+      show-details: "always"
+      mail:
+        enabled: false
   endpoints:
     web:
-      base-path: /
+      base-path: "/"
+      exposure:
+        include: health,info
 
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:
   application:
     name: CTSC Work Allocation
-#  datasource:
-#    driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}${DB_OPTIONS:}
-#    username: ${DB_USER_NAME}
-#    password: ${DB_PASSWORD}
-#    properties:
-#      charSet: UTF-8
-#    hikari:
-#      minimumIdle: 2
-#      maximumPoolSize: 10
-#      idleTimeout: 10000
-#      poolName: {to-be-defined}HikariCP
-#      maxLifetime: 7200000
-#      connectionTimeout: 30000
-#  jpa:
-#    properties:
-#      hibernate:
-#        jdbc:
-#          lob:
-#            # silence the 'wall-of-text' - unnecessary exception throw about blob types
-#            non_contextual_creation: true
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/workallocation
+    username: workallocation
+    password: workallocation
+    properties:
+      charSet: UTF-8
+  liquibase:
+    enabled: ${SPRING_LIQUIBASE_ENABLED:false}
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            # silence the 'wall-of-text' - unnecessary exception throw about blob types
+            non_contextual_creation: true
+  velocity:
+    resourceLoaderPath: 'classpath:/templates/'
+    suffix: .vm
+    cache: false
+    check-template-location: true
+    content-type: text/html
+    charset: UTF-8
+    properties:
+      input:
+        encoding: UTF-8
+      output:
+        encoding: UTF-8
+  mail:
+    host: ${SMTP_HOST:smtp.mail.com}
+    port: ${SMTP_PORT:25}
+    username: ${SMTP_USER:from@mail.com}
+    password: ${SMTP_PASSWORD:password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+        starttls:
+          enable: true
+
+idam:
+  s2s-auth:
+    totp_secret: ${S2S_SECRET:ABCD1F2BABCD1F2B}
+    microservice: ${S2S_MICROSERVICE_NAME:ctsc_work_allocation}
+    url: ${S2S_AUTH_URL:http://localhost:23443}
+  service-user:
+    email: ${SERVICE_USER_EMAIL:service.user@mail.com}
+    password: ${SERVICE_USER_PASSWORD:password123}
+
+auth:
+  idam:
+    client:
+      baseUrl: ${IDAM_CLIENT_BASE_URL:http://localhost:23443}
+      client_id: ${IDAM_CLIENT_ID:ctsc_work_allocation}
+      client_secret: ${IDAM_CLIENT_SECRET:ABCD1F2BABCD1F2B}
+      redirect_uri: /oauth2/callback
+ccd:
+  baseUrl: ${CCD_API_URL:http://localhost:23443}
+  deeplinkBaseUrl: ${DEEPLINK_BASE_URL:https://www-ccd.demo.platform.hmcts.net/case/}
+  ctids: DIVORCE
+  minus_time_from_current: ${MINUS_TIME_FROM_CURRENT:7}
+
+server-url: ${SERVER_URL:http://localhost:8080}
+
+http:
+  client:
+    timeout: 5
+
+service:
+  email: ${SERVICE_EMAIL_ADDRESS:service_email@mail.com}
+
+smtp:
+  enabled: ${SMTP_ENABLED:false}
+  from: ${SMTP_FROM:from@mail.com}
+  host: ${SMTP_HOST:smtp.mail.com}
+  password: ${SMTP_PASSWORD:password}
+  port: ${SMTP_PORT:25}
+  user: ${SMTP_USER:from@mail.com}
+
+servicebus:
+  queue:
+    connectionString: ${SERVICE_BUS_CONNECTION_STRING:your_service_bus_connection_string}
+    entityPath: ${SERVICE_BUS_QUEUE_NAME:ctsc-work-allocation-queue-dev}
+    messageTTLInDays: 5

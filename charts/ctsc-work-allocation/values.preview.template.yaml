@@ -1,5 +1,26 @@
 java:
   environment:
+    SPRING_DATASOURCE_USERNAME: workallocation
+    SPRING_DATASOURCE_PASSWORD: workallocation
+
+    SPRING_LIQUIBASE_ENABLED: true
+
+    S2S_AUTH_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
+    IDAM_CLIENT_BASE_URL: https://idam-api.aat.platform.hmcts.net
+    PAYMENT_API_URL: http://payment-api-aat.service.core-compute-aat.internal
+
+    APPINSIGHTS_INSTRUMENTATIONKEY: fake-key
+
+    LOGBACK_REQUIRE_ALERT_LEVEL: false
+    LOGBACK_REQUIRE_ERROR_CODE: false
+    SERVER_URL: https://ccpay-bubble-frontend-aat.service.core-compute-aat.internal
+    CCD_API_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
+
+    SERVICE_BUS_QUEUE_NAME: ctsc-work-allocation-queue-preview
+    DEEPLINK_BASE_URL: https://www-ccd.demo.platform.hmcts.net/case/
+    IDAM_CLIENT_ID: paybubble
+    S2S_MICROSERVICE_NAME: ccpay_bubble
+    SMTP_ENABLED: false
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
