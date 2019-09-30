@@ -1,5 +1,15 @@
+postgresql:
+  initdbScripts:
+    init.sql: |-
+      CREATE USER workallocation WITH PASSWORD 'workallocation';
+      CREATE DATABASE workallocation WITH OWNER = workallocation ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+  nameOverride: workallocation-db
+  persistence:
+    enabled: false
+
 java:
   environment:
+    SPRING_DATASOURCE_URL: "jdbc:postgresql://{{ .Release.Name }}-workallocation-db:5432/workallocation"
     SPRING_DATASOURCE_USERNAME: workallocation
     SPRING_DATASOURCE_PASSWORD: workallocation
 
@@ -16,11 +26,7 @@ java:
     SERVER_URL: https://ccpay-bubble-frontend-aat.service.core-compute-aat.internal
     CCD_API_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
 
-    SERVICE_BUS_QUEUE_NAME: ctsc-work-allocation-queue-preview
-    DEEPLINK_BASE_URL: https://www-ccd.demo.platform.hmcts.net/case/
-    IDAM_CLIENT_ID: paybubble
-    S2S_MICROSERVICE_NAME: ccpay_bubble
-    SMTP_ENABLED: false
+    DEEPLINK_BASE_URL: https://www-ccd.aat.platform.hmcts.net/case/
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
