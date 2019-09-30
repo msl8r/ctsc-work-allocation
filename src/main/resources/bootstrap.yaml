@@ -17,3 +17,4 @@ spring:
         ctsc.smtp-port                         : SMTP_PORT
         ctsc.smtp-user                         : SMTP_USER
         ctsc.wa-service-email-address          : SERVICE_EMAIL_ADDRESS
+        ctsc.workallocation-POSTGRES-PASS      : SPRING_DATASOURCE_PASSWORD

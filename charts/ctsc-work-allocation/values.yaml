@@ -21,6 +21,7 @@ java:
         - smtp-port
         - smtp-user
         - wa-service-email-address
+        - workallocation-POSTGRES-PASS
   environment:
     SPRING_DATASOURCE_URL: jdbc:postgresql://ctsc-work-allocation-{{ .Values.global.environment }}.postgres.database.azure.com:5432/workallocation
     SPRING_DATASOURCE_USERNAME: workallocation@ctsc-postgres-db-{{.Values.global.environment }}
