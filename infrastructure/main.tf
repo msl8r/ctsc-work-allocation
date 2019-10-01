@@ -11,6 +11,12 @@ data "azurerm_key_vault" "workallocation_key_vault" {
   resource_group_name = "${var.product}-${var.env}"
 }
 
+resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
+  name         = "workallocation-POSTGRES-PASS"
+  value        = "${module.bar-database.postgresql_password}"
+}
+
 data "azurerm_key_vault_secret" "s2s_secret" {
   name      = "CTSC-S2S-SECRET"
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
