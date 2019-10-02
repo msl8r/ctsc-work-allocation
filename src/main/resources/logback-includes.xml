@@ -1,12 +1,14 @@
 <included>
+  <contextListener class="uk.gov.hmcts.reform.workallocation.util.LoggerStartupListener"/>
+
   <appender name="WORK_ALLOCATION_AUDIT_MEM" class="uk.gov.hmcts.reform.workallocation.util.MemoryAppender"/>
 
   <appender name="WORK_ALLOCATION_AUDIT_DB" class="ch.qos.logback.classic.db.DBAppender">
     <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
       <driverClass>org.postgresql.Driver</driverClass>
-      <url>${SPRING_DATASOURCE_URL:-jdbc:postgresql://localhost:5432/workallocation}</url>
-      <user>${SPRING_DATASOURCE_USERNAME:-workallocation}</user>
-      <password>${SPRING_DATASOURCE_PASSWORD:-workallocation}</password>
+      <url>${DB_URL}</url>
+      <user>${DB_USER}</user>
+      <password>${DB_PASS}</password>
     </connectionSource>
   </appender>
 

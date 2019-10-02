@@ -98,6 +98,7 @@ def sonarExclusions = [
   '**/Task.java',
   '**/EmailSendingService.java',
   '**/QueueClientSupplier.java',
+  '**/LoggerStartupListener.java',
   '**/*Exception.java'
 ]
 
