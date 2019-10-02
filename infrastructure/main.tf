@@ -82,6 +82,12 @@ data "azurerm_key_vault_secret" "idam_client_secret" {
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
+data "azurerm_key_vault_secret" "applicationinsights_instrumentationkey" {
+  name      = "AppInsightsInstrumentationKey"
+  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+}
+
+
 # Make sure the resource group exists
 resource "azurerm_resource_group" "rg" {
   name     = "${local.asp_name}"
@@ -165,6 +171,7 @@ module "ctsc-work-allocation" {
     DEEPLINK_BASE_URL = "${var.deeplink_base_url}"
     SMTP_ENABLED = "${var.smtp_enabled}"
     MINUS_TIME_FROM_CURRENT = "${var.minus_time_from_current}"
+    AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY = "${data.azurerm_key_vault_secret.applicationinsights_instrumentationkey.value}"
   }
 }
 

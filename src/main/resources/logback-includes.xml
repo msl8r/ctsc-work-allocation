@@ -1,25 +1,13 @@
 <included>
-  <contextListener class="uk.gov.hmcts.reform.workallocation.util.LoggerStartupListener"/>
 
   <appender name="WORK_ALLOCATION_AUDIT_MEM" class="uk.gov.hmcts.reform.workallocation.util.MemoryAppender"/>
 
-  <appender name="WORK_ALLOCATION_AUDIT_DB" class="ch.qos.logback.classic.db.DBAppender">
-    <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
-      <driverClass>org.postgresql.Driver</driverClass>
-      <url>${DB_URL}</url>
-      <user>${DB_USER}</user>
-      <password>${DB_PASS}</password>
-    </connectionSource>
-  </appender>
-
   <appender name="WORK_ALLOCATION_API_APPENDER"
             class="com.microsoft.applicationinsights.logback.ApplicationInsightsAppender">
-    <instrumentationKey>${APPLICATION_INSIGHTS_IKEY:false}</instrumentationKey>
   </appender>
 
   <logger name="uk.gov.hmcts.reform.workallocation">
     <appender-ref ref="WORK_ALLOCATION_AUDIT_MEM" />
-    <appender-ref ref="WORK_ALLOCATION_AUDIT_DB" />
     <appender-ref ref="WORK_ALLOCATION_API_APPENDER" />
   </logger>
 </included>

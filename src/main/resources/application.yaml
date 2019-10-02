@@ -104,3 +104,7 @@ servicebus:
     connectionString: ${SERVICE_BUS_CONNECTION_STRING:your_service_bus_connection_string}
     entityPath: ${SERVICE_BUS_QUEUE_NAME:ctsc-work-allocation-queue-dev}
     messageTTLInDays: 5
+
+azure:
+  application-insights:
+    instrumentation-key: ${AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY:false}
