@@ -22,15 +22,15 @@ public class LoggerStartupListener extends ContextAwareBase implements LoggerCon
         if (started) {
             return;
         }
-        System.out.println(System.getProperty("SPRING_DATASOURCE_USERNAME"));
-        System.out.println(System.getProperty("SPRING_DATASOURCE_PASSWORD"));
-        System.out.println(System.getProperty("SPRING_DATASOURCE_URL"));
-        String dbUser = StringUtils.isEmpty(System.getProperty("SPRING_DATASOURCE_USERNAME")) ? DEFAULT_DB_USER :
-            System.getProperty("SPRING_DATASOURCE_USERNAME");
-        String dbPass = StringUtils.isEmpty(System.getProperty("SPRING_DATASOURCE_PASSWORD")) ? DEFAULT_DB_PASS :
-            System.getProperty("SPRING_DATASOURCE_PASSWORD");
-        String url = StringUtils.isEmpty(System.getProperty("SPRING_DATASOURCE_URL")) ? DEFAULT_DB_URL :
-            System.getProperty("SPRING_DATASOURCE_URL");
+        System.out.println(System.getenv("SPRING_DATASOURCE_USERNAME"));
+        System.out.println(System.getenv("SPRING_DATASOURCE_PASSWORD"));
+        System.out.println(System.getenv("SPRING_DATASOURCE_URL"));
+        String dbUser = StringUtils.isEmpty(System.getenv("SPRING_DATASOURCE_USERNAME")) ? DEFAULT_DB_USER :
+            System.getenv("SPRING_DATASOURCE_USERNAME");
+        String dbPass = StringUtils.isEmpty(System.getenv("SPRING_DATASOURCE_PASSWORD")) ? DEFAULT_DB_PASS :
+            System.getenv("SPRING_DATASOURCE_PASSWORD");
+        String url = StringUtils.isEmpty(System.getenv("SPRING_DATASOURCE_URL")) ? DEFAULT_DB_URL :
+            System.getenv("SPRING_DATASOURCE_URL");
 
         Context context = getContext();
 
