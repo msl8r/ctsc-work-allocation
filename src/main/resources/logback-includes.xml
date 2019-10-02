@@ -1,14 +1,14 @@
 <included>
   <appender name="WORK_ALLOCATION_AUDIT_MEM" class="uk.gov.hmcts.reform.workallocation.util.MemoryAppender"/>
 
-  <!--<appender name="WORK_ALLOCATION_AUDIT_DB" class="ch.qos.logback.classic.db.DBAppender">-->
-    <!--<connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">-->
-      <!--<driverClass>org.postgresql.Driver</driverClass>-->
-      <!--<url>${SPRING_DATASOURCE_URL:-jdbc:postgresql://localhost:5432/workallocation}</url>-->
-      <!--<user>${SPRING_DATASOURCE_USERNAME:-workallocation}</user>-->
-      <!--<password>${SPRING_DATASOURCE_PASSWORD:-workallocation}</password>-->
-    <!--</connectionSource>-->
-  <!--</appender>-->
+  <appender name="WORK_ALLOCATION_AUDIT_DB" class="ch.qos.logback.classic.db.DBAppender">
+    <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+      <driverClass>org.postgresql.Driver</driverClass>
+      <url>${SPRING_DATASOURCE_URL:-jdbc:postgresql://localhost:5432/workallocation}</url>
+      <user>${SPRING_DATASOURCE_USERNAME:-workallocation}</user>
+      <password>${SPRING_DATASOURCE_PASSWORD:-workallocation}</password>
+    </connectionSource>
+  </appender>
 
   <appender name="WORK_ALLOCATION_API_APPENDER"
             class="com.microsoft.applicationinsights.logback.ApplicationInsightsAppender">
@@ -17,7 +17,7 @@
 
   <logger name="uk.gov.hmcts.reform.workallocation">
     <appender-ref ref="WORK_ALLOCATION_AUDIT_MEM" />
-    <!--<appender-ref ref="WORK_ALLOCATION_AUDIT_DB" />-->
+    <appender-ref ref="WORK_ALLOCATION_AUDIT_DB" />
     <appender-ref ref="WORK_ALLOCATION_API_APPENDER" />
   </logger>
 </included>
