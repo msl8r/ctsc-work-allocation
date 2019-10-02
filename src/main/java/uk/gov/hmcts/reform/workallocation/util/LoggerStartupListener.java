@@ -22,7 +22,9 @@ public class LoggerStartupListener extends ContextAwareBase implements LoggerCon
         if (started) {
             return;
         }
-
+        System.out.println(System.getProperty("SPRING_DATASOURCE_USERNAME"));
+        System.out.println(System.getProperty("SPRING_DATASOURCE_PASSWORD"));
+        System.out.println(System.getProperty("SPRING_DATASOURCE_URL"));
         String dbUser = StringUtils.isEmpty(System.getProperty("SPRING_DATASOURCE_USERNAME")) ? DEFAULT_DB_USER :
             System.getProperty("SPRING_DATASOURCE_USERNAME");
         String dbPass = StringUtils.isEmpty(System.getProperty("SPRING_DATASOURCE_PASSWORD")) ? DEFAULT_DB_PASS :
