@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.workallocation.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.applicationinsights.TelemetryClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,11 +55,14 @@ public class CcdPollingServiceTest {
     @Mock
     private DeadQueueConsumer deadQueueConsumer;
 
+    @Mock
+    private TelemetryClient telemetryClient;
+
     @Before
     public void setup() throws ServiceBusException, InterruptedException, IOException {
         MockitoAnnotations.initMocks(this);
         ccdPollingService = new CcdPollingService(idamService, ccdClient, lastRunTimeService, queueProducer,
-            queueConsumer, deadQueueConsumer);
+            queueConsumer, deadQueueConsumer, telemetryClient);
         ReflectionTestUtils.setField(ccdPollingService, "ctids", "DIVORCE");
         ReflectionTestUtils.setField(ccdPollingService, "deeplinkBaseUrl", "ccd_server_url");
 

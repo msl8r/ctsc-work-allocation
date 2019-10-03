@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.workallocation.services;
 
+import com.microsoft.applicationinsights.TelemetryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,22 +36,12 @@ public class CcdPollingService {
 
     public static final int LAST_MODIFIED_TIME_MINUS_MINUTES = 5;
 
-    @Autowired
+    private final TelemetryClient telemetryClient;
     private final IdamService idamService;
-
-    @Autowired
     private final CcdClient ccdClient;
-
-    @Autowired
     private final LastRunTimeService lastRunTimeService;
-
-    @Autowired
     private final QueueProducer<Task> queueProducer;
-
-    @Autowired
     private final QueueConsumer<Task> queueConsumer;
-
-    @Autowired
     private final DeadQueueConsumer deadQueueConsumer;
 
     @Value("${ccd.ctids}")
@@ -63,19 +54,22 @@ public class CcdPollingService {
         + TIME_PLACE_HOLDER + "\"}}},{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested\","
         + "\"operator\": \"or\"}}}]}},\"size\": 500}";
 
+    @Autowired
     public CcdPollingService(IdamService idamService, CcdClient ccdClient, LastRunTimeService lastRunTimeService,
                              QueueProducer<Task> queueProducer, QueueConsumer<Task> queueConsumer,
-                             DeadQueueConsumer deadQueueConsumer) {
+                             DeadQueueConsumer deadQueueConsumer, TelemetryClient telemetryClient) {
         this.idamService = idamService;
         this.ccdClient = ccdClient;
         this.lastRunTimeService = lastRunTimeService;
         this.queueProducer = queueProducer;
         this.queueConsumer = queueConsumer;
         this.deadQueueConsumer = deadQueueConsumer;
+        this.telemetryClient = telemetryClient;
     }
 
     @Scheduled(fixedDelay = POLL_INTERVAL)
     public void pollCcdEndpoint() {
+        telemetryClient.trackEvent("work-allocation start polling");
         MemoryAppender.resetLogger();
         final DelayedExecutor delayedExecutor = new DelayedExecutor(Executors.newScheduledThreadPool(1));
 
