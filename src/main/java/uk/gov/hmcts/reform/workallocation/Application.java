@@ -18,12 +18,12 @@ public class Application {
     public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        Logger waLogger = lc.getLogger(WORKALLOCATION_APPENDER_NAME);
         ApplicationInsightsAppender appender = new ApplicationInsightsAppender();
         appender.setName("WA_INSIGHT_APPENDER");
         appender.setContext(lc);
         appender.start();
 
+        Logger waLogger = lc.getLogger(WORKALLOCATION_APPENDER_NAME);
         waLogger.addAppender(appender);
     }
 }
