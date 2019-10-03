@@ -59,7 +59,7 @@ data "azurerm_key_vault_secret" "ctsc_wa_smtp_user" {
 }
 
 data "azurerm_key_vault_secret" "ctsc_wa_smtp_password" {
-  name      = "CTSC-WA-SMTP-PASSWORDR"
+  name      = "CTSC-WA-SMTP-PASSWORD"
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
