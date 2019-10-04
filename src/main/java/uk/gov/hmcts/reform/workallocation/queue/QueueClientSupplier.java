@@ -31,6 +31,7 @@ public class QueueClientSupplier implements CtscQueueSupplier {
     }
 
     private IQueueClient getServiceBusQueue(String entityPath) {
+        log.info("EntiyPath: " + entityPath);
         try {
             return new QueueClient(
                 new ConnectionStringBuilder(connectionString, entityPath),
