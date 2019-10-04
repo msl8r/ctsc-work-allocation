@@ -1,29 +1,13 @@
-postgresql:
-  initdbScripts:
-    init.sql: |-
-      CREATE USER workallocation WITH PASSWORD 'workallocation';
-      CREATE DATABASE workallocation WITH OWNER = workallocation ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
-  nameOverride: workallocation-db
-  persistence:
-    enabled: false
-
 java:
   environment:
-    SPRING_DATASOURCE_URL: "jdbc:postgresql://{{ .Release.Name }}-workallocation-db:5432/workallocation"
-    SPRING_DATASOURCE_USERNAME: workallocation
-    SPRING_DATASOURCE_PASSWORD: workallocation
+    RUN_DB_MIGRATION_ON_STARTUP: true
+    SPRING_CLOUD_PROPERTIESVOLUME_ENABLED: false
+
+    SPRING_DATASOURCE_URL: "jdbc:postgresql://{{ .Release.Name }}-postgresql:5432/{{ .Values.postgresql.postgresqlDatabase}}"
+    SPRING_DATASOURCE_USERNAME: "{{ .Values.postgresql.postgresqlUsername}}"
+    SPRING_DATASOURCE_PASSWORD: "{{ .Values.postgresql.postgresqlPassword}}"
 
     SPRING_LIQUIBASE_ENABLED: true
-
-    S2S_AUTH_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
-    IDAM_CLIENT_BASE_URL: https://idam-api.aat.platform.hmcts.net
-    PAYMENT_API_URL: http://payment-api-aat.service.core-compute-aat.internal
-
-    LOGBACK_REQUIRE_ALERT_LEVEL: false
-    LOGBACK_REQUIRE_ERROR_CODE: false
-    SERVER_URL: https://ccpay-bubble-frontend-aat.service.core-compute-aat.internal
-    CCD_API_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
-
     DEEPLINK_BASE_URL: https://www-ccd.aat.platform.hmcts.net/case/
   # Don't modify below here
   image: ${IMAGE_NAME}
