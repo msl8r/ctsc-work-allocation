@@ -7,6 +7,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +42,10 @@ public class AppConfig {
         props.put("class.resource.loader.class",
             "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         VelocityEngine engine = new VelocityEngine(props);
+        engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
+            "org.apache.velocity.runtime.log.Log4JLogChute");
+
+        engine.setProperty("runtime.log.logsystem.log4j.logger", "VELOCITY_LOGGER");
         engine.init();
         return engine;
     }
