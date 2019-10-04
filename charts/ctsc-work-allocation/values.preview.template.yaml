@@ -19,8 +19,6 @@ java:
     IDAM_CLIENT_BASE_URL: https://idam-api.aat.platform.hmcts.net
     PAYMENT_API_URL: http://payment-api-aat.service.core-compute-aat.internal
 
-    APPINSIGHTS_INSTRUMENTATIONKEY: fake-key
-
     LOGBACK_REQUIRE_ALERT_LEVEL: false
     LOGBACK_REQUIRE_ERROR_CODE: false
     SERVER_URL: https://ccpay-bubble-frontend-aat.service.core-compute-aat.internal
