@@ -30,7 +30,7 @@ java:
     S2S_AUTH_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     IDAM_CLIENT_BASE_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
     PAYMENT_API_URL: http://payment-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    SERVER_URL: https://ccpay-bubble-frontend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVER_URL: https://ctsc-work-allocation-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     CCD_API_URL: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     SERVICE_BUS_QUEUE_NAME: ctsc-work-allocation-queue-{{ .Values.global.environment }}
     DEEPLINK_BASE_URL: https://www-ccd.{{ .Values.global.environment }}.platform.hmcts.net/case/
