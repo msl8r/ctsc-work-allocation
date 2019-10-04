@@ -37,6 +37,6 @@ java:
 
     LOGBACK_REQUIRE_ALERT_LEVEL: false
     LOGBACK_REQUIRE_ERROR_CODE: false
-    IDAM_CLIENT_ID: paybubble
-    S2S_MICROSERVICE_NAME: ccpay_bubble
+    IDAM_CLIENT_ID: ctsc_work_allocation
+    S2S_MICROSERVICE_NAME: ctsc_work_allocation
     SMTP_ENABLED: false
