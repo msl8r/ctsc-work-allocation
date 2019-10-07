@@ -1,4 +1,6 @@
 java:
+  environment:
+    TEST_ENDPOINTS_ENABLED: true
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}

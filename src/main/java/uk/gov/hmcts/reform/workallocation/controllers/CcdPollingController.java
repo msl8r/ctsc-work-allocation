@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.workallocation.controllers;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
  *
  */
 @Controller
+@ConditionalOnExpression("${test.endpoints.enabled:true}")
 public class CcdPollingController {
 
     private final CcdPollingService ccdPollingService;

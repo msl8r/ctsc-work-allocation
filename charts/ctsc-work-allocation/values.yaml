@@ -40,3 +40,5 @@ java:
     IDAM_CLIENT_ID: paybubble
     S2S_MICROSERVICE_NAME: ccpay_bubble
     SMTP_ENABLED: false
+    TEST_ENDPOINTS_ENABLED: false
+    MINUS_TIME_FROM_CURRENT: 0

@@ -108,3 +108,7 @@ servicebus:
 azure:
   application-insights:
     instrumentation-key: ${AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY:false}
+
+test:
+  endpoints:
+    enabled: ${TEST_ENDPOINTS_ENABLED:false}
