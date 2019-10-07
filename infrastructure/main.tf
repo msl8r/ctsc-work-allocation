@@ -17,6 +17,12 @@ resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   value        = "${module.bar-database.postgresql_password}"
 }
 
+resource "azurerm_key_vault_secret" "SERVICE-BUS-PRIMARY-CONNECTION-STRING" {
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
+  name         = "CTSC-SERVICEBUS-CONNECTION-STRING"
+  value        = "${module.servicebus-namespace.primary_send_and_listen_connection_string}"
+}
+
 data "azurerm_key_vault_secret" "s2s_secret" {
   name      = "CTSC-S2S-SECRET"
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
@@ -155,7 +161,7 @@ module "ctsc-work-allocation" {
     IDAM_CLIENT_BASE_URL = "${var.idam_api_url}"
     SERVICE_USER_EMAIL = "${data.azurerm_key_vault_secret.service_user_email.value}"
     SERVICE_USER_PASSWORD = "${data.azurerm_key_vault_secret.service_user_password.value}"
-    SERVICE_BUS_CONNECTION_STRING = "${data.azurerm_key_vault_secret.servicebus_connection_string.value}"
+    SERVICE_BUS_CONNECTION_STRING = "${module.servicebus-namespace.primary_send_and_listen_connection_string}"
     SERVICE_BUS_QUEUE_NAME = "${var.service_bus_queue_name}"
 
     #SMTP
@@ -172,6 +178,7 @@ module "ctsc-work-allocation" {
     SMTP_ENABLED = "${var.smtp_enabled}"
     MINUS_TIME_FROM_CURRENT = "${var.minus_time_from_current}"
     AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY = "${data.azurerm_key_vault_secret.applicationinsights_instrumentationkey.value}"
+    TEST_ENDPOINTS_ENABLED = "${var.test_enpooints_enabled}"
   }
 }
 

@@ -82,3 +82,6 @@ variable "minus_time_from_current" {
   default = "0"
 }
 
+variable "test_enpooints_enabled" {
+  default = "false"
+}

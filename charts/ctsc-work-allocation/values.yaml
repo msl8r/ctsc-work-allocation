@@ -40,3 +40,5 @@ java:
     IDAM_CLIENT_ID: ctsc_work_allocation
     S2S_MICROSERVICE_NAME: ctsc_work_allocation
     SMTP_ENABLED: false
+    TEST_ENDPOINTS_ENABLED: false
+    MINUS_TIME_FROM_CURRENT: 0

@@ -48,4 +48,10 @@
       <cve>CVE-2015-2156</cve>
       <cve>CVE-2019-16869</cve>
     </suppress>
+    <suppress>
+      <notes>latest upgrades issues</notes>
+      <cve>CVE-2018-1000844</cve>
+      <cve>CVE-2018-1000850</cve>
+      <cve>CVE-2018-20200</cve>
+    </suppress>
 </suppressions>
