@@ -38,11 +38,6 @@ data "azurerm_key_vault_secret" "service_user_email" {
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
 }
 
-data "azurerm_key_vault_secret" "servicebus_connection_string" {
-  name      = "CTSC-SERVICEBUS-CONNECTION-STRING"
-  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
-}
-
 data "azurerm_key_vault_secret" "smtp_host" {
   name      = "smtp-host"
   vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
