@@ -9,12 +9,7 @@ spring:
         ctsc.CTSC-SERVICE-USER-EMAIL           : SERVICE_USER_EMAIL
         ctsc.CTSC-SERVICE-USER-PASSWORD        : SERVICE_USER_PASSWORD
         ctsc.CTSC-SERVICEBUS-CONNECTION-STRING : SERVICE_BUS_CONNECTION_STRING
-        ctsc.smtp-from                         : SMTP_FROM
-        ctsc.smtp-host                         : SMTP_HOST
-        ctsc.smtp-is-secure                    : SMTP_IS_SECURE
-        ctsc.smtp-is-spoofed                   : SMTP_IS_SPOOFED
-        ctsc.smtp-password                     : SMTP_PASSWORD
-        ctsc.smtp-port                         : SMTP_PORT
-        ctsc.smtp-user                         : SMTP_USER
+        ctsc.CTSC-WA-SMTP-PASSWORD             : SMTP_PASSWORD
+        ctsc.CTSC-WA-SMTP-USER                 : SMTP_USER
         ctsc.wa-service-email-address          : SERVICE_EMAIL_ADDRESS
         ctsc.workallocation-POSTGRES-PASS      : SPRING_DATASOURCE_PASSWORD

@@ -93,10 +93,9 @@ service:
 
 smtp:
   enabled: ${SMTP_ENABLED:false}
-  from: ${SMTP_FROM:from@mail.com}
-  host: ${SMTP_HOST:smtp.mail.com}
+  host: ${SMTP_HOST:smtp.office365.com}
   password: ${SMTP_PASSWORD:password}
-  port: ${SMTP_PORT:25}
+  port: ${SMTP_PORT:587}
   user: ${SMTP_USER:from@mail.com}
 
 servicebus:

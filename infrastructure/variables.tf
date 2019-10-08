@@ -85,3 +85,11 @@ variable "minus_time_from_current" {
 variable "test_enpooints_enabled" {
   default = "false"
 }
+
+variable "smtp_host" {
+  default = "smtp.office365.com"
+}
+
+variable "smtp_port" {
+  default = "587"
+}

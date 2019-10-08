@@ -40,7 +40,7 @@ public class EmailSendingService implements IEmailSendingService, InitializingBe
     @Value("${smtp.password}")
     private String smtpPassword;
 
-    @Value("${smtp.from}")
+    @Value("${smtp.user}")
     private String smtpFrom;
 
     @Value("${service.email}")
