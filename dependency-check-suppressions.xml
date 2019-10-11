@@ -23,6 +23,9 @@
       <cve>CVE-2019-14379</cve>
       <cve>CVE-2019-14540</cve>
       <cve>CVE-2019-16335</cve>
+      <cve>CVE-2019-16942</cve>
+      <cve>CVE-2019-16943</cve>
+      <cve>CVE-2019-17267</cve>
     </suppress>
     <suppress>
       <notes>currently commons collections is not updated in the libraries so suppressing for now</notes>
