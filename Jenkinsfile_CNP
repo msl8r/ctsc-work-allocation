@@ -53,5 +53,6 @@ withPipeline(type, product, app) {
     enableDockerBuild()
     installCharts()
     enableSlackNotifications('#ctstc-tech-internal')
+    disableLegacyDeployment()
     enableAksStagingDeployment()
 }
