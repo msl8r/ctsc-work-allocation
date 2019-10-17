@@ -11,6 +11,11 @@ data "azurerm_key_vault" "workallocation_key_vault" {
   resource_group_name = "${var.product}-${var.env}"
 }
 
+data "azurerm_key_vault" "s2s_key_vault" {
+  name = "s2s-${var.env}"
+  resource_group_name = "rpe-service-auth-provider-${var.env}"
+}
+
 resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
   name         = "workallocation-POSTGRES-PASS"
@@ -24,43 +29,43 @@ resource "azurerm_key_vault_secret" "SERVICE-BUS-PRIMARY-CONNECTION-STRING" {
 }
 
 data "azurerm_key_vault_secret" "s2s_secret" {
-  name      = "CTSC-S2S-SECRET"
-  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+  name = "microservicekey-ctsc-work-allocation"
+  key_vault_id = "${data.azurerm_key_vault.s2s_key_vault.id}"
 }
 
 data "azurerm_key_vault_secret" "service_user_password" {
   name      = "CTSC-SERVICE-USER-PASSWORD"
-  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
 }
 
 data "azurerm_key_vault_secret" "service_user_email" {
   name      = "CTSC-SERVICE-USER-EMAIL"
-  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
 }
 
 data "azurerm_key_vault_secret" "service_email_address" {
   name      = "wa-service-email-address"
-  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
 }
 
 data "azurerm_key_vault_secret" "idam_client_secret" {
   name      = "CTSC-IDAM-CLIENT-SECRET"
-  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
 }
 
 data "azurerm_key_vault_secret" "applicationinsights_instrumentationkey" {
   name      = "AppInsightsInstrumentationKey"
-  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
 }
 
 data "azurerm_key_vault_secret" "ctsc_wa_smtp_user" {
   name      = "CTSC-WA-SMTP-USER"
-  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
 }
 
 data "azurerm_key_vault_secret" "ctsc_wa_smtp_password" {
   name      = "CTSC-WA-SMTP-PASSWORD"
-  vault_uri = "${data.azurerm_key_vault.workallocation_key_vault.vault_uri}"
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
 }
 
 # Make sure the resource group exists
