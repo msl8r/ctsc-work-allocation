@@ -7,7 +7,6 @@ java:
       resourceGroup: ctsc
       secrets:
         - AppInsightsInstrumentationKey
-        - CTSC-S2S-SECRET
         - CTSC-IDAM-CLIENT-SECRET
         - CTSC-SERVICE-USER-EMAIL
         - CTSC-SERVICE-USER-PASSWORD

@@ -4,7 +4,6 @@ spring:
       paths: /mnt/secrets/ctsc
       aliases:
         ctsc.AppInsightsInstrumentationKey     : AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY
-        ctsc.CTSC-S2S-SECRET                   : S2S_SECRET
         ctsc.CTSC-IDAM-CLIENT-SECRET           : IDAM_CLIENT_SECRET
         ctsc.CTSC-SERVICE-USER-EMAIL           : SERVICE_USER_EMAIL
         ctsc.CTSC-SERVICE-USER-PASSWORD        : SERVICE_USER_PASSWORD
