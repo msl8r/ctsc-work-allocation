@@ -36,10 +36,6 @@ public class IdamService {
     @Value("${server-url}")
     private String serverUrl;
 
-    // Temporary
-    @Value("${idam.s2s-auth.totp_secret}") String secret;
-    @Value("${idam.s2s-auth.microservice}") String microService;
-
     // Tactical idam token caching solution implemented
     // SSCS-5895 - will deliver the strategic caching solution
     private String cachedToken;
@@ -51,8 +47,6 @@ public class IdamService {
     }
 
     public String generateServiceAuthorization() {
-        log.info("microservice: " + microService);
-        log.info("secret: " + secret);
         return authTokenGenerator.generate();
     }
 
