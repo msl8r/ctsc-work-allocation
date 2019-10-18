@@ -1,4 +1,9 @@
 java:
+  keyVaults:
+    "s2s":
+      resourceGroup: rpe-service-auth-provider
+      secrets:
+        - microservicekey-ctsc-work-allocation
   environment:
     RUN_DB_MIGRATION_ON_STARTUP: true
     SPRING_CLOUD_PROPERTIESVOLUME_ENABLED: true

@@ -1,4 +1,9 @@
 java:
+  keyVaults:
+    "s2s":
+      resourceGroup: rpe-service-auth-provider
+      secrets:
+        - microservicekey-ctsc-work-allocation
   environment:
     TEST_ENDPOINTS_ENABLED: true
     SMTP_ENABLED: true
