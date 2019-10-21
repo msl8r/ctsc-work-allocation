@@ -1,9 +1,8 @@
 spring:
   cloud:
     propertiesvolume:
-      paths: /mnt/secrets/s2s,/mnt/secrets/ctsc
+      paths: /mnt/secrets/ctsc
       aliases:
-        s2s.microservicekey-ctsc-work-allocation: S2S_SECRET
         ctsc.AppInsightsInstrumentationKey     : AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY
         ctsc.CTSC-IDAM-CLIENT-SECRET           : IDAM_CLIENT_SECRET
         ctsc.CTSC-SERVICE-USER-EMAIL           : SERVICE_USER_EMAIL

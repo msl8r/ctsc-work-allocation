@@ -15,10 +15,6 @@ java:
         - workallocation-POSTGRES-PASS
         - CTSC-WA-SMTP-USER
         - CTSC-WA-SMTP-PASSWORD
-    "s2s":
-      resourceGroup: rpe-service-auth-provider
-      secrets:
-        - microservicekey-ctsc-work-allocation
   environment:
     SPRING_DATASOURCE_URL: jdbc:postgresql://ctsc-postgres-db-{{ .Values.global.environment }}.postgres.database.azure.com:5432/workallocation
     SPRING_DATASOURCE_USERNAME: workallocation@ctsc-postgres-db-{{.Values.global.environment }}
