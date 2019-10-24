@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.workallocation;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import com.microsoft.applicationinsights.logback.ApplicationInsightsAppender;
@@ -13,7 +14,7 @@ import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
 public class Application {
 
-    public static final String WORKALLOCATION_APPENDER_NAME = "uk.gov.hmcts.reform.workallocation";
+    public static final String WORKALLOCATION_APPENDER_NAME = "uk.gov.hmcts.reform";
 
     public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
@@ -23,7 +24,8 @@ public class Application {
         appender.setContext(lc);
         appender.start();
 
-        Logger waLogger = lc.getLogger(WORKALLOCATION_APPENDER_NAME);
+        Logger waLogger = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        waLogger.setLevel(Level.INFO);
         waLogger.addAppender(appender);
     }
 }
