@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import uk.gov.hmcts.reform.workallocation.exception.CcdConnectionException;
+import uk.gov.hmcts.reform.workallocation.idam.IdamConnectionException;
 import uk.gov.hmcts.reform.workallocation.services.CcdPollingService;
 import uk.gov.hmcts.reform.workallocation.services.LastRunTimeService;
 
@@ -28,7 +30,7 @@ public class CcdPollingController {
     }
 
     @GetMapping("/get-cases")
-    public ResponseEntity<String> pollCcd() {
+    public ResponseEntity<String> pollCcd() throws IdamConnectionException, CcdConnectionException {
         LocalDateTime lastRunTime = lastRunTimeService.getMinDate();
         lastRunTimeService.updateLastRuntime(lastRunTime);
         ccdPollingService.pollCcdEndpoint();
@@ -36,7 +38,8 @@ public class CcdPollingController {
     }
 
     @GetMapping("/get-cases/{time}")
-    public ResponseEntity<String> pollCcd(@PathVariable("time") String time) {
+    public ResponseEntity<String> pollCcd(@PathVariable("time") String time)
+        throws IdamConnectionException, CcdConnectionException {
         LocalDateTime lastRunTime = LocalDateTime.parse(time);
         lastRunTimeService.updateLastRuntime(lastRunTime);
         ccdPollingService.pollCcdEndpoint();
@@ -44,7 +47,7 @@ public class CcdPollingController {
     }
 
     @GetMapping("/get-cases/now")
-    public ResponseEntity<String> pollCcdNow() {
+    public ResponseEntity<String> pollCcdNow() throws IdamConnectionException, CcdConnectionException {
         LocalDateTime lastRunTime = lastRunTimeService.getLastRunTime().orElse(lastRunTimeService.getMinDate());
         ccdPollingService.pollCcdEndpoint();
         return ResponseEntity.ok(generateResponse(lastRunTime));

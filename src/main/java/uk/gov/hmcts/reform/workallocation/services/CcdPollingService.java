@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.workallocation.ccd.CcdClient;
+import uk.gov.hmcts.reform.workallocation.exception.CcdConnectionException;
+import uk.gov.hmcts.reform.workallocation.idam.IdamConnectionException;
 import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.queue.DeadQueueConsumer;
@@ -68,7 +70,7 @@ public class CcdPollingService {
     }
 
     @Scheduled(fixedDelay = POLL_INTERVAL)
-    public void pollCcdEndpoint() {
+    public void pollCcdEndpoint() throws IdamConnectionException, CcdConnectionException {
         telemetryClient.trackEvent("work-allocation start polling");
         MemoryAppender.resetLogger();
         final DelayedExecutor delayedExecutor = new DelayedExecutor(Executors.newScheduledThreadPool(1));
@@ -102,10 +104,16 @@ public class CcdPollingService {
         // 3. connect to CCD, and get the data
         // TODO  Properly setup overlap between the runs
         String queryDateTime = lastRunTime.minusSeconds(LAST_MODIFIED_TIME_MINUS_MINUTES).toString();
-        Map<String, Object> response = ccdClient.searchCases(userAuthToken, serviceToken, ctids,
-            queryTemplate.replace(TIME_PLACE_HOLDER, queryDateTime));
+        Map<String, Object> response;
+        try {
+            response = ccdClient.searchCases(userAuthToken, serviceToken, ctids,
+                queryTemplate.replace(TIME_PLACE_HOLDER, queryDateTime));
+        } catch (Exception e) {
+            throw new CcdConnectionException("Failed to connect ccd.", e);
+        }
         log.info("Connecting to CCD was successful");
         log.info("total number of cases: {}", response.get("total"));
+        telemetryClient.trackMetric("num_of_cases", (Integer) response.get("total"));
 
         // 4. Process data
         @SuppressWarnings("unchecked")
@@ -121,6 +129,7 @@ public class CcdPollingService {
                 .build();
         }).collect(Collectors.toList());
         log.info("total number of tasks: {}", tasks.size());
+        telemetryClient.trackMetric("num_of_tasks", tasks.size());
 
         // 5. send to azure service bus
         queueProducer.placeItemsInQueue(tasks, Task::getId);

@@ -69,7 +69,7 @@ public class QueueConsumer<T> extends BaseQueueConsumer {
                                 // TODO: make email sending generic
                                 emailSendingService.sendEmail((Task) messageObject, deeplinkBaseUrl);
                             } catch (Exception e) {
-                                log.error("failed to retrieve message: ", e);
+                                log.error("failed to parse/send message: ", e);
                                 CompletableFuture<Void> failure = new CompletableFuture<>();
                                 failure.cancel(true);
                                 return failure;

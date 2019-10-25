@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.workallocation.email.IEmailSendingService;
+import uk.gov.hmcts.reform.workallocation.exception.EmailSendingException;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 
 import java.io.StringWriter;
@@ -56,33 +57,37 @@ public class EmailSendingService implements IEmailSendingService, InitializingBe
     private static final String NO_JURISDICTION = "No Jurisdiction";
 
     @Override
-    public void sendEmail(Task task, String deeplinkBaseUrl) throws Exception {
+    public void sendEmail(Task task, String deeplinkBaseUrl) throws EmailSendingException {
         log.info("Sending Email for Task {} With Deep Link URL {} to Email address {}",
             task, deeplinkBaseUrl, serviceEmail);
 
-        VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put("jurisdiction", task.getJurisdiction());
-        velocityContext.put("lastModifiedDate", task.getLastModifiedDate());
-        velocityContext.put("deepLinkUrl", deeplinkBaseUrl + task.getJurisdiction()
-            +  "/" + task.getCaseTypeId() + "/" + task.getId());
-        String jurisdiction = task.getJurisdiction() != null ? task.getJurisdiction() : NO_JURISDICTION;
-        String templateFileName = jurisdiction.equalsIgnoreCase(NO_JURISDICTION)
-            ? "default.vm"
-            : jurisdiction.toLowerCase() + ".vm";
+        try {
+            VelocityContext velocityContext = new VelocityContext();
+            velocityContext.put("jurisdiction", task.getJurisdiction());
+            velocityContext.put("lastModifiedDate", task.getLastModifiedDate());
+            velocityContext.put("deepLinkUrl", deeplinkBaseUrl + task.getJurisdiction()
+                +  "/" + task.getCaseTypeId() + "/" + task.getId());
+            String jurisdiction = task.getJurisdiction() != null ? task.getJurisdiction() : NO_JURISDICTION;
+            String templateFileName = jurisdiction.equalsIgnoreCase(NO_JURISDICTION)
+                ? "default.vm"
+                : jurisdiction.toLowerCase() + ".vm";
 
-        StringWriter stringWriter = new StringWriter();
-        Template template = velocityEngine.getTemplate(TEMPLATE_DIR + templateFileName);
-        template.merge(velocityContext, stringWriter);
+            StringWriter stringWriter = new StringWriter();
+            Template template = velocityEngine.getTemplate(TEMPLATE_DIR + templateFileName);
+            template.merge(velocityContext, stringWriter);
 
-        MimeMessage msg = createMimeMessage(deeplinkBaseUrl);
-        msg.setReplyTo(InternetAddress.parse(smtpFrom, false));
-        msg.setFrom(InternetAddress.parse(smtpFrom, false)[0]);
-        msg.setSubject(task.getId() + " - " + task.getState() + " - " + jurisdiction.toUpperCase(), "UTF-8");
-        msg.setText(stringWriter.toString(), "UTF-8", "html");
+            MimeMessage msg = createMimeMessage(deeplinkBaseUrl);
+            msg.setReplyTo(InternetAddress.parse(smtpFrom, false));
+            msg.setFrom(InternetAddress.parse(smtpFrom, false)[0]);
+            msg.setSubject(task.getId() + " - " + task.getState() + " - " + jurisdiction.toUpperCase(), "UTF-8");
+            msg.setText(stringWriter.toString(), "UTF-8", "html");
 
-        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(serviceEmail, false));
-        Transport.send(msg);
-        log.info("Email sending successful");
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(serviceEmail, false));
+            Transport.send(msg);
+            log.info("Email sending successful");
+        } catch (Exception e) {
+            throw new EmailSendingException("Failed to send email", e);
+        }
     }
 
     private MimeMessage createMimeMessage(String deepLinkUrl) throws MessagingException {
@@ -104,6 +109,7 @@ public class EmailSendingService implements IEmailSendingService, InitializingBe
         props.put("mail.smtp.ssl.trust", "*");
 
         Authenticator auth = new Authenticator() {
+            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(smtpUser, smtpPassword);
             }

@@ -14,7 +14,7 @@ import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
 public class Application {
 
-    public static final String WORKALLOCATION_APPENDER_NAME = "uk.gov.hmcts.reform";
+    public static final String WORKALLOCATION_APPENDER_NAME = "uk.gov.hmcts.reform.workallocation";
 
     public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
@@ -24,8 +24,12 @@ public class Application {
         appender.setContext(lc);
         appender.start();
 
-        Logger waLogger = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        Logger waLogger = lc.getLogger(WORKALLOCATION_APPENDER_NAME);
         waLogger.setLevel(Level.INFO);
         waLogger.addAppender(appender);
+
+        Logger rootLogger = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        rootLogger.setLevel(Level.ERROR);
+        rootLogger.addAppender(appender);
     }
 }

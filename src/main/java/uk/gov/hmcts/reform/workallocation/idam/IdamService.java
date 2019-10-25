@@ -46,15 +46,23 @@ public class IdamService {
         this.idamApiClient = idamApiClient;
     }
 
-    public String generateServiceAuthorization() {
-        return authTokenGenerator.generate();
+    public String generateServiceAuthorization() throws IdamConnectionException {
+        try {
+            return authTokenGenerator.generate();
+        } catch (Exception e) {
+            throw new IdamConnectionException("Failed to get S2S token", e);
+        }
     }
 
-    public String getUserId(String oauth2Token) {
-        return idamApiClient.getUserDetails(oauth2Token).getId();
+    public String getUserId(String oauth2Token) throws IdamConnectionException {
+        try {
+            return idamApiClient.getUserDetails(oauth2Token).getId();
+        } catch (Exception e) {
+            throw new IdamConnectionException("Failed to get user details", e);
+        }
     }
 
-    public String getIdamOauth2Token() {
+    public String getIdamOauth2Token() throws IdamConnectionException {
         String redirectUrl = serverUrl + idamOauth2RedirectUrl;
         try {
             log.info("Requesting idam token...");
@@ -86,8 +94,7 @@ public class IdamService {
 
             return cachedToken;
         } catch (Exception e) {
-            log.error("Requesting idam token failed: " + e.getMessage());
-            throw e;
+            throw new IdamConnectionException("Requesting idam token failed: ", e);
         }
     }
 
@@ -97,7 +104,7 @@ public class IdamService {
         cachedToken = null;
     }
 
-    public IdamTokens getIdamTokens() {
+    public IdamTokens getIdamTokens() throws IdamConnectionException {
 
         String idamOauth2Token;
 

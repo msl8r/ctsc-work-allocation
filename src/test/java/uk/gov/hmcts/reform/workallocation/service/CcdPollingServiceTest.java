@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.workallocation.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.TelemetryClient;
-import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -10,6 +9,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.workallocation.ccd.CcdClient;
+import uk.gov.hmcts.reform.workallocation.exception.CcdConnectionException;
+import uk.gov.hmcts.reform.workallocation.idam.IdamConnectionException;
 import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.queue.DeadQueueConsumer;
@@ -59,7 +60,7 @@ public class CcdPollingServiceTest {
     private TelemetryClient telemetryClient;
 
     @Before
-    public void setup() throws ServiceBusException, InterruptedException, IOException {
+    public void setup() throws IOException, IdamConnectionException {
         MockitoAnnotations.initMocks(this);
         ccdPollingService = new CcdPollingService(idamService, ccdClient, lastRunTimeService, queueProducer,
             queueConsumer, deadQueueConsumer, telemetryClient);
@@ -75,7 +76,7 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testPollccdEndpoint() throws ServiceBusException, InterruptedException {
+    public void testPollccdEndpoint() throws IdamConnectionException, CcdConnectionException {
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.of(LocalDateTime.of(2019, 9, 25, 12, 0, 0, 0)));
 
         ccdPollingService.pollCcdEndpoint();
@@ -87,7 +88,7 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testPollccdEndpointFirstTime() {
+    public void testPollccdEndpointFirstTime() throws IdamConnectionException, CcdConnectionException {
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.empty());
 
         ccdPollingService.pollCcdEndpoint();
@@ -99,7 +100,8 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testPollccdEndpointWhenQueueConsumerThrowsAnError() {
+    public void testPollccdEndpointWhenQueueConsumerThrowsAnError()
+        throws IdamConnectionException, CcdConnectionException {
         CompletableFuture<Void> consumerResponse = new CompletableFuture<>();
         consumerResponse.completeExceptionally(new RuntimeException("Something went wrong"));
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.of(LocalDateTime.of(2019, 9, 25, 12, 0, 0, 0)));
@@ -113,7 +115,8 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testPollccdEndpointWhenDeadQueueConsumerThrowsAnError() {
+    public void testPollccdEndpointWhenDeadQueueConsumerThrowsAnError()
+        throws IdamConnectionException, CcdConnectionException {
         CompletableFuture<Void> consumerResponse = new CompletableFuture<>();
         consumerResponse.completeExceptionally(new RuntimeException("Something went wrong"));
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.of(LocalDateTime.of(2019, 9, 25, 12, 0, 0, 0)));
