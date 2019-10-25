@@ -94,7 +94,7 @@ public class IdamService {
 
             return cachedToken;
         } catch (Exception e) {
-            throw new IdamConnectionException("Requesting idam token failed: ", e);
+            throw new IdamConnectionException("Requesting idam token failed", e);
         }
     }
 

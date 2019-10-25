@@ -28,6 +28,13 @@ resource "azurerm_key_vault_secret" "SERVICE-BUS-PRIMARY-CONNECTION-STRING" {
   value        = "${module.servicebus-namespace.primary_send_and_listen_connection_string}"
 }
 
+# Copy orchestrator s2s secret from s2s key vault to bulkscan key vault
+resource "azurerm_key_vault_secret" "bulk_scan_orchestrator_app_s2s_secret" {
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
+  name         = "CTSC-S2S-SECRET"
+  value        = "${data.azurerm_key_vault_secret.s2s_secret.value}"
+}
+
 data "azurerm_key_vault_secret" "s2s_secret" {
   name = "microservicekey-ctsc-work-allocation"
   key_vault_id = "${data.azurerm_key_vault.s2s_key_vault.id}"
