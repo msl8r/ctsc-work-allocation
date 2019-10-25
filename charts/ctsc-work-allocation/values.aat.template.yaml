@@ -1,6 +1,5 @@
 java:
   environment:
-    S2S_SECRET: ${S2S_IDAM_SECRET}
     TEST_ENDPOINTS_ENABLED: true
     SMTP_ENABLED: true
   # Don't modify below here
