@@ -22,6 +22,7 @@ import uk.gov.hmcts.reform.workallocation.services.LastRunTimeService;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -126,6 +127,24 @@ public class CcdPollingServiceTest {
         Task task = getTask();
         verify(ccdClient, times(1)).searchCases("idam_token", "service_token", "DIVORCE", query);
         verify(queueProducer, times(1)).placeItemsInQueue(eq(Collections.singletonList(task)), any());
+        verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testPollCcdWhenTheResponseIsNotCorrect()
+        throws IdamConnectionException, CcdConnectionException, IOException {
+        Map<String, Object> searchResult = caseSearchResult();
+        List<Object> cases = (List<Object>) searchResult.get("cases");
+        Map<String, Object> ccdCase = (Map<String, Object>) cases.get(0);
+        ccdCase.remove("id");
+        //ccdCase.put("last_modified", "1234sdfsdwe");
+        when(ccdClient.searchCases(anyString(), anyString(), anyString(), anyString())).thenReturn(searchResult);
+        ccdPollingService.pollCcdEndpoint();
+        String query = composeQuery("2019-09-20T11:59:55");
+        Task task = getTask();
+        verify(ccdClient, times(1)).searchCases("idam_token", "service_token", "DIVORCE", query);
+        verify(queueProducer, times(1)).placeItemsInQueue(eq(Collections.emptyList()), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 

@@ -33,6 +33,9 @@ public class QueueProducer<T> {
     }
 
     public void placeItemsInQueue(List<T> items, Function<T, String> extractId) {
+        if (items.isEmpty()) {
+            return;
+        }
         IQueueClient sendClient = queueClientSupplier.getQueue();
         try {
             items.forEach(item -> {

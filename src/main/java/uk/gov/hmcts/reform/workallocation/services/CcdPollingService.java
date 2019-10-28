@@ -18,13 +18,14 @@ import uk.gov.hmcts.reform.workallocation.queue.QueueConsumer;
 import uk.gov.hmcts.reform.workallocation.queue.QueueProducer;
 import uk.gov.hmcts.reform.workallocation.util.MemoryAppender;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 
 @Service
 @Transactional
@@ -117,17 +118,15 @@ public class CcdPollingService {
 
         // 4. Process data
         @SuppressWarnings("unchecked")
-        List<Map> cases = (List<Map>) response.get("cases");
+        List<Map<String, Object>> cases = (List<Map<String, Object>>) response.get("cases");
         List<Task> tasks = cases.stream().map(o -> {
-            LocalDateTime lastModifiedDate = LocalDateTime.parse(o.get("last_modified").toString());
-            return Task.builder()
-                .id(((Long)o.get("id")).toString())
-                .state((String) o.get("state"))
-                .jurisdiction((String) o.get("jurisdiction"))
-                .caseTypeId((String) o.get("case_type_id"))
-                .lastModifiedDate(lastModifiedDate)
-                .build();
-        }).collect(Collectors.toList());
+            try {
+                return Task.fromCcdDCase(o);
+            } catch (Exception e) {
+                log.error("Failed to parse case", e);
+                return null;
+            }
+        }).filter(Objects::nonNull).collect(Collectors.toList());
         log.info("total number of tasks: {}", tasks.size());
         telemetryClient.trackMetric("num_of_tasks", tasks.size());
 
