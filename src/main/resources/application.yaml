@@ -100,7 +100,7 @@ smtp:
 
 servicebus:
   queue:
-    connectionString: ${SERVICE_BUS_CONNECTION_STRING:Endpoint=sb://ctsc-servicebus-demo.servicebus.windows.net/;SharedAccessKeyName=SendAndListenSharedAccessKey;SharedAccessKey=sSvtVypjGMoIOr/aITYiDvs1emFR4S9f27ebyA4rmes=}
+    connectionString: ${SERVICE_BUS_CONNECTION_STRING:your_service_bus_connection_string}
     entityPath: ${SERVICE_BUS_QUEUE_NAME:ctsc-work-allocation-queue-dev}
     messageTTLInDays: 5
 
