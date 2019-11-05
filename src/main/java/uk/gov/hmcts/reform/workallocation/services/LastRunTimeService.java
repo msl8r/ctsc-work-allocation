@@ -54,6 +54,7 @@ public class LastRunTimeService {
             .setParameter("lastRun", time)
             .setParameter("id", 1);
         q.executeUpdate();
+        em.flush();
     }
 
 }
