@@ -153,6 +153,15 @@ public class CcdPollingServiceTest {
         verify(lastRunTimeService, times(0)).updateLastRuntime(any(LocalDateTime.class));
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testPollCcdWhenThereIsError() throws IOException {
+        when(ccdClient.searchCases(anyString(), anyString(), anyString(), anyString()))
+            .thenThrow(new RuntimeException("Something went wrong"));
+        ccdPollingService.pollCcdEndpoint();
+        verify(lastRunTimeService, times(2)).updateLastRuntime(any(LocalDateTime.class));
+    }
+
     //CHECKSTYLE:OFF
     @SuppressWarnings("unchecked")
     private Map<String, Object> caseSearchResult() throws IOException {
