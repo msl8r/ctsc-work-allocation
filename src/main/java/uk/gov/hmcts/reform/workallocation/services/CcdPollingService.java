@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.workallocation.ccd.CcdClient;
 import uk.gov.hmcts.reform.workallocation.exception.CcdConnectionException;
-import uk.gov.hmcts.reform.workallocation.idam.IdamConnectionException;
 import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.queue.DeadQueueConsumer;
@@ -69,7 +68,7 @@ public class CcdPollingService {
     }
 
     @Scheduled(fixedDelay = POLL_INTERVAL)
-    public void pollCcdEndpoint() throws IdamConnectionException, CcdConnectionException {
+    public void pollCcdEndpoint() {
         LocalDateTime lastRunTime = null;
         try {
             telemetryClient.trackEvent("work-allocation start polling");
@@ -138,7 +137,6 @@ public class CcdPollingService {
             if (lastRunTime != null) {
                 lastRunTimeService.updateLastRuntime(lastRunTime);
             }
-            throw e;
         }
     }
 

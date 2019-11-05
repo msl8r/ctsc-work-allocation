@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.workallocation.ccd.CcdClient;
-import uk.gov.hmcts.reform.workallocation.exception.CcdConnectionException;
 import uk.gov.hmcts.reform.workallocation.idam.IdamConnectionException;
 import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
@@ -77,7 +76,7 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testPollccdEndpoint() throws IdamConnectionException, CcdConnectionException {
+    public void testPollccdEndpoint() {
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.of(LocalDateTime.of(2019, 9, 25, 12, 0, 0, 0)));
 
         ccdPollingService.pollCcdEndpoint();
@@ -89,7 +88,7 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testPollccdEndpointFirstTime() throws IdamConnectionException, CcdConnectionException {
+    public void testPollccdEndpointFirstTime() {
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.empty());
 
         ccdPollingService.pollCcdEndpoint();
@@ -101,8 +100,7 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testPollccdEndpointWhenQueueConsumerThrowsAnError()
-        throws IdamConnectionException, CcdConnectionException {
+    public void testPollccdEndpointWhenQueueConsumerThrowsAnError() {
         CompletableFuture<Void> consumerResponse = new CompletableFuture<>();
         consumerResponse.completeExceptionally(new RuntimeException("Something went wrong"));
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.of(LocalDateTime.of(2019, 9, 25, 12, 0, 0, 0)));
@@ -116,8 +114,7 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testPollccdEndpointWhenDeadQueueConsumerThrowsAnError()
-        throws IdamConnectionException, CcdConnectionException {
+    public void testPollccdEndpointWhenDeadQueueConsumerThrowsAnError() {
         CompletableFuture<Void> consumerResponse = new CompletableFuture<>();
         consumerResponse.completeExceptionally(new RuntimeException("Something went wrong"));
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.of(LocalDateTime.of(2019, 9, 25, 12, 0, 0, 0)));
@@ -132,8 +129,7 @@ public class CcdPollingServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testPollCcdWhenTheResponseIsNotCorrect()
-        throws IdamConnectionException, CcdConnectionException, IOException {
+    public void testPollCcdWhenTheResponseIsNotCorrect() throws IOException {
         Map<String, Object> searchResult = caseSearchResult();
         List<Object> cases = (List<Object>) searchResult.get("cases");
         Map<String, Object> ccdCase = (Map<String, Object>) cases.get(0);
@@ -149,7 +145,7 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testWhenLastRunLessThanThirtyMinutes() throws IdamConnectionException, CcdConnectionException {
+    public void testWhenLastRunLessThanThirtyMinutes() {
         when(lastRunTimeService.getMinDate()).thenReturn(LocalDateTime.now().minusMinutes(25L));
         ccdPollingService.pollCcdEndpoint();
         verify(ccdClient, times(0)).searchCases(any(), any(), any(), any());
