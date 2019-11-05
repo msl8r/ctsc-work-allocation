@@ -56,10 +56,5 @@
       <notes>latest upgrades issues</notes>
       <cve>CVE-2018-1000844</cve>
       <cve>CVE-2018-1000850</cve>
-      <cve>CVE-2018-20200</cve>
-    </suppress>
-    <suppress>
-      <notes>maven/org.bouncycastle/bcprov-jdk15on@1.63 issue</notes>
-      <cve>CVE-2019-17359</cve>
     </suppress>
 </suppressions>

@@ -148,6 +148,15 @@ public class CcdPollingServiceTest {
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
+    @Test
+    public void testWhenLastRunLessThanThirtyMinutes() throws IdamConnectionException, CcdConnectionException {
+        when(lastRunTimeService.getMinDate()).thenReturn(LocalDateTime.now().minusMinutes(25L));
+        ccdPollingService.pollCcdEndpoint();
+        verify(ccdClient, times(0)).searchCases(any(), any(), any(), any());
+        verify(queueProducer, times(0)).placeItemsInQueue(any(), any());
+        verify(lastRunTimeService, times(0)).updateLastRuntime(any(LocalDateTime.class));
+    }
+
     //CHECKSTYLE:OFF
     @SuppressWarnings("unchecked")
     private Map<String, Object> caseSearchResult() throws IOException {
