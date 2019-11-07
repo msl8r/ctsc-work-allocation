@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.workallocation.ccd.CcdClient;
-import uk.gov.hmcts.reform.workallocation.exception.CcdConnectionException;
 import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.queue.DeadQueueConsumer;
@@ -30,62 +28,55 @@ public class CcdPollingService {
 
     private static final Logger log = LoggerFactory.getLogger(CcdPollingService.class);
 
-    public static final String TIME_PLACE_HOLDER = "[TIME]";
-
-    public static final long POLL_INTERVAL = 1000 * 60 * 30L; // 30 minutes
-
-    public static final int LAST_MODIFIED_TIME_MINUS_MINUTES = 5;
-
     private final TelemetryClient telemetryClient;
     private final IdamService idamService;
-    private final CcdClient ccdClient;
+    private final CcdConnectorService ccdConnectorService;
     private final LastRunTimeService lastRunTimeService;
     private final QueueProducer<Task> queueProducer;
     private final QueueConsumer<Task> queueConsumer;
     private final DeadQueueConsumer deadQueueConsumer;
 
-    @Value("${ccd.ctids}")
-    private String ctids;
-
-    @Value("${ccd.deeplinkBaseUrl}")
-    private String deeplinkBaseUrl;
-
-    private String queryTemplate = "{\"query\":{\"bool\":{\"must\":[{\"range\":{\"last_modified\":{\"gte\":\""
-        + TIME_PLACE_HOLDER + "\"}}},{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested\","
-        + "\"operator\": \"or\"}}}]}},\"size\": 500}";
+    private final int lastModifiedTimeMinusMinutes;
+    private final int pollIntervalMinutes;
 
     @Autowired
-    public CcdPollingService(IdamService idamService, CcdClient ccdClient, LastRunTimeService lastRunTimeService,
+    public CcdPollingService(IdamService idamService, CcdConnectorService ccdConnectorService,
+                             LastRunTimeService lastRunTimeService,
+                             @Value("${service.poll_interval_minutes}") int pollIntervalMinutes,
+                             @Value("${service.last_modified_minus_minutes}") int lastModifiedTimeMinusMinutes,
                              QueueProducer<Task> queueProducer, QueueConsumer<Task> queueConsumer,
                              DeadQueueConsumer deadQueueConsumer, TelemetryClient telemetryClient) {
         this.idamService = idamService;
-        this.ccdClient = ccdClient;
+        this.ccdConnectorService = ccdConnectorService;
         this.lastRunTimeService = lastRunTimeService;
         this.queueProducer = queueProducer;
         this.queueConsumer = queueConsumer;
         this.deadQueueConsumer = deadQueueConsumer;
         this.telemetryClient = telemetryClient;
+        this.lastModifiedTimeMinusMinutes = lastModifiedTimeMinusMinutes;
+        this.pollIntervalMinutes = pollIntervalMinutes;
     }
 
-    @Scheduled(fixedDelay = POLL_INTERVAL)
+    @Scheduled(cron = "${service.poll_cron}")
     public void pollCcdEndpoint() {
         LocalDateTime lastRunTime = null;
         try {
             telemetryClient.trackEvent("work-allocation start polling");
-            final DelayedExecutor delayedExecutor = new DelayedExecutor(Executors.newScheduledThreadPool(1));
 
             // 0. get last run time
             lastRunTime = readLastRunTime();
             log.info("last run time: {}", lastRunTime);
             LocalDateTime now = LocalDateTime.now();
             long minutes = lastRunTime.until(now, ChronoUnit.MINUTES);
-            if (minutes < 29) {
+            if (minutes < pollIntervalMinutes) {
                 log.info("The last run was {} minutes ago", minutes);
                 return;
             }
             // write last poll time to db, we will roll-back if there is an error
             lastRunTimeService.updateLastRuntime(now);
 
+            // 1. Start polling the queue
+            final DelayedExecutor delayedExecutor = new DelayedExecutor(Executors.newScheduledThreadPool(1));
             // Handling dead letters
             log.info("collecting dead letters");
             deadQueueConsumer
@@ -101,22 +92,22 @@ public class CcdPollingService {
                     delayedExecutor.shutdown();
                 });
 
-            // 1. Create service token
+            // 2. Create service token
             String serviceToken = this.idamService.generateServiceAuthorization();
 
-            // 2. create/get user token
+            // 3. create/get user token
             String userAuthToken = this.idamService.getIdamOauth2Token();
 
-            // 3. connect to CCD, and get the data
+            // 4. connect to CCD, and get the data
             // TODO  Properly setup overlap between the runs
             // TODO Change the query to include end time as well
-            String queryDateTime = lastRunTime.minusSeconds(LAST_MODIFIED_TIME_MINUS_MINUTES).toString();
-            Map<String, Object> response = searchCases(userAuthToken, serviceToken, queryDateTime);
+            String queryDateTime = lastRunTime.minusMinutes(lastModifiedTimeMinusMinutes).toString();
+            Map<String, Object> response = ccdConnectorService.searchCases(userAuthToken, serviceToken, queryDateTime);
             log.info("Connecting to CCD was successful");
             log.info("total number of cases: {}", response.get("total"));
             telemetryClient.trackMetric("num_of_cases", (Integer) response.get("total"));
 
-            // 4. Process data
+            // 5. Process data
             @SuppressWarnings("unchecked")
             List<Map<String, Object>> cases = (List<Map<String, Object>>) response.get("cases");
             List<Task> tasks = cases.stream().map(o -> {
@@ -130,7 +121,7 @@ public class CcdPollingService {
             log.info("total number of tasks: {}", tasks.size());
             telemetryClient.trackMetric("num_of_tasks", tasks.size());
 
-            // 5. send to azure service bus
+            // 6. send to azure service bus
             queueProducer.placeItemsInQueue(tasks, Task::getId);
         } catch (Exception e) {
             log.error("Failed to run poller", e);
@@ -138,18 +129,6 @@ public class CcdPollingService {
                 lastRunTimeService.updateLastRuntime(lastRunTime);
             }
         }
-    }
-
-    private Map<String, Object> searchCases(String userAuthToken, String serviceToken, String queryDateTime)
-            throws CcdConnectionException {
-        Map<String, Object> response;
-        try {
-            response = ccdClient.searchCases(userAuthToken, serviceToken, ctids,
-                queryTemplate.replace(TIME_PLACE_HOLDER, queryDateTime));
-        } catch (Exception e) {
-            throw new CcdConnectionException("Failed to connect ccd.", e);
-        }
-        return response;
     }
 
     private LocalDateTime readLastRunTime() {

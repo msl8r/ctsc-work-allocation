@@ -93,3 +93,19 @@ variable "smtp_host" {
 variable "smtp_port" {
   default = "587"
 }
+
+variable "poll_interval_minutes" {
+  default = "30"
+}
+
+variable "poll_cron" {
+  default = "0 */30 * * * *"
+}
+
+variable "last_modified_minus_minutes" {
+  default = "0"
+}
+
+variable "ccd_dry_run" {
+  default = "false"
+}

@@ -4,17 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.TelemetryClient;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.hmcts.reform.workallocation.ccd.CcdClient;
+import uk.gov.hmcts.reform.workallocation.exception.CcdConnectionException;
 import uk.gov.hmcts.reform.workallocation.idam.IdamConnectionException;
 import uk.gov.hmcts.reform.workallocation.idam.IdamService;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.queue.DeadQueueConsumer;
 import uk.gov.hmcts.reform.workallocation.queue.QueueConsumer;
 import uk.gov.hmcts.reform.workallocation.queue.QueueProducer;
+import uk.gov.hmcts.reform.workallocation.services.CcdConnectorService;
 import uk.gov.hmcts.reform.workallocation.services.CcdPollingService;
 import uk.gov.hmcts.reform.workallocation.services.LastRunTimeService;
 
@@ -35,14 +34,10 @@ import static org.mockito.Mockito.when;
 
 public class CcdPollingServiceTest {
 
-    @InjectMocks
     private CcdPollingService ccdPollingService;
 
     @Mock
     private IdamService idamService;
-
-    @Mock
-    private CcdClient ccdClient;
 
     @Mock
     private LastRunTimeService lastRunTimeService;
@@ -59,104 +54,101 @@ public class CcdPollingServiceTest {
     @Mock
     private TelemetryClient telemetryClient;
 
+    @Mock
+    private CcdConnectorService ccdConnectorService;
+
     @Before
-    public void setup() throws IOException, IdamConnectionException {
+    public void setup() throws IOException, IdamConnectionException, CcdConnectionException {
         MockitoAnnotations.initMocks(this);
-        ccdPollingService = new CcdPollingService(idamService, ccdClient, lastRunTimeService, queueProducer,
+        ccdPollingService = new CcdPollingService(idamService, ccdConnectorService, lastRunTimeService,
+            30, 5, queueProducer,
             queueConsumer, deadQueueConsumer, telemetryClient);
-        ReflectionTestUtils.setField(ccdPollingService, "ctids", "DIVORCE");
-        ReflectionTestUtils.setField(ccdPollingService, "deeplinkBaseUrl", "ccd_server_url");
 
         when(deadQueueConsumer.runConsumer(any())).thenReturn(CompletableFuture.completedFuture(null));
         when(queueConsumer.runConsumer(any())).thenReturn(CompletableFuture.completedFuture(null));
-        when(ccdClient.searchCases(anyString(), anyString(), anyString(), anyString())).thenReturn(caseSearchResult());
+        when(ccdConnectorService.searchCases(anyString(), anyString(), anyString())).thenReturn(caseSearchResult());
         when(idamService.generateServiceAuthorization()).thenReturn("service_token");
         when(idamService.getIdamOauth2Token()).thenReturn("idam_token");
         when(lastRunTimeService.getMinDate()).thenReturn(LocalDateTime.of(2019, 9, 20, 12, 0, 0, 0));
     }
 
     @Test
-    public void testPollccdEndpoint() {
+    public void testPollccdEndpoint() throws CcdConnectionException {
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.of(LocalDateTime.of(2019, 9, 25, 12, 0, 0, 0)));
 
         ccdPollingService.pollCcdEndpoint();
-        String query = composeQuery("2019-09-25T11:59:55");
+        String queryDate = "2019-09-25T11:55";
         Task task = getTask();
-        verify(ccdClient, times(1)).searchCases("idam_token", "service_token", "DIVORCE", query);
+        verify(ccdConnectorService, times(1)).searchCases("idam_token", "service_token", queryDate);
         verify(queueProducer, times(1)).placeItemsInQueue(eq(Collections.singletonList(task)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
     @Test
-    public void testPollccdEndpointFirstTime() {
+    public void testPollccdEndpointFirstTime() throws CcdConnectionException {
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.empty());
 
         ccdPollingService.pollCcdEndpoint();
-        String query = composeQuery("2019-09-20T11:59:55");
+        String queryDate = "2019-09-20T11:55";
         Task task = getTask();
-        verify(ccdClient, times(1)).searchCases("idam_token", "service_token", "DIVORCE", query);
+        verify(ccdConnectorService, times(1)).searchCases("idam_token", "service_token", queryDate);
         verify(queueProducer, times(1)).placeItemsInQueue(eq(Collections.singletonList(task)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
     @Test
-    public void testPollccdEndpointWhenQueueConsumerThrowsAnError() {
+    public void testPollccdEndpointWhenQueueConsumerThrowsAnError() throws CcdConnectionException {
         CompletableFuture<Void> consumerResponse = new CompletableFuture<>();
         consumerResponse.completeExceptionally(new RuntimeException("Something went wrong"));
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.of(LocalDateTime.of(2019, 9, 25, 12, 0, 0, 0)));
         when(queueConsumer.runConsumer(any())).thenReturn(consumerResponse);
         ccdPollingService.pollCcdEndpoint();
-        String query = composeQuery("2019-09-25T11:59:55");
         Task task = getTask();
-        verify(ccdClient, times(1)).searchCases("idam_token", "service_token", "DIVORCE", query);
+        verify(ccdConnectorService, times(1)).searchCases("idam_token", "service_token", "2019-09-25T11:55");
         verify(queueProducer, times(1)).placeItemsInQueue(eq(Collections.singletonList(task)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
     @Test
-    public void testPollccdEndpointWhenDeadQueueConsumerThrowsAnError() {
+    public void testPollccdEndpointWhenDeadQueueConsumerThrowsAnError() throws CcdConnectionException {
         CompletableFuture<Void> consumerResponse = new CompletableFuture<>();
         consumerResponse.completeExceptionally(new RuntimeException("Something went wrong"));
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.of(LocalDateTime.of(2019, 9, 25, 12, 0, 0, 0)));
         when(deadQueueConsumer.runConsumer(any())).thenReturn(consumerResponse);
         ccdPollingService.pollCcdEndpoint();
-        String query = composeQuery("2019-09-25T11:59:55");
         Task task = getTask();
-        verify(ccdClient, times(1)).searchCases("idam_token", "service_token", "DIVORCE", query);
+        verify(ccdConnectorService, times(1)).searchCases("idam_token", "service_token", "2019-09-25T11:55");
         verify(queueProducer, times(1)).placeItemsInQueue(eq(Collections.singletonList(task)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testPollCcdWhenTheResponseIsNotCorrect() throws IOException {
+    public void testPollCcdWhenTheResponseIsNotCorrect() throws IOException, CcdConnectionException {
         Map<String, Object> searchResult = caseSearchResult();
         List<Object> cases = (List<Object>) searchResult.get("cases");
         Map<String, Object> ccdCase = (Map<String, Object>) cases.get(0);
         ccdCase.remove("id");
-        //ccdCase.put("last_modified", "1234sdfsdwe");
-        when(ccdClient.searchCases(anyString(), anyString(), anyString(), anyString())).thenReturn(searchResult);
+        when(ccdConnectorService.searchCases(anyString(), anyString(), anyString())).thenReturn(searchResult);
         ccdPollingService.pollCcdEndpoint();
-        String query = composeQuery("2019-09-20T11:59:55");
-        Task task = getTask();
-        verify(ccdClient, times(1)).searchCases("idam_token", "service_token", "DIVORCE", query);
+        verify(ccdConnectorService, times(1)).searchCases("idam_token", "service_token", "2019-09-20T11:55");
         verify(queueProducer, times(1)).placeItemsInQueue(eq(Collections.emptyList()), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
     @Test
-    public void testWhenLastRunLessThanThirtyMinutes() {
+    public void testWhenLastRunLessThanThirtyMinutes() throws CcdConnectionException {
         when(lastRunTimeService.getMinDate()).thenReturn(LocalDateTime.now().minusMinutes(25L));
         ccdPollingService.pollCcdEndpoint();
-        verify(ccdClient, times(0)).searchCases(any(), any(), any(), any());
+        verify(ccdConnectorService, times(0)).searchCases(any(), any(), any());
         verify(queueProducer, times(0)).placeItemsInQueue(any(), any());
         verify(lastRunTimeService, times(0)).updateLastRuntime(any(LocalDateTime.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testPollCcdWhenThereIsError() throws IOException {
-        when(ccdClient.searchCases(anyString(), anyString(), anyString(), anyString()))
+    public void testPollCcdWhenThereIsError() throws IOException, CcdConnectionException {
+        when(ccdConnectorService.searchCases(anyString(), anyString(), anyString()))
             .thenThrow(new RuntimeException("Something went wrong"));
         ccdPollingService.pollCcdEndpoint();
         verify(lastRunTimeService, times(2)).updateLastRuntime(any(LocalDateTime.class));

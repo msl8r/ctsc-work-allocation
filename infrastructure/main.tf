@@ -157,6 +157,10 @@ module "ctsc-work-allocation" {
     MINUS_TIME_FROM_CURRENT = "${var.minus_time_from_current}"
     AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY = "${data.azurerm_key_vault_secret.applicationinsights_instrumentationkey.value}"
     TEST_ENDPOINTS_ENABLED = "${var.test_enpooints_enabled}"
+    POLL_INTERVAL = "${var.poll_interval_minutes}"
+    POLL_CRON = "${var.poll_cron}"
+    LAST_MODIFIED_MINUS_MINUTES = "${var.last_modified_minus_minutes}"
+    CCD_DRY_RUN = "${var.ccd_dry_run}"
   }
 }
 

@@ -77,6 +77,7 @@ auth:
       client_secret: ${IDAM_CLIENT_SECRET:ABCD1F2BABCD1F2B}
       redirect_uri: /oauth2/callback
 ccd:
+  dry_run: false
   baseUrl: ${CCD_API_URL:http://localhost:23443}
   deeplinkBaseUrl: ${DEEPLINK_BASE_URL:https://www-ccd.demo.platform.hmcts.net/case/}
   ctids: DIVORCE
@@ -90,6 +91,9 @@ http:
 
 service:
   email: ${SERVICE_EMAIL_ADDRESS:service_email@mail.com}
+  poll_interval_minutes: ${POLL_INTERVAL_MINUTES:5}
+  poll_cron: ${POLL_CRON:0 */5 * * * *}
+  last_modified_minus_minutes: ${LAST_MODIFIED_MINUS_MINUTES:5}
 
 smtp:
   enabled: ${SMTP_ENABLED:false}

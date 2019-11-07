@@ -1,2 +1,4 @@
 capacity = "2"
-smtp_enabled = "true"
+smtp_enabled = "false"
+ccd_dry_run = "true"
+
