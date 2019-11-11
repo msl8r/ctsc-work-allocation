@@ -1,0 +1,3 @@
+smtp-is-secure=false
+smtp-is-spoofed=true
+smtp-port=25
