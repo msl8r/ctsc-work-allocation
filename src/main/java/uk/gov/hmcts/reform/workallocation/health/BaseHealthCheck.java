@@ -13,7 +13,7 @@ public class BaseHealthCheck implements HealthIndicator {
 
     private final RestTemplate restTemplate;
     private final String baseUrl;
-    private static final String LIVENESS_ENDPOINT = "/health/liveness";
+    private static final String LIVENESS_ENDPOINT = "/health";
 
     public BaseHealthCheck(RestTemplateBuilder restTemplateBuilder, String baseUrl) {
         this.baseUrl = baseUrl;
