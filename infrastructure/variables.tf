@@ -107,5 +107,5 @@ variable "last_modified_minus_minutes" {
 }
 
 variable "ccd_dry_run" {
-  default = "false"
+  default = "true"
 }

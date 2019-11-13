@@ -77,7 +77,7 @@ auth:
       client_secret: ${IDAM_CLIENT_SECRET:ABCD1F2BABCD1F2B}
       redirect_uri: /oauth2/callback
 ccd:
-  dry_run: false
+  dry_run: ${CCD_DRY_RUN:true}
   baseUrl: ${CCD_API_URL:http://localhost:23443}
   deeplinkBaseUrl: ${DEEPLINK_BASE_URL:https://www-ccd.demo.platform.hmcts.net/case/}
   ctids: DIVORCE
