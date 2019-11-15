@@ -73,7 +73,7 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testPollccdEndpoint() throws CcdConnectionException {
+    public void testPollccdEndpoint() throws CcdConnectionException, IdamConnectionException {
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.of(LocalDateTime.of(2019, 9, 25, 12, 0, 0, 0)));
 
         ccdPollingService.pollCcdEndpoint();
@@ -85,7 +85,7 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testPollccdEndpointFirstTime() throws CcdConnectionException {
+    public void testPollccdEndpointFirstTime() throws CcdConnectionException, IdamConnectionException {
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.empty());
 
         ccdPollingService.pollCcdEndpoint();
@@ -97,7 +97,8 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testPollccdEndpointWhenQueueConsumerThrowsAnError() throws CcdConnectionException {
+    public void testPollccdEndpointWhenQueueConsumerThrowsAnError()
+            throws CcdConnectionException, IdamConnectionException {
         CompletableFuture<Void> consumerResponse = new CompletableFuture<>();
         consumerResponse.completeExceptionally(new RuntimeException("Something went wrong"));
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.of(LocalDateTime.of(2019, 9, 25, 12, 0, 0, 0)));
@@ -110,7 +111,8 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testPollccdEndpointWhenDeadQueueConsumerThrowsAnError() throws CcdConnectionException {
+    public void testPollccdEndpointWhenDeadQueueConsumerThrowsAnError()
+            throws CcdConnectionException, IdamConnectionException {
         CompletableFuture<Void> consumerResponse = new CompletableFuture<>();
         consumerResponse.completeExceptionally(new RuntimeException("Something went wrong"));
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.of(LocalDateTime.of(2019, 9, 25, 12, 0, 0, 0)));
@@ -124,7 +126,8 @@ public class CcdPollingServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testPollCcdWhenTheResponseIsNotCorrect() throws IOException, CcdConnectionException {
+    public void testPollCcdWhenTheResponseIsNotCorrect()
+            throws IOException, CcdConnectionException, IdamConnectionException {
         Map<String, Object> searchResult = caseSearchResult();
         List<Object> cases = (List<Object>) searchResult.get("cases");
         Map<String, Object> ccdCase = (Map<String, Object>) cases.get(0);
@@ -137,21 +140,12 @@ public class CcdPollingServiceTest {
     }
 
     @Test
-    public void testWhenLastRunLessThanThirtyMinutes() throws CcdConnectionException {
+    public void testWhenLastRunLessThanThirtyMinutes() throws CcdConnectionException, IdamConnectionException {
         when(lastRunTimeService.getMinDate()).thenReturn(LocalDateTime.now().minusMinutes(25L));
         ccdPollingService.pollCcdEndpoint();
         verify(ccdConnectorService, times(0)).searchCases(any(), any(), any());
         verify(queueProducer, times(0)).placeItemsInQueue(any(), any());
         verify(lastRunTimeService, times(0)).updateLastRuntime(any(LocalDateTime.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testPollCcdWhenThereIsError() throws IOException, CcdConnectionException {
-        when(ccdConnectorService.searchCases(anyString(), anyString(), anyString()))
-            .thenThrow(new RuntimeException("Something went wrong"));
-        ccdPollingService.pollCcdEndpoint();
-        verify(lastRunTimeService, times(2)).updateLastRuntime(any(LocalDateTime.class));
     }
 
     //CHECKSTYLE:OFF

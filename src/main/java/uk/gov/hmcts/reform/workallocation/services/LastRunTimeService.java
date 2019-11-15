@@ -31,7 +31,8 @@ public class LastRunTimeService {
     }
 
     public Optional<LocalDateTime> getLastRunTime() {
-        Query q = em.createNativeQuery("select last_run from last_run_time where id = :id").setParameter("id", 1);
+        Query q = em.createNativeQuery("select last_run from last_run_time where id = :id for update")
+            .setParameter("id", 1);
         LocalDateTime lastRunTime = null;
         try {
             Date lastRun = (Date) q.getSingleResult();
@@ -54,7 +55,6 @@ public class LastRunTimeService {
             .setParameter("lastRun", time)
             .setParameter("id", 1);
         q.executeUpdate();
-        em.flush();
     }
 
 }

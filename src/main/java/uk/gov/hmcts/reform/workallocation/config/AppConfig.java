@@ -13,10 +13,13 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.util.ErrorHandler;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.queue.CtscQueueSupplier;
 import uk.gov.hmcts.reform.workallocation.queue.QueueClientSupplier;
 import uk.gov.hmcts.reform.workallocation.queue.QueueConsumer;
+import uk.gov.hmcts.reform.workallocation.util.TaskErrorHandler;
 
 import java.util.Properties;
 
@@ -72,4 +75,15 @@ public class AppConfig {
         return new QueueConsumer<>(Task.class);
     }
 
+    @Bean
+    public ErrorHandler taskErrorHandler() {
+        return new TaskErrorHandler();
+    }
+
+    @Bean
+    public ThreadPoolTaskScheduler scheduler() {
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setErrorHandler(taskErrorHandler());
+        return scheduler;
+    }
 }
