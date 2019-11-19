@@ -104,8 +104,10 @@ public class CcdPollingService {
         // 4. connect to CCD, and get the data
         // TODO  Properly setup overlap between the runs
         // TODO Change the query to include end time as well
-        String queryDateTime = lastRunTime.minusMinutes(lastModifiedTimeMinusMinutes).toString();
-        Map<String, Object> response = ccdConnectorService.searchCases(userAuthToken, serviceToken, queryDateTime);
+        String queryFromDateTime = lastRunTime.minusMinutes(lastModifiedTimeMinusMinutes).toString();
+        String queryToDateTime = now.toString();
+        Map<String, Object> response = ccdConnectorService.searchCases(userAuthToken, serviceToken,
+            queryFromDateTime, queryToDateTime);
         log.info("Connecting to CCD was successful");
         log.info("total number of cases: {}", response.get("total"));
         telemetryClient.trackMetric("num_of_cases", (Integer) response.get("total"));
@@ -113,9 +115,10 @@ public class CcdPollingService {
         // 5. Process data
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> cases = (List<Map<String, Object>>) response.get("cases");
+        String caseTypeId = (String) response.get("case_type_id");
         List<Task> tasks = cases.stream().map(o -> {
             try {
-                return Task.fromCcdDCase(o);
+                return Task.fromCcdDCase(o, caseTypeId);
             } catch (Exception e) {
                 log.error("Failed to parse case", e);
                 return null;

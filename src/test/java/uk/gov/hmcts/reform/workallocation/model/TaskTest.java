@@ -27,7 +27,7 @@ public class TaskTest {
 
     @Test
     public void testConvertCaseToTaskHappyPath() throws CaseTransformException {
-        Task task = Task.fromCcdDCase(data);
+        Task task = Task.fromCcdDCase(data, "DIVORCE");
         Assert.assertEquals("1563460551495313", task.getId());
         Assert.assertEquals("DIVORCE", task.getJurisdiction());
         Assert.assertEquals("DIVORCE", task.getCaseTypeId());
@@ -36,12 +36,12 @@ public class TaskTest {
     @Test(expected = CaseTransformException.class)
     public void testConvertCaseToTaskWithoutId() throws CaseTransformException {
         data.remove("id");
-        Task.fromCcdDCase(data);
+        Task.fromCcdDCase(data, "DIVORCE");
     }
 
     @Test(expected = CaseTransformException.class)
     public void testConvertCaseToTaskWitWrongDateFormat() throws CaseTransformException {
         data.put("last_modified", "asdasd121234");
-        Task.fromCcdDCase(data);
+        Task.fromCcdDCase(data, "DIVORCE");
     }
 }

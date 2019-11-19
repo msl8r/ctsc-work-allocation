@@ -66,7 +66,10 @@ public class CcdPollingServiceTest {
 
         when(deadQueueConsumer.runConsumer(any())).thenReturn(CompletableFuture.completedFuture(null));
         when(queueConsumer.runConsumer(any())).thenReturn(CompletableFuture.completedFuture(null));
-        when(ccdConnectorService.searchCases(anyString(), anyString(), anyString())).thenReturn(caseSearchResult());
+        Map<String, Object> ccdResponse = caseSearchResult();
+        ccdResponse.put("case_type_id", "DIVORCE");
+        when(ccdConnectorService.searchCases(anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(ccdResponse);
         when(idamService.generateServiceAuthorization()).thenReturn("service_token");
         when(idamService.getIdamOauth2Token()).thenReturn("idam_token");
         when(lastRunTimeService.getMinDate()).thenReturn(LocalDateTime.of(2019, 9, 20, 12, 0, 0, 0));
@@ -77,9 +80,10 @@ public class CcdPollingServiceTest {
         when(lastRunTimeService.getLastRunTime()).thenReturn(Optional.of(LocalDateTime.of(2019, 9, 25, 12, 0, 0, 0)));
 
         ccdPollingService.pollCcdEndpoint();
-        String queryDate = "2019-09-25T11:55";
+        String queryFromDate = "2019-09-25T11:55";
         Task task = getTask();
-        verify(ccdConnectorService, times(1)).searchCases("idam_token", "service_token", queryDate);
+        verify(ccdConnectorService, times(1))
+            .searchCases(eq("idam_token"), eq("service_token"), eq(queryFromDate), anyString());
         verify(queueProducer, times(1)).placeItemsInQueue(eq(Collections.singletonList(task)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
@@ -90,8 +94,10 @@ public class CcdPollingServiceTest {
 
         ccdPollingService.pollCcdEndpoint();
         String queryDate = "2019-09-20T11:55";
+        String queryToDate = LocalDateTime.now().toString();
         Task task = getTask();
-        verify(ccdConnectorService, times(1)).searchCases("idam_token", "service_token", queryDate);
+        verify(ccdConnectorService, times(1))
+            .searchCases(eq("idam_token"), eq("service_token"), eq(queryDate), anyString());
         verify(queueProducer, times(1)).placeItemsInQueue(eq(Collections.singletonList(task)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
@@ -105,7 +111,8 @@ public class CcdPollingServiceTest {
         when(queueConsumer.runConsumer(any())).thenReturn(consumerResponse);
         ccdPollingService.pollCcdEndpoint();
         Task task = getTask();
-        verify(ccdConnectorService, times(1)).searchCases("idam_token", "service_token", "2019-09-25T11:55");
+        verify(ccdConnectorService, times(1))
+            .searchCases(eq("idam_token"), eq("service_token"), eq("2019-09-25T11:55"), anyString());
         verify(queueProducer, times(1)).placeItemsInQueue(eq(Collections.singletonList(task)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
@@ -119,7 +126,8 @@ public class CcdPollingServiceTest {
         when(deadQueueConsumer.runConsumer(any())).thenReturn(consumerResponse);
         ccdPollingService.pollCcdEndpoint();
         Task task = getTask();
-        verify(ccdConnectorService, times(1)).searchCases("idam_token", "service_token", "2019-09-25T11:55");
+        verify(ccdConnectorService, times(1))
+            .searchCases(eq("idam_token"), eq("service_token"), eq("2019-09-25T11:55"), anyString());
         verify(queueProducer, times(1)).placeItemsInQueue(eq(Collections.singletonList(task)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
@@ -132,9 +140,11 @@ public class CcdPollingServiceTest {
         List<Object> cases = (List<Object>) searchResult.get("cases");
         Map<String, Object> ccdCase = (Map<String, Object>) cases.get(0);
         ccdCase.remove("id");
-        when(ccdConnectorService.searchCases(anyString(), anyString(), anyString())).thenReturn(searchResult);
+        when(ccdConnectorService.searchCases(anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(searchResult);
         ccdPollingService.pollCcdEndpoint();
-        verify(ccdConnectorService, times(1)).searchCases("idam_token", "service_token", "2019-09-20T11:55");
+        verify(ccdConnectorService, times(1))
+            .searchCases(eq("idam_token"), eq("service_token"), eq("2019-09-20T11:55"), anyString());
         verify(queueProducer, times(1)).placeItemsInQueue(eq(Collections.emptyList()), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
@@ -143,7 +153,7 @@ public class CcdPollingServiceTest {
     public void testWhenLastRunLessThanThirtyMinutes() throws CcdConnectionException, IdamConnectionException {
         when(lastRunTimeService.getMinDate()).thenReturn(LocalDateTime.now().minusMinutes(25L));
         ccdPollingService.pollCcdEndpoint();
-        verify(ccdConnectorService, times(0)).searchCases(any(), any(), any());
+        verify(ccdConnectorService, times(0)).searchCases(any(), any(), any(), any());
         verify(queueProducer, times(0)).placeItemsInQueue(any(), any());
         verify(lastRunTimeService, times(0)).updateLastRuntime(any(LocalDateTime.class));
     }
@@ -159,10 +169,10 @@ public class CcdPollingServiceTest {
             + "    \"jurisdiction\": \"DIVORCE\",\n"
             + "    \"state\": \"Submitted\",\n"
             + "    \"version\": null,\n"
-            + "    \"case_type_id\": \"DIVORCE\",\n"
+            + "    \"case_type_id\": null,\n"
             + "    \"created_date\": \"2019-07-18T14:35:51.473\",\n"
             + "    \"last_modified\": \"2019-07-18T14:36:25.862\",\n"
-            + "    \"security_classification\": \"PUBLIC\"\n"
+            + "    \"security_classification\": null\n"
             + "  }\n"
             + "]\n"
             + "}";

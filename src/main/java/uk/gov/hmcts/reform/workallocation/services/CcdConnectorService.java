@@ -15,7 +15,8 @@ import java.util.Map;
 @Slf4j
 public class CcdConnectorService {
 
-    public static final String TIME_PLACE_HOLDER = "[TIME]";
+    public static final String FROM_PLACE_HOLDER = "[FROM]";
+    public static final String TO_PLACE_HOLDER = "[TO]";
 
     private final CcdClient ccdClient;
 
@@ -26,15 +27,19 @@ public class CcdConnectorService {
     private String ctids;
 
     private final String queryTemplate = "{\"query\":{\"bool\":{\"must\":[{\"range\":{\"last_modified\":{\"gte\":\""
-        + TIME_PLACE_HOLDER + "\"}}},{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested\","
-        + "\"operator\": \"or\"}}}]}},\"size\": 500}";
+        + FROM_PLACE_HOLDER + "\", \"lte\":\"" + TO_PLACE_HOLDER + "\"}}}"
+        + ",{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested\","
+        + "\"operator\": \"or\"}}}]}},"
+        + "\"_source\": [\"reference\", \"jurisdiction\", \"state\", \"last_modified\"],"
+        + "\"size\": 1000}";
 
     @Autowired
     public CcdConnectorService(CcdClient ccdClient) {
         this.ccdClient = ccdClient;
     }
 
-    public Map<String, Object> searchCases(String userAuthToken, String serviceToken, String queryDateTime)
+    public Map<String, Object> searchCases(String userAuthToken, String serviceToken,
+                                           String queryFromDateTime, String queryToDateTime)
             throws CcdConnectionException {
         Map<String, Object> response;
         if (dryRun) {
@@ -44,7 +49,9 @@ public class CcdConnectorService {
         }
         try {
             response = ccdClient.searchCases(userAuthToken, serviceToken, ctids,
-                queryTemplate.replace(TIME_PLACE_HOLDER, queryDateTime));
+                queryTemplate.replace(FROM_PLACE_HOLDER, queryFromDateTime)
+                    .replace(TO_PLACE_HOLDER, queryToDateTime));
+            response.put("case_type_id", ctids);
         } catch (Exception e) {
             throw new CcdConnectionException("Failed to connect ccd.", e);
         }

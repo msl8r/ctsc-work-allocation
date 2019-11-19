@@ -11,7 +11,7 @@ java:
     SERVICE_BUS_QUEUE_NAME: ctsc-work-allocation-queue-preview
     DEEPLINK_BASE_URL: https://www-ccd.aat.platform.hmcts.net/case/
     TEST_ENDPOINTS_ENABLED: true
-    SMTP_ENABLED: false
+    SMTP_ENABLED: true
     CCD_DRY_RUN: false
   # Don't modify below here
   image: ${IMAGE_NAME}

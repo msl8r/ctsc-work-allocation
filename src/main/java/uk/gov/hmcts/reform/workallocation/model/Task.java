@@ -30,14 +30,14 @@ public class Task {
     private String caseTypeId;
     private LocalDateTime lastModifiedDate;
 
-    public static Task fromCcdDCase(Map<String, Object> caseData) throws CaseTransformException {
+    public static Task fromCcdDCase(Map<String, Object> caseData, String caseTypeId) throws CaseTransformException {
         try {
             LocalDateTime lastModifiedDate = LocalDateTime.parse(caseData.get("last_modified").toString());
             return Task.builder()
                 .id(((Long)caseData.get("id")).toString())
                 .state((String) caseData.get("state"))
                 .jurisdiction((String) caseData.get("jurisdiction"))
-                .caseTypeId((String) caseData.get("case_type_id"))
+                .caseTypeId(caseTypeId)
                 .lastModifiedDate(lastModifiedDate)
                 .build();
         } catch (Exception e) {
