@@ -16,10 +16,34 @@ data "azurerm_key_vault" "s2s_key_vault" {
   resource_group_name = "rpe-service-auth-provider-${var.env}"
 }
 
+resource "azurerm_key_vault_secret" "POSTGRES-USER" {
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
+  name         = "${var.component}-POSTGRES-USER"
+  value        = "${module.bar-database.user_name}"
+}
+
 resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
-  name         = "workallocation-POSTGRES-PASS"
+  name         = "${var.component}-POSTGRES-PASS"
   value        = "${module.bar-database.postgresql_password}"
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES_HOST" {
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
+  name         = "${var.component}-POSTGRES-HOST"
+  value        = "${module.bar-database.host_name}"
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES_PORT" {
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
+  name         = "${var.component}-POSTGRES-PORT"
+  value        = "5432"
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES_DATABASE" {
+  key_vault_id = "${data.azurerm_key_vault.workallocation_key_vault.id}"
+  name         = "${var.component}-POSTGRES-DATABASE"
+  value        = "${module.bar-database.postgresql_database}"
 }
 
 resource "azurerm_key_vault_secret" "SERVICE-BUS-PRIMARY-CONNECTION-STRING" {
