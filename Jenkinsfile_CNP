@@ -50,6 +50,7 @@ withPipeline(type, product, app) {
     }
     overrideVaultEnvironments(vaultOverrides)
     loadVaultSecrets(secrets)
+    enableDbMigration('workallocation')
     enableDockerBuild()
     installCharts()
     enableSlackNotifications('#ctstc-tech-internal')

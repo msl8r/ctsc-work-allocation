@@ -19,7 +19,7 @@ java:
   environment:
     SPRING_DATASOURCE_URL: jdbc:postgresql://ctsc-postgres-db-{{ .Values.global.environment }}.postgres.database.azure.com:5432/workallocation
     SPRING_DATASOURCE_USERNAME: workallocation@ctsc-postgres-db-{{.Values.global.environment }}
-    SPRING_LIQUIBASE_ENABLED: false
+    RUN_DB_MIGRATION_ON_STARTUP: false
 
     S2S_AUTH_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     IDAM_CLIENT_BASE_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
