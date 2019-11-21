@@ -12,4 +12,4 @@ spring:
         ctsc.CTSC-WA-SMTP-PASSWORD             : SMTP_PASSWORD
         ctsc.CTSC-WA-SMTP-USER                 : SMTP_USER
         ctsc.wa-service-email-address          : SERVICE_EMAIL_ADDRESS
-        ctsc.workallocation-POSTGRES-PASS      : SPRING_DATASOURCE_PASSWORD
+        ctsc.work-allocation-POSTGRES-PASS     : SPRING_DATASOURCE_PASSWORD
