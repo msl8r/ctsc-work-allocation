@@ -29,8 +29,8 @@ public class BaseQueueConsumerTest {
             Supplier<CompletableFuture<Void>> jobToRun = invocation.getArgument(2);
             Assert.assertEquals(consumer.getLastMessageTime(), getLastTime.get());
             return CompletableFuture.completedFuture(null);
-        }).when(executor).schedule(any(Supplier.class), any(Long.class), any(Supplier.class));
-        consumer.runConsumer(executor);
+        }).when(executor).schedule(any(Supplier.class), any(Long.class), any(Supplier.class), any(LocalDateTime.class));
+        consumer.runConsumer(executor, LocalDateTime.now());
 
 
     }

@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -58,7 +59,7 @@ public class DeadQueueConsumerTest {
     @Test
     public void testPickUpDeadLettersHappyPath() throws ServiceBusException, InterruptedException {
         DelayedExecutor executor = new DelayedExecutor(Executors.newScheduledThreadPool(1));
-        deadQueueConsumer.runConsumer(executor);
+        deadQueueConsumer.runConsumer(executor, LocalDateTime.now());
     }
 
     private IQueueClient getQueueClient() throws ServiceBusException, InterruptedException {

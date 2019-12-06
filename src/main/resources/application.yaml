@@ -91,6 +91,8 @@ service:
   poll_interval_minutes: ${POLL_INTERVAL_MINUTES:5}
   poll_cron: ${POLL_CRON:0 */5 * * * *}
   last_modified_minus_minutes: ${LAST_MODIFIED_MINUS_MINUTES:5}
+  probate:
+    email: ${SERVICE_PROBATE_EMAIL_ADDRESS:service_probate_email@mail.com}
 
 smtp:
   enabled: ${SMTP_ENABLED:false}

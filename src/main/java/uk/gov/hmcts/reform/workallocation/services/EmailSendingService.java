@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -14,6 +13,8 @@ import uk.gov.hmcts.reform.workallocation.exception.EmailSendingException;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -27,39 +28,36 @@ import javax.mail.internet.MimeMessage;
 @Service
 @Slf4j
 @ConditionalOnProperty(name = "smtp.enabled", havingValue = "true")
-public class EmailSendingService implements IEmailSendingService, InitializingBean {
-
-    @Value("${smtp.host}")
-    private String smtpHost;
-
-    @Value("${smtp.port}")
-    private String smtpPort;
-
-    @Value("${smtp.user}")
-    private String smtpUser;
-
-    @Value("${smtp.password}")
-    private String smtpPassword;
-
-    @Value("${smtp.user}")
-    private String smtpFrom;
-
-    @Value("${service.email}")
-    private String serviceEmail;
-
-    @Autowired
-    private VelocityEngine velocityEngine;
-
-    private Session session;
+public class EmailSendingService implements IEmailSendingService {
 
     private static final String TEMPLATE_DIR = "templates/";
-
     private static final String NO_JURISDICTION = "No Jurisdiction";
+
+    private final VelocityEngine velocityEngine;
+    private final Session session;
+    private final String smtpFrom;
+    private final Map<String, String> serviceEmails = new HashMap<>();
+
+    @Autowired
+    public EmailSendingService(@Value("${smtp.host}") String smtpHost,
+                               @Value("${smtp.port}") String smtpPort,
+                               @Value("${smtp.user}") String smtpUser,
+                               @Value("${smtp.password}") String smtpPassword,
+                               @Value("${service.email}") String divorceServiceEmail,
+                               @Value("${service.probate.email}") String probateServiceEmail,
+                               VelocityEngine velocityEngine) {
+        this.session = createSession(smtpHost, smtpPort, smtpUser, smtpPassword);
+        this.velocityEngine = velocityEngine;
+        this.smtpFrom = smtpUser;
+        this.serviceEmails.put("DIVORCE", divorceServiceEmail);
+        this.serviceEmails.put("PROBATE", probateServiceEmail);
+    }
 
     @Override
     public void sendEmail(Task task, String deeplinkBaseUrl) throws EmailSendingException {
+        String emailTo = serviceEmails.get(task.getJurisdiction());
         log.info("Sending Email for Task {} With Deep Link URL {} to Email address {}",
-            task, deeplinkBaseUrl, serviceEmail);
+            task, deeplinkBaseUrl, emailTo);
 
         try {
             VelocityContext velocityContext = new VelocityContext();
@@ -82,7 +80,7 @@ public class EmailSendingService implements IEmailSendingService, InitializingBe
             msg.setSubject(task.getId() + " - " + task.getState() + " - " + jurisdiction.toUpperCase(), "UTF-8");
             msg.setText(stringWriter.toString(), "UTF-8", "html");
 
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(serviceEmail, false));
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailTo, false));
             Transport.send(msg);
             log.info("Email sending successful");
         } catch (Exception e) {
@@ -100,7 +98,7 @@ public class EmailSendingService implements IEmailSendingService, InitializingBe
     }
 
 
-    private Session createSession() {
+    private Session createSession(String smtpHost, String smtpPort, String smtpUser, String smtpPassword) {
         Properties props = new Properties();
         props.put("mail.smtp.host", smtpHost);
         props.put("mail.smtp.port", smtpPort);
@@ -115,10 +113,5 @@ public class EmailSendingService implements IEmailSendingService, InitializingBe
             }
         };
         return Session.getInstance(props, auth);
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.session = createSession();
     }
 }

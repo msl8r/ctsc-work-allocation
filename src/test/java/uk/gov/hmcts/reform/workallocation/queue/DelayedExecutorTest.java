@@ -29,7 +29,7 @@ public class DelayedExecutorTest {
         ScheduledExecutorService executorService = Mockito.mock(ScheduledExecutorService.class);
         DelayedExecutor executor = new DelayedExecutor(executorService);
         Supplier<CompletableFuture<Void>> job = () -> CompletableFuture.completedFuture(null);
-        executor.schedule(LocalDateTime::now, 30L, job);
+        executor.schedule(LocalDateTime::now, 30L, job, LocalDateTime.now());
         Mockito.verify(executorService, Mockito.times(1))
             .scheduleWithFixedDelay(any(Runnable.class), eq(30L), eq(30L), eq(TimeUnit.SECONDS));
     }
@@ -41,7 +41,7 @@ public class DelayedExecutorTest {
         Supplier<CompletableFuture<Void>> job = () -> CompletableFuture.completedFuture(null);
         Supplier<LocalDateTime> lastMesageTimeFunc = () -> LocalDateTime.of(2019, 1, 1, 0, 0);
         job.get().complete(null);
-        CompletableFuture<Void> ret = executor.schedule(lastMesageTimeFunc, 1L, job);
+        CompletableFuture<Void> ret = executor.schedule(lastMesageTimeFunc, 1L, job, LocalDateTime.now());
         Thread.sleep(1500);
         Assert.assertTrue(ret.isDone());
     }

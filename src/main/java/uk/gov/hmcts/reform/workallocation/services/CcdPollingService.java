@@ -20,12 +20,12 @@ import uk.gov.hmcts.reform.workallocation.queue.QueueProducer;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 @Service
 public class CcdPollingService {
@@ -83,11 +83,11 @@ public class CcdPollingService {
         // Handling dead letters
         log.info("collecting dead letters");
         deadQueueConsumer
-            .runConsumer(delayedExecutor)
+            .runConsumer(delayedExecutor, now.plusMinutes(20))
             .thenCompose(aVoid -> {
                 // Start queue client
                 log.info("poll started");
-                return queueConsumer.runConsumer(delayedExecutor);
+                return queueConsumer.runConsumer(delayedExecutor, now.plusMinutes(20));
             }).whenComplete((aVoid, throwable) -> {
                 if (throwable != null) {
                     log.error("There was an error running queue client", throwable);
@@ -102,28 +102,25 @@ public class CcdPollingService {
         String userAuthToken = this.idamService.getIdamOauth2Token();
 
         // 4. connect to CCD, and get the data
-        // TODO  Properly setup overlap between the runs
-        // TODO Change the query to include end time as well
         String queryFromDateTime = lastRunTime.minusMinutes(lastModifiedTimeMinusMinutes).toString();
-        String queryToDateTime = now.toString();
-        Map<String, Object> response = ccdConnectorService.searchCases(userAuthToken, serviceToken,
+        String queryToDateTime = now.minusMinutes(lastModifiedTimeMinusMinutes).toString();
+        // Divorce cases
+        Map<String, Object> divorceData = ccdConnectorService.searchDivorceCases(userAuthToken, serviceToken,
             queryFromDateTime, queryToDateTime);
         log.info("Connecting to CCD was successful");
-        log.info("total number of cases: {}", response.get("total"));
-        telemetryClient.trackMetric("num_of_cases", (Integer) response.get("total"));
+        log.info("total number of divorce cases: {}", divorceData.get("total"));
+        telemetryClient.trackMetric("num_of_divorce_cases", (Integer) divorceData.get("total"));
+
+        // Probate cases
+        Map<String, Object> probateData = ccdConnectorService.searchProbateCases(userAuthToken, serviceToken,
+            queryFromDateTime, queryToDateTime);
+        log.info("Connecting to CCD was successful");
+        log.info("total number of probate cases: {}", probateData.get("total"));
+        telemetryClient.trackMetric("num_of_probate_cases", (Integer) probateData.get("total"));
 
         // 5. Process data
         @SuppressWarnings("unchecked")
-        List<Map<String, Object>> cases = (List<Map<String, Object>>) response.get("cases");
-        String caseTypeId = (String) response.get("case_type_id");
-        List<Task> tasks = cases.stream().map(o -> {
-            try {
-                return Task.fromCcdDCase(o, caseTypeId);
-            } catch (Exception e) {
-                log.error("Failed to parse case", e);
-                return null;
-            }
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+        List<Task> tasks = mergeResponse(divorceData, probateData);
         log.info("total number of tasks: {}", tasks.size());
         telemetryClient.trackMetric("num_of_tasks", tasks.size());
 
@@ -138,6 +135,23 @@ public class CcdPollingService {
             lastRunTimeService.insertLastRunTime(defaultLastRun);
             return defaultLastRun;
         });
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Task> mergeResponse(Map<String, Object>... data) {
+        List<Task> tasks = new ArrayList<>();
+        Arrays.stream(data).forEach(stringObjectMap -> {
+            String caseTypeId = (String)stringObjectMap.get("case_type_id");
+            List<Map<String, Object>> cases = (List<Map<String, Object>>) stringObjectMap.get("cases");
+            cases.stream().forEach(o -> {
+                try {
+                    tasks.add(Task.fromCcdCase(o, caseTypeId));
+                } catch (Exception e) {
+                    log.error("Failed to parse case", e);
+                }
+            });
+        });
+        return tasks;
     }
 
 }

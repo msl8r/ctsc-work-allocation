@@ -18,14 +18,14 @@ public abstract class BaseQueueConsumer {
     @Setter
     private LocalDateTime lastMessageTime = now();
 
-    public CompletableFuture<Void> runConsumer(DelayedExecutor executorService) {
+    public CompletableFuture<Void> runConsumer(DelayedExecutor executorService, LocalDateTime finishTime) {
 
         CompletableFuture<Void> future = new CompletableFuture<>();
         try {
             setLastMessageTime(now());
             Supplier<CompletableFuture<Void>> job = registerReceiver(executorService);
             Supplier<LocalDateTime> getLastMessageTimeFunc = this::getLastMessageTime;
-            future = executorService.schedule(getLastMessageTimeFunc, CLIENT_TIMEOUT_SECONDS, job);
+            future = executorService.schedule(getLastMessageTimeFunc, CLIENT_TIMEOUT_SECONDS, job, finishTime);
         } catch (Exception e) {
             future.completeExceptionally(e);
         }

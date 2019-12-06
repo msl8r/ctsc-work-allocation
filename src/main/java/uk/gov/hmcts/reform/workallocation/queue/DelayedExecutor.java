@@ -28,12 +28,12 @@ public class DelayedExecutor {
 
     public CompletableFuture<Void> schedule(Supplier<LocalDateTime> lastMessageTimeFunc,
                                             long timeoutSeconds,
-                                            Supplier<CompletableFuture<Void>> job) {
+                                            Supplier<CompletableFuture<Void>> job, LocalDateTime finishTime) {
         CompletableFuture<Void> ret = new CompletableFuture<>();
         Future future = executorService.scheduleWithFixedDelay(() -> {
             LocalDateTime lastMessageTime = lastMessageTimeFunc.get();
             log.info("Schedule is running and checking for time {}", lastMessageTime);
-            if (now().isAfter(lastMessageTime.plusSeconds(timeoutSeconds))) {
+            if (now().isAfter(lastMessageTime.plusSeconds(timeoutSeconds)) || now().isAfter(finishTime)) {
                 log.info("closing receiver client");
                 job.get().thenAccept(aVoid -> ret.complete(null));
             }

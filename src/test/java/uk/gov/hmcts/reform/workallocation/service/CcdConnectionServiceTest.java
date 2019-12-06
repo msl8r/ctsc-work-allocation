@@ -35,7 +35,7 @@ public class CcdConnectionServiceTest {
 
     @Test
     public void testDryRun() throws CcdConnectionException {
-        Map<String, Object> result = ccdConnectorService.searchCases("", "", "", "");
+        Map<String, Object> result = ccdConnectorService.searchDivorceCases("", "", "", "");
         Assert.assertEquals(0, result.get("total"));
         Assert.assertTrue(((List)result.get("cases")).isEmpty());
     }
@@ -44,7 +44,7 @@ public class CcdConnectionServiceTest {
     public void testNormalRun() throws CcdConnectionException, IOException {
         ReflectionTestUtils.setField(ccdConnectorService, "dryRun", false);
         when(ccdClient.searchCases(any(), any(), any(), any())).thenReturn(caseSearchResult());
-        Map<String, Object> result = ccdConnectorService.searchCases("", "", "", "");
+        Map<String, Object> result = ccdConnectorService.searchDivorceCases("", "", "", "");
         Assert.assertEquals(1, result.get("total"));
         Assert.assertFalse(((List)result.get("cases")).isEmpty());
     }
