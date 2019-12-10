@@ -15,13 +15,26 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.ErrorHandler;
+import uk.gov.hmcts.reform.auth.checker.core.CachingSubjectResolver;
+import uk.gov.hmcts.reform.auth.checker.core.SubjectResolver;
+import uk.gov.hmcts.reform.auth.checker.core.service.Service;
+import uk.gov.hmcts.reform.auth.checker.core.service.ServiceRequestAuthorizer;
+import uk.gov.hmcts.reform.auth.checker.core.user.User;
+import uk.gov.hmcts.reform.auth.checker.core.user.UserRequestAuthorizer;
+import uk.gov.hmcts.reform.auth.checker.spring.AuthCheckerProperties;
+import uk.gov.hmcts.reform.auth.parser.idam.core.user.token.UserTokenParser;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.queue.CtscQueueSupplier;
 import uk.gov.hmcts.reform.workallocation.queue.QueueClientSupplier;
 import uk.gov.hmcts.reform.workallocation.queue.QueueConsumer;
 import uk.gov.hmcts.reform.workallocation.util.TaskErrorHandler;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Function;
 
 @Configuration
 @EnableScheduling
@@ -85,5 +98,16 @@ public class AppConfig {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setErrorHandler(taskErrorHandler());
         return scheduler;
+    }
+
+    @Bean
+    public Function<HttpServletRequest, Collection<String>> authorizedServicesExtractor() {
+        return (request) -> Collections.singletonList("divorce");
+    }
+
+    @Bean
+    public ServiceRequestAuthorizer serviceRequestAuthorizer(SubjectResolver<Service> serviceResolver,
+                                                             Function<HttpServletRequest, Collection<String>> authorizedServicesExtractor) {
+        return new ServiceRequestAuthorizer(serviceResolver, authorizedServicesExtractor);
     }
 }

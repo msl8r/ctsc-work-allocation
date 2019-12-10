@@ -67,6 +67,10 @@ idam:
     password: ${SERVICE_USER_PASSWORD:password123}
 
 auth:
+  provider:
+    service:
+      client:
+        baseUrl: ${AUTH_PROVIDER_SERVICE_CLIENT_BASEURL:http://localhost:23443}
   idam:
     client:
       baseUrl: ${IDAM_CLIENT_BASE_URL:http://localhost:23443}
