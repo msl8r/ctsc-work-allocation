@@ -63,8 +63,13 @@ public class EmailSendingService implements IEmailSendingService {
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("jurisdiction", task.getJurisdiction());
             velocityContext.put("lastModifiedDate", task.getLastModifiedDate());
-            velocityContext.put("deepLinkUrl", deeplinkBaseUrl + task.getJurisdiction()
-                +  "/" + task.getCaseTypeId() + "/" + task.getId());
+            // it's an ugly hack now but the url structure of prod/non prod ccd is very different
+            if (deeplinkBaseUrl.contains("www.ccd.platform.hmcts.net")) {
+                velocityContext.put("deepLinkUrl", deeplinkBaseUrl + task.getId());
+            } else {
+                velocityContext.put("deepLinkUrl", deeplinkBaseUrl + task.getJurisdiction()
+                    +  "/" + task.getCaseTypeId() + "/" + task.getId());
+            }
             String jurisdiction = task.getJurisdiction() != null ? task.getJurisdiction() : NO_JURISDICTION;
             String templateFileName = jurisdiction.equalsIgnoreCase(NO_JURISDICTION)
                 ? "default.vm"
