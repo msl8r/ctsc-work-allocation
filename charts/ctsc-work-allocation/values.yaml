@@ -44,5 +44,6 @@ java:
     POLL_INTERVAL_MINUTES: 29
     LAST_MODIFIED_MINUS_MINUTES: 5
     CCD_DRY_RUN: true
+    DUMMY_VAR: false
 
 

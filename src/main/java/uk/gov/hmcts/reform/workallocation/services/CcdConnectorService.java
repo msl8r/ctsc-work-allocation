@@ -39,15 +39,19 @@ public class CcdConnectorService {
     private static final String QUERY_PROBATE_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
         + "{\"last_modified\":{\"gte\":\"" + FROM_PLACE_HOLDER + "\",\"lte\":\"" + TO_PLACE_HOLDER + "\"}}},"
         + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"state\":\"CasePrinted\"}},{\"match\":"
-        + "{\"data.evidenceHandled\":\"No\"}}]}},{\"bool\":{\"must\":[{\"match\":{\"state\":\"CaseCreated\"}}]}}"
-        + ",{\"bool\":{\"must\":[{\"match\":{\"state\":\"BOReadyForExamination\"}},{\"match\":"
-        + "{\"data.applicationType\":\"Personal\"}},{\"match\":{\"data.caseType\":\"gop\"}}]}},"
-        + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"BOReadyForExamination\"}},{\"match\":"
-        + "{\"data.applicationType\":\"Solicitor\"}},{\"match\":{\"data.caseType\":\"gop\"}}]}},"
+        + "{\"data.evidenceHandled\":\"No\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":"
+        + "{\"must\":[{\"match\":{\"state\":\"CaseCreated\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},"
+        + "{\"bool\":{\"must\":[{\"match\":{\"state\":"
+        + "\"BOReadyForExamination\"}},{\"match\":{\"data.applicationType\":\"Personal\"}},{\"match\":"
+        + "{\"data.caseType\":\"gop\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":"
+        + "{\"must\":[{\"match\":{\"state\":\"BOReadyForExamination\"}},{\"match\":{\"data.applicationType\":"
+        + "\"Solicitor\"}},{\"match\":{\"data.caseType\":\"gop\"}},{\"match\":{\"data.registryLocation\":"
+        + "\"ctsc\"}}]}},{\"bool\":{\"must\":[{\"match\":{\"state\":\"BOCaseStopped\"}},{\"match\":"
+        + "{\"data.evidenceHandled\":\"Yes\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},"
         + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"BOCaseStopped\"}},{\"match\":{\"data.evidenceHandled\":"
-        + "\"Yes\"}}]}},{\"bool\":{\"must\":[{\"match\":{\"state\":\"BOCaseStopped\"}},{\"match\":"
-        + "{\"data.evidenceHandled\":\"No\"}}]}}]}}]}},\"_source\":[\"reference\",\"jurisdiction\",\"state\","
-        + "\"last_modified\",\"data.applicationType\",\"data.evidenceHandled\",\"data.caseType\"],\"size\":1000}";
+        + "\"No\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}}]}}]}},\"_source\":[\"reference\","
+        + "\"jurisdiction\",\"state\",\"last_modified\",\"data.applicationType\",\"data.evidenceHandled\","
+        + "\"data.caseType\",\"data.registryLocation\"],\"size\":1000}";
 
     @Autowired
     public CcdConnectorService(CcdClient ccdClient) {
