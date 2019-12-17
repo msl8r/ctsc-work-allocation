@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.queue.QueueProducer;
 
-import javax.validation.Valid;
 import java.util.Collections;
+import javax.validation.Valid;
 
 @RestController
 public class TaskController {

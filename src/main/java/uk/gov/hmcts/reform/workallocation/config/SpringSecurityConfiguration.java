@@ -31,12 +31,14 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/swagger-ui.html", "/webjars/springfox-swagger-ui/**", "/swagger-resources/**",
-            "/v2/**", "/health", "/health/liveness", "/info", "/favicon.ico");
+        web.ignoring().antMatchers("/swagger-ui.html", "/webjars/springfox-swagger-ui/**",
+            "/swagger-resources/**", "/v2/**", "/health", "/health/liveness", "/info", "/favicon.ico");
     }
 
     @Override
-    @SuppressFBWarnings(value = "SPRING_CSRF_PROTECTION_DISABLED", justification = "It's safe to disable CSRF protection as application is not being hit directly from the browser")
+    @SuppressFBWarnings(value = "SPRING_CSRF_PROTECTION_DISABLED",
+        justification = "It's safe to disable CSRF protection as application is not being "
+            + "hit directly from the browser")
     protected void configure(HttpSecurity http) throws Exception {
 
         http

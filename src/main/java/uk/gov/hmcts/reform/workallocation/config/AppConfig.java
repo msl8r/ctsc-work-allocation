@@ -24,11 +24,11 @@ import uk.gov.hmcts.reform.workallocation.queue.QueueClientSupplier;
 import uk.gov.hmcts.reform.workallocation.queue.QueueConsumer;
 import uk.gov.hmcts.reform.workallocation.util.TaskErrorHandler;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.function.Function;
+import javax.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableScheduling
@@ -101,7 +101,8 @@ public class AppConfig {
 
     @Bean
     public ServiceRequestAuthorizer serviceRequestAuthorizer(SubjectResolver<Service> serviceResolver,
-                                                             Function<HttpServletRequest, Collection<String>> authorizedServicesExtractor) {
+                                                             Function<HttpServletRequest,
+                                                                 Collection<String>> authorizedServicesExtractor) {
         return new ServiceRequestAuthorizer(serviceResolver, authorizedServicesExtractor);
     }
 }
