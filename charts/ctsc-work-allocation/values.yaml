@@ -44,6 +44,6 @@ java:
     POLL_INTERVAL_MINUTES: 29
     LAST_MODIFIED_MINUS_MINUTES: 5
     CCD_DRY_RUN: true
-    DUMMY_VAR: false
+    AUTH_PROVIDER_SERVICE_CLIENT_BASEURL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
 
 
