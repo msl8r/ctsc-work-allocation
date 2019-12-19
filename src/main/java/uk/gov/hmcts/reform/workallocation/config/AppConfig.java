@@ -24,17 +24,20 @@ import uk.gov.hmcts.reform.workallocation.queue.QueueClientSupplier;
 import uk.gov.hmcts.reform.workallocation.queue.QueueConsumer;
 import uk.gov.hmcts.reform.workallocation.util.TaskErrorHandler;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 import java.util.function.Function;
-import javax.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableScheduling
 @EnableFeignClients(basePackages = {"uk.gov.hmcts.reform.workallocation.idam",
     "uk.gov.hmcts.reform.workallocation.ccd"})
 public class AppConfig {
+
+    @Value("#{'${trusted.s2s.service.names}'.split(',')}")
+    private List<String> authorizedServices;
 
     @Bean
     public CloseableHttpClient httpClient(@Value("${http.client.timeout}") int timeout) {
@@ -96,7 +99,7 @@ public class AppConfig {
 
     @Bean
     public Function<HttpServletRequest, Collection<String>> authorizedServicesExtractor() {
-        return (request) -> Collections.singletonList("divorce");
+        return (any) -> authorizedServices;
     }
 
     @Bean

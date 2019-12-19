@@ -12,6 +12,8 @@ import lombok.ToString;
 import uk.gov.hmcts.reform.workallocation.exception.CaseTransformException;
 import uk.gov.hmcts.reform.workallocation.services.CcdConnectorService;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -25,10 +27,20 @@ import java.util.Map;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Task {
 
+    @NotNull
+    @Pattern(regexp = "^\\d{16}$", message = "id must contains only numbers and should be 16 digits")
     private String id;
+
+    @NotNull
     private String state;
+
+    @NotNull
     private String jurisdiction;
+
+    @NotNull
     private String caseTypeId;
+
+    @NotNull
     private LocalDateTime lastModifiedDate;
 
     public static Task fromCcdCase(Map<String, Object> caseData, String caseTypeId) throws CaseTransformException {
