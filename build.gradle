@@ -221,6 +221,9 @@ dependencies {
   testCompile group: 'org.springframework.security', name: 'spring-security-test', version: '5.2.1.RELEASE'
   // https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock
   testCompile 'com.github.tomakehurst:wiremock:2.25.1'
+  // https://mvnrepository.com/artifact/org.hsqldb/hsqldb
+  testCompile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.0'
+
 
 
 

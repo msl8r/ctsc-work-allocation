@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
@@ -29,11 +30,12 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {Application.class}, webEnvironment = MOCK)
+@ActiveProfiles(profiles = "test")
 public class TaskControllerIntegrationTest {
 
     @ClassRule
     public static WireMockRule wireMockRule = new WireMockRule(
-        options().port(23443).notifier(new ConsoleNotifier(true))
+        options().port(23444).notifier(new ConsoleNotifier(true))
     );
 
     @MockBean

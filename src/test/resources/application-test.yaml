@@ -1,0 +1,132 @@
+server:
+  port: 8080
+
+management:
+  endpoint:
+    health:
+      show-details: "always"
+      mail:
+        enabled: false
+  endpoints:
+    web:
+      base-path: "/"
+      exposure:
+        include: health,info
+
+#If you use a database then uncomment below lines and update db properties accordingly
+spring:
+  flyway:
+    enabled: false
+  application:
+    name: CTSC Work Allocation
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+    url: jdbc:hsqldb:mem:local
+    username: sa
+    password:
+    properties:
+      charSet: UTF-8
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            # silence the 'wall-of-text' - unnecessary exception throw about blob types
+            non_contextual_creation: true
+  velocity:
+    resourceLoaderPath: 'classpath:/templates/'
+    suffix: .vm
+    cache: false
+    check-template-location: true
+    content-type: text/html
+    charset: UTF-8
+    properties:
+      input:
+        encoding: UTF-8
+      output:
+        encoding: UTF-8
+  mail:
+    host: ${SMTP_HOST:smtp.mail.com}
+    port: ${SMTP_PORT:25}
+    username: ${SMTP_USER:from@mail.com}
+    password: ${SMTP_PASSWORD:password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+        starttls:
+          enable: true
+
+idam:
+  s2s-auth:
+    totp_secret: ${S2S_SECRET:ABCD1F2BABCD1F2B}
+    microservice: ${S2S_MICROSERVICE_NAME:ctsc_work_allocation}
+    url: ${S2S_AUTH_URL:http://localhost:23444}
+  service-user:
+    email: ${SERVICE_USER_EMAIL:service.user@mail.com}
+    password: ${SERVICE_USER_PASSWORD:password123}
+
+auth:
+  provider:
+    service:
+      client:
+        baseUrl: ${AUTH_PROVIDER_SERVICE_CLIENT_BASEURL:http://localhost:23444}
+  idam:
+    client:
+      baseUrl: ${IDAM_CLIENT_BASE_URL:http://localhost:23444}
+      client_id: ${IDAM_CLIENT_ID:ctsc_work_allocation}
+      client_secret: ${IDAM_CLIENT_SECRET:ABCD1F2BABCD1F2B}
+      redirect_uri: /oauth2/callback
+ccd:
+  dry_run: ${CCD_DRY_RUN:true}
+  baseUrl: ${CCD_API_URL:http://localhost:23444}
+  deeplinkBaseUrl: ${DEEPLINK_BASE_URL:https://www-ccd.demo.platform.hmcts.net/case/}
+  ctids: DIVORCE
+  minus_time_from_current: ${MINUS_TIME_FROM_CURRENT:7}
+
+server-url: ${SERVER_URL:http://localhost:8080}
+
+http:
+  client:
+    timeout: 5
+
+service:
+  email: ${SERVICE_EMAIL_ADDRESS:service_email@mail.com}
+  poll_interval_minutes: ${POLL_INTERVAL_MINUTES:5}
+  poll_cron: ${POLL_CRON:0 */5 * * * *}
+  last_modified_minus_minutes: ${LAST_MODIFIED_MINUS_MINUTES:5}
+  probate:
+    email: ${SERVICE_PROBATE_EMAIL_ADDRESS:service_probate_email@mail.com}
+
+smtp:
+  enabled: ${SMTP_ENABLED:false}
+  host: ${SMTP_HOST:smtp.office365.com}
+  password: ${SMTP_PASSWORD:password}
+  port: ${SMTP_PORT:587}
+  user: ${SMTP_USER:from@mail.com}
+
+servicebus:
+  queue:
+    connectionString: ${SERVICE_BUS_CONNECTION_STRING:your_service_bus_connection_string}
+    entityPath: ${SERVICE_BUS_QUEUE_NAME:ctsc-work-allocation-queue-dev}
+    messageTTLInDays: 5
+
+azure:
+  application-insights:
+    instrumentation-key: ${AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY:false}
+
+test:
+  endpoints:
+    enabled: ${TEST_ENDPOINTS_ENABLED:false}
+
+dbMigration:
+  # When true, the app will run DB migration on startup.
+  # Otherwise, it will just check if all migrations have been applied (and fail to start if not).
+  runOnStartup: false
+
+trusted:
+  s2s:
+    service:
+      names: cmc,divorce,probate,ctsc-work-allocation,ccpay_bubble,bar_api
