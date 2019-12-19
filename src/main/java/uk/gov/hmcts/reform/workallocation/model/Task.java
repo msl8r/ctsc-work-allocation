@@ -12,10 +12,10 @@ import lombok.ToString;
 import uk.gov.hmcts.reform.workallocation.exception.CaseTransformException;
 import uk.gov.hmcts.reform.workallocation.services.CcdConnectorService;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.Map;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Data
 @Builder

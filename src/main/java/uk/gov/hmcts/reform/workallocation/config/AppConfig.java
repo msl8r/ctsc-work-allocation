@@ -24,11 +24,11 @@ import uk.gov.hmcts.reform.workallocation.queue.QueueClientSupplier;
 import uk.gov.hmcts.reform.workallocation.queue.QueueConsumer;
 import uk.gov.hmcts.reform.workallocation.util.TaskErrorHandler;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Function;
+import javax.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableScheduling
