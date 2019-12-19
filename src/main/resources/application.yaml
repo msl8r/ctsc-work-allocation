@@ -127,4 +127,4 @@ dbMigration:
 trusted:
   s2s:
     service:
-      names: cmc,divorce,probate,ctsc-work-allocation,ccpay_bubble,bar_api
+      names: cmc,divorce,probate,ctsc_work_allocation,ccpay_bubble,bar_api
