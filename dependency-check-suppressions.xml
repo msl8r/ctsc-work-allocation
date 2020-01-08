@@ -56,5 +56,6 @@
       <notes>latest upgrades issues</notes>
       <cve>CVE-2018-1000844</cve>
       <cve>CVE-2018-1000850</cve>
+      <cve>CVE-2019-17563</cve>
     </suppress>
 </suppressions>
