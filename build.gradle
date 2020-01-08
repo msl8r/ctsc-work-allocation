@@ -76,6 +76,10 @@ checkstyle {
   configDir = new File(rootDir, 'config/checkstyle')
 }
 
+jacoco {
+  toolVersion = "0.8.4"
+}
+
 jacocoTestReport {
   executionData(test, integration)
   reports {
@@ -84,8 +88,6 @@ jacocoTestReport {
     xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
   }
 }
-
-project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
 
 def sonarExclusions = [
   '**/Application.java',
@@ -117,6 +119,9 @@ sonarqube {
     property "sonar.coverage.exclusions", sonarExclusions.join(", ")
   }
 }
+
+project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
+project.tasks['sonarqube'].group = "Verification"
 
 dependencyUpdates.resolutionStrategy = {
   componentSelection { rules ->
