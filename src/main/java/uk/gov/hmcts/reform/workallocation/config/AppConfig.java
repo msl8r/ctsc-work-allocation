@@ -22,12 +22,14 @@ import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.queue.CtscQueueSupplier;
 import uk.gov.hmcts.reform.workallocation.queue.QueueClientSupplier;
 import uk.gov.hmcts.reform.workallocation.queue.QueueConsumer;
+import uk.gov.hmcts.reform.workallocation.services.MailSender;
 import uk.gov.hmcts.reform.workallocation.util.TaskErrorHandler;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Function;
+import javax.mail.Transport;
 import javax.servlet.http.HttpServletRequest;
 
 @Configuration
@@ -61,6 +63,10 @@ public class AppConfig {
         engine.setProperty("runtime.log.logsystem.log4j.logger", "VELOCITY_LOGGER");
         engine.init();
         return engine;
+    }
+
+    public MailSender getTransport() {
+        return (msg) -> Transport.send(msg);
     }
 
     @Bean
