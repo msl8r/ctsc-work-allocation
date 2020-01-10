@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import uk.gov.hmcts.reform.workallocation.exception.CaseTransformException;
 import uk.gov.hmcts.reform.workallocation.services.CcdConnectorService;
+import uk.gov.hmcts.reform.workallocation.validator.JurisdictionConstraint;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -35,6 +36,7 @@ public class Task {
     private String state;
 
     @NotNull
+    @JurisdictionConstraint
     private String jurisdiction;
 
     @NotNull
