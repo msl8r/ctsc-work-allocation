@@ -65,6 +65,7 @@ public class AppConfig {
         return engine;
     }
 
+    @Bean
     public MailSender getTransport() {
         return (msg) -> Transport.send(msg);
     }
