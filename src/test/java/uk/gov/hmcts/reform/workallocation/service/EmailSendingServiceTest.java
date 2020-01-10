@@ -10,11 +10,11 @@ import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.services.EmailSendingService;
 import uk.gov.hmcts.reform.workallocation.services.MailSender;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.MessagingException;
 
 public class EmailSendingServiceTest {
 

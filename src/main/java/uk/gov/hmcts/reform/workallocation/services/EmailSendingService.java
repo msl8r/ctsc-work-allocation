@@ -12,6 +12,11 @@ import uk.gov.hmcts.reform.workallocation.email.IEmailSendingService;
 import uk.gov.hmcts.reform.workallocation.exception.EmailSendingException;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -19,11 +24,6 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
 @Service
 @Slf4j
