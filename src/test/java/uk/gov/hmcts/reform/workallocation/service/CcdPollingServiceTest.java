@@ -77,6 +77,11 @@ public class CcdPollingServiceTest {
         when(ccdConnectorService.searchProbateCases(anyString(), anyString(), anyString(), anyString()))
             .thenReturn(probateResponse);
 
+        Map<String, Object> cmcResponse = cmcSearchResult();
+        probateResponse.put("case_type_id", "GrantOfRepresentation");
+        when(ccdConnectorService.searchCmcCases(anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(cmcResponse);
+
         when(idamService.generateServiceAuthorization()).thenReturn("service_token");
         when(idamService.getIdamOauth2Token()).thenReturn("idam_token");
         when(lastRunTimeService.getMinDate()).thenReturn(LocalDateTime.of(2019, 9, 20, 12, 0, 0, 0));
@@ -216,6 +221,34 @@ public class CcdPollingServiceTest {
             + "     \"delete_draft_response_status\": null,\n"
             + "     \"security_classifications\": null\n"
             + "     }\n"
+            + "]\n"
+            + "}";
+        return new ObjectMapper().readValue(json, Map.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> cmcSearchResult() throws IOException {
+        String json = "{\n"
+            + "\"total\": 1,\n"
+            + "  \"cases\": [\n"
+            + "  {\n"
+            +       "\"id\": 1567636489967327,\n"
+            +       "\"jurisdiction\": \"CMC\",\n"
+            +       "\"state\": \"orderDrawn\",\n"
+            +       "\"version\": null,\n"
+            +       "\"case_type_id\": null,\n"
+            +       "\"created_date\": null,\n"
+            +       "\"last_modified\": \"2019-09-04T23:33:39.574\",\n"
+            +       "\"security_classification\": null,\n"
+            +       "\"case_data\": null,\n"
+            +       "\"data_classification\": null,\n"
+            +       "\"after_submit_callback_response\": null,\n"
+            +       "\"callback_response_status_code\": null,\n"
+            +       "\"callback_response_status\": null,\n"
+            +       "\"delete_draft_response_status_code\": null,\n"
+            +       "\"delete_draft_response_status\": null,\n"
+            +       "\"security_classifications\": null\n"
+            +   "}"
             + "]\n"
             + "}";
         return new ObjectMapper().readValue(json, Map.class);

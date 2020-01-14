@@ -14,3 +14,4 @@ spring:
         ctsc.wa-service-email-address          : SERVICE_EMAIL_ADDRESS
         ctsc.wa-service-probate-email-address  : SERVICE_PROBATE_EMAIL_ADDRESS
         ctsc.work-allocation-POSTGRES-PASS     : SPRING_DATASOURCE_PASSWORD
+        ctsc.wa-service-email-addresses        : WA_SERVICE_EMAILS

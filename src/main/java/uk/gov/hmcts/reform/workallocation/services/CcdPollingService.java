@@ -104,23 +104,25 @@ public class CcdPollingService {
         // 4. connect to CCD, and get the data
         String queryFromDateTime = lastRunTime.minusMinutes(lastModifiedTimeMinusMinutes).toString();
         String queryToDateTime = now.minusMinutes(lastModifiedTimeMinusMinutes).toString();
+
         // Divorce cases
         Map<String, Object> divorceData = ccdConnectorService.searchDivorceCases(userAuthToken, serviceToken,
             queryFromDateTime, queryToDateTime);
-        log.info("Connecting to CCD was successful");
-        log.info("total number of divorce cases: {}", divorceData.get("total"));
-        telemetryClient.trackMetric("num_of_divorce_cases", (Integer) divorceData.get("total"));
+        logCcdResult(divorceData, "divorce");
 
         // Probate cases
         Map<String, Object> probateData = ccdConnectorService.searchProbateCases(userAuthToken, serviceToken,
             queryFromDateTime, queryToDateTime);
-        log.info("Connecting to CCD was successful");
-        log.info("total number of probate cases: {}", probateData.get("total"));
-        telemetryClient.trackMetric("num_of_probate_cases", (Integer) probateData.get("total"));
+        logCcdResult(probateData, "probate");
+
+        // CMC cases
+        Map<String, Object> cmcData = ccdConnectorService.searchCmcCases(userAuthToken, serviceToken,
+            queryFromDateTime, queryToDateTime);
+        logCcdResult(cmcData, "cmc");
 
         // 5. Process data
         @SuppressWarnings("unchecked")
-        List<Task> tasks = mergeResponse(divorceData, probateData);
+        List<Task> tasks = mergeResponse(divorceData, probateData, cmcData);
         log.info("total number of tasks: {}", tasks.size());
         telemetryClient.trackMetric("num_of_tasks", tasks.size());
 
@@ -152,6 +154,12 @@ public class CcdPollingService {
             });
         });
         return tasks;
+    }
+
+    private void logCcdResult(Map<String, Object>  data, String type) {
+        log.info("Connecting to CCD was successful");
+        log.info("total number of {} cases: {}", type, data.get("total"));
+        telemetryClient.trackMetric("num_of_" + type + "_cases", (Integer) data.get("total"));
     }
 
 }

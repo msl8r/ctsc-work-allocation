@@ -19,6 +19,7 @@ public class CcdConnectorService {
     public static final String TO_PLACE_HOLDER = "[TO]";
     public static final String CASE_TYPE_ID_DIVORCE = "DIVORCE";
     public static final String CASE_TYPE_ID_PROBATE = "GrantOfRepresentation";
+    public static final String CASE_TYPE_ID_CMC = "MoneyClaimCase";
 
     private final CcdClient ccdClient;
 
@@ -53,6 +54,11 @@ public class CcdConnectorService {
         + "\"jurisdiction\",\"state\",\"last_modified\",\"data.applicationType\",\"data.evidenceHandled\","
         + "\"data.caseType\",\"data.registryLocation\"],\"size\":1000}";
 
+    private static final String QUERY_CMC_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":{\"last_modified\":"
+        + "{\"gte\":\"" + FROM_PLACE_HOLDER + "\",\"lte\":\"" + TO_PLACE_HOLDER + "\"}}},{\"match\":{\"state\":"
+        + "{\"query\":\"orderDrawnreadyForTransfer\",\"operator\":\"or\"}}}]}},\"_source\":[\"reference\","
+        + "\"jurisdiction\",\"state\",\"last_modified\"],\"size\":1000}";
+
     @Autowired
     public CcdConnectorService(CcdClient ccdClient) {
         this.ccdClient = ccdClient;
@@ -83,6 +89,20 @@ public class CcdConnectorService {
             serviceToken,
             query,
             CASE_TYPE_ID_PROBATE
+        );
+    }
+
+    public Map<String, Object> searchCmcCases(String userAuthToken,
+                                                  String serviceToken,
+                                                  String queryFromDateTime,
+                                                  String queryToDateTime) throws CcdConnectionException {
+        String query = QUERY_CMC_TEMPLATE.replace(FROM_PLACE_HOLDER, queryFromDateTime)
+            .replace(TO_PLACE_HOLDER, queryToDateTime);
+        return searchCases(
+            userAuthToken,
+            serviceToken,
+            query,
+            CASE_TYPE_ID_CMC
         );
     }
 

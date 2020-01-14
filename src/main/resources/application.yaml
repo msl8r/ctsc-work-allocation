@@ -67,6 +67,10 @@ idam:
     password: ${SERVICE_USER_PASSWORD:password123}
 
 auth:
+  provider:
+    service:
+      client:
+        baseUrl: ${AUTH_PROVIDER_SERVICE_CLIENT_BASEURL:http://localhost:23443}
   idam:
     client:
       baseUrl: ${IDAM_CLIENT_BASE_URL:http://localhost:23443}
@@ -93,6 +97,7 @@ service:
   last_modified_minus_minutes: ${LAST_MODIFIED_MINUS_MINUTES:5}
   probate:
     email: ${SERVICE_PROBATE_EMAIL_ADDRESS:service_probate_email@mail.com}
+  emails: ${WA_SERVICE_EMAILS:DIVORCE:service_divorce_email@mail.com,PROBATE:service_probate_email@mail.com,CMC:service_cmc_email@mail.com}
 
 smtp:
   enabled: ${SMTP_ENABLED:false}

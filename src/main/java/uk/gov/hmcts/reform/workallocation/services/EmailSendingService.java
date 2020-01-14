@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.workallocation.exception.EmailSendingException;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -21,7 +22,6 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -37,25 +37,29 @@ public class EmailSendingService implements IEmailSendingService {
     private final Session session;
     private final String smtpFrom;
     private final Map<String, String> serviceEmails = new HashMap<>();
+    private final MailSender mailSender;
 
     @Autowired
     public EmailSendingService(@Value("${smtp.host}") String smtpHost,
                                @Value("${smtp.port}") String smtpPort,
                                @Value("${smtp.user}") String smtpUser,
                                @Value("${smtp.password}") String smtpPassword,
-                               @Value("${service.email}") String divorceServiceEmail,
-                               @Value("${service.probate.email}") String probateServiceEmail,
-                               VelocityEngine velocityEngine) {
+                               @Value("${service.emails}") String serviceEmails,
+                               VelocityEngine velocityEngine,
+                               MailSender mailSender) {
         this.session = createSession(smtpHost, smtpPort, smtpUser, smtpPassword);
         this.velocityEngine = velocityEngine;
         this.smtpFrom = smtpUser;
-        this.serviceEmails.put("DIVORCE", divorceServiceEmail);
-        this.serviceEmails.put("PROBATE", probateServiceEmail);
+        this.mailSender = mailSender;
+        Arrays.stream(serviceEmails.split(",")).forEach(s -> {
+            String[] values = s.split(":");
+            this.serviceEmails.put(values[0], values[1]);
+        });
     }
 
     @Override
     public void sendEmail(Task task, String deeplinkBaseUrl) throws EmailSendingException {
-        String emailTo = serviceEmails.get(task.getJurisdiction());
+        String emailTo = serviceEmails.get(task.getJurisdiction().toUpperCase());
         log.info("Sending Email for Task {} With Deep Link URL {} to Email address {}",
             task, deeplinkBaseUrl, emailTo);
 
@@ -86,8 +90,8 @@ public class EmailSendingService implements IEmailSendingService {
             msg.setText(stringWriter.toString(), "UTF-8", "html");
 
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailTo, false));
-            Transport.send(msg);
-            log.info("Email sending successful");
+            mailSender.send(msg);
+            log.info("Email sending was successful");
         } catch (Exception e) {
             throw new EmailSendingException("Failed to send email", e);
         }
