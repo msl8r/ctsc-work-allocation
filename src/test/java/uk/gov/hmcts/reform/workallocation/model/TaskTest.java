@@ -14,6 +14,7 @@ public class TaskTest {
 
     private Map<String, Object> divorce;
     private Map<String, Object> probate;
+    private Map<String, Object> cmc;
 
     @Before
     public void setUp() {
@@ -40,6 +41,16 @@ public class TaskTest {
         probate.put("case_data", caseData);
         caseData.put("evidenceHandled", "Yes");
         caseData.put("applicationType", "Personal");
+
+        cmc = new HashMap<>();
+        cmc.put("id", 1563460551495313L);
+        cmc.put("jurisdiction", "CMC");
+        cmc.put("state", "Submitted");
+        cmc.put("version", null);
+        cmc.put("case_type_id", "MoneyClaimCase");
+        cmc.put("created_date", null);
+        cmc.put("last_modified", "2019-07-18T14:36:25.862");
+        cmc.put("security_classification", "PUBLIC");
     }
 
     @Test
@@ -48,6 +59,14 @@ public class TaskTest {
         assertEquals("1563460551495313", task.getId());
         assertEquals("DIVORCE", task.getJurisdiction());
         assertEquals("DIVORCE", task.getCaseTypeId());
+    }
+
+    @Test
+    public void testConvertCmcCase() throws CaseTransformException {
+        Task task = Task.fromCcdCase(cmc, CcdConnectorService.CASE_TYPE_ID_CMC);
+        assertEquals("1563460551495313", task.getId());
+        assertEquals("CMC", task.getJurisdiction());
+        assertEquals("MoneyClaimCase", task.getCaseTypeId());
     }
 
     @Test

@@ -38,6 +38,9 @@ public class Task {
         if (CcdConnectorService.CASE_TYPE_ID_PROBATE.equals(caseTypeId)) {
             return fromCcdProbateCase(caseData);
         }
+        if (CcdConnectorService.CASE_TYPE_ID_CMC.equals(caseTypeId)) {
+            return fromCcdCmcCase(caseData);
+        }
         throw new CaseTransformException("Unknown case type: " + caseTypeId);
     }
 
@@ -64,6 +67,21 @@ public class Task {
                 .state(getProbateState(caseData))
                 .jurisdiction((String) caseData.get("jurisdiction"))
                 .caseTypeId(CcdConnectorService.CASE_TYPE_ID_PROBATE)
+                .lastModifiedDate(lastModifiedDate)
+                .build();
+        } catch (Exception e) {
+            throw new CaseTransformException("Failed to transform the case", e);
+        }
+    }
+
+    private static Task fromCcdCmcCase(Map<String, Object> caseData) throws CaseTransformException {
+        try {
+            LocalDateTime lastModifiedDate = LocalDateTime.parse(caseData.get("last_modified").toString());
+            return Task.builder()
+                .id(((Long)caseData.get("id")).toString())
+                .state((String) caseData.get("state"))
+                .jurisdiction((String) caseData.get("jurisdiction"))
+                .caseTypeId(CcdConnectorService.CASE_TYPE_ID_CMC)
                 .lastModifiedDate(lastModifiedDate)
                 .build();
         } catch (Exception e) {

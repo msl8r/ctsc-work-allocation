@@ -105,17 +105,17 @@ public class CcdPollingService {
         String queryFromDateTime = lastRunTime.minusMinutes(lastModifiedTimeMinusMinutes).toString();
         String queryToDateTime = now.minusMinutes(lastModifiedTimeMinusMinutes).toString();
 
-        // Divorce cases
+        // 4.1 Divorce cases
         Map<String, Object> divorceData = ccdConnectorService.searchDivorceCases(userAuthToken, serviceToken,
             queryFromDateTime, queryToDateTime);
         logCcdResult(divorceData, "divorce");
 
-        // Probate cases
+        // 4.2 Probate cases
         Map<String, Object> probateData = ccdConnectorService.searchProbateCases(userAuthToken, serviceToken,
             queryFromDateTime, queryToDateTime);
         logCcdResult(probateData, "probate");
 
-        // CMC cases
+        // 4.3 CMC cases
         Map<String, Object> cmcData = ccdConnectorService.searchCmcCases(userAuthToken, serviceToken,
             queryFromDateTime, queryToDateTime);
         logCcdResult(cmcData, "cmc");
