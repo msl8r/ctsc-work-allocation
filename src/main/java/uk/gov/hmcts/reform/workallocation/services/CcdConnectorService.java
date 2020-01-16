@@ -56,7 +56,7 @@ public class CcdConnectorService {
 
     private static final String QUERY_CMC_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":{\"last_modified\":"
         + "{\"gte\":\"" + FROM_PLACE_HOLDER + "\",\"lte\":\"" + TO_PLACE_HOLDER + "\"}}},{\"match\":{\"state\":"
-        + "{\"query\":\"orderDrawnreadyForTransfer\",\"operator\":\"or\"}}}]}},\"_source\":[\"reference\","
+        + "{\"query\":\"orderDrawn readyForTransfer\",\"operator\":\"or\"}}}]}},\"_source\":[\"reference\","
         + "\"jurisdiction\",\"state\",\"last_modified\"],\"size\":1000}";
 
     @Autowired
