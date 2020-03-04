@@ -58,6 +58,9 @@
       <cve>CVE-2018-1000850</cve>
       <cve>CVE-2019-17563</cve>
       <cve>CVE-2019-20330</cve>
+      <cve>CVE-2019-10782</cve>
+      <cve>CVE-2020-8840</cve>
+      <cve>CVE-2020-1938</cve>
     </suppress>
     <suppress>
       <notes><![CDATA[file name: commons-collections-3.2.1.jar]]></notes>
