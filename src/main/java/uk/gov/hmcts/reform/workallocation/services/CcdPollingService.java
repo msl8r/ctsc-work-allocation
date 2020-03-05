@@ -62,7 +62,7 @@ public class CcdPollingService {
     }
 
     @Scheduled(cron = "${service.poll_cron}")
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = {Exception.class})
     public void pollCcdEndpoint() throws IdamConnectionException, CcdConnectionException {
         telemetryClient.trackEvent("work-allocation start polling");
 
