@@ -118,9 +118,16 @@ public class CcdPollingService {
         log.info("total number of probate cases: {}", probateData.get("total"));
         telemetryClient.trackMetric("num_of_probate_cases", (Integer) probateData.get("total"));
 
+        // Bulk Scanning cases
+        Map<String, Object> bulkScanningData = ccdConnectorService.searchProbateCases(userAuthToken, serviceToken,
+            queryFromDateTime, queryToDateTime);
+        log.info("Connecting to CCD was successful");
+        log.info("total number of bulk scanning cases: {}", bulkScanningData.get("total"));
+        telemetryClient.trackMetric("num_of_probate_cases", (Integer) bulkScanningData.get("total"));
+
         // 5. Process data
         @SuppressWarnings("unchecked")
-        List<Task> tasks = mergeResponse(divorceData, probateData);
+        List<Task> tasks = mergeResponse(divorceData, probateData, bulkScanningData);
         log.info("total number of tasks: {}", tasks.size());
         telemetryClient.trackMetric("num_of_tasks", tasks.size());
 
