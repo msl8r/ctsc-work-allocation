@@ -19,6 +19,7 @@ public class CcdConnectorService {
     public static final String TO_PLACE_HOLDER = "[TO]";
     public static final String CASE_TYPE_ID_DIVORCE = "DIVORCE";
     public static final String CASE_TYPE_ID_PROBATE = "GrantOfRepresentation";
+    public static final String CASE_TYPE_ID_BULK_SCANNING = "PROBATE_ExceptionRecord";
 
     private final CcdClient ccdClient;
 
@@ -41,17 +42,20 @@ public class CcdConnectorService {
         + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"state\":\"CasePrinted\"}},{\"match\":"
         + "{\"data.evidenceHandled\":\"No\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":"
         + "{\"must\":[{\"match\":{\"state\":\"CaseCreated\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},"
-        + "{\"bool\":{\"must\":[{\"match\":{\"state\":"
-        + "\"BOReadyForExamination\"}},{\"match\":{\"data.applicationType\":\"Personal\"}},{\"match\":"
-        + "{\"data.caseType\":\"gop\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":"
-        + "{\"must\":[{\"match\":{\"state\":\"BOReadyForExamination\"}},{\"match\":{\"data.applicationType\":"
-        + "\"Solicitor\"}},{\"match\":{\"data.caseType\":\"gop\"}},{\"match\":{\"data.registryLocation\":"
-        + "\"ctsc\"}}]}},{\"bool\":{\"must\":[{\"match\":{\"state\":\"BOCaseStopped\"}},{\"match\":"
-        + "{\"data.evidenceHandled\":\"Yes\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},"
         + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"BOCaseStopped\"}},{\"match\":{\"data.evidenceHandled\":"
         + "\"No\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}}]}}]}},\"_source\":[\"reference\","
         + "\"jurisdiction\",\"state\",\"last_modified\",\"data.applicationType\",\"data.evidenceHandled\","
         + "\"data.caseType\",\"data.registryLocation\"],\"size\":1000}";
+
+    private static final String QUERY_BULK_SCANNING_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
+        + "{\"last_modified\":{\"gte\":\"" + FROM_PLACE_HOLDER + "\",\"lte\":\"" + TO_PLACE_HOLDER + "\"}}},"
+        + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"state\":\"ScannedRecordReceived\"}},"
+        + "{\"match\":{\"data.journeyClassification\":\"NEW_APPLICATION\"}},"
+        + "{\"match\":{\"data.containsPayments\":\"Yes\"}}]}},"
+        + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"ScannedRecordReceived\"}},"
+        + "{\"match\":{\"data.journeyClassification\":\"SUPPLEMENTARY_EVIDENCE\"}}],"
+        + "\"must_not\":{\"exists\":{\"field\":\"data.containsPayments\"}}}}]}}]}},"
+        + "\"size\":50,\"_source\":[\"reference\",\"jurisdiction\",\"state\",\"last_modified\",\"data\"]}";
 
     @Autowired
     public CcdConnectorService(CcdClient ccdClient) {
@@ -83,6 +87,20 @@ public class CcdConnectorService {
             serviceToken,
             query,
             CASE_TYPE_ID_PROBATE
+        );
+    }
+
+    public Map<String, Object> searchBulkScanningCases(String userAuthToken,
+                                                  String serviceToken,
+                                                  String queryFromDateTime,
+                                                  String queryToDateTime) throws CcdConnectionException {
+        String query = QUERY_BULK_SCANNING_TEMPLATE.replace(FROM_PLACE_HOLDER, queryFromDateTime)
+            .replace(TO_PLACE_HOLDER, queryToDateTime);
+        return searchCases(
+            userAuthToken,
+            serviceToken,
+            query,
+            CASE_TYPE_ID_BULK_SCANNING
         );
     }
 
