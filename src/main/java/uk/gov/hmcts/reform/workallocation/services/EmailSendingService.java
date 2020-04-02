@@ -17,10 +17,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import javax.mail.Authenticator;
+import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -80,13 +82,18 @@ public class EmailSendingService implements IEmailSendingService {
             template.merge(velocityContext, stringWriter);
 
             MimeMessage msg = createMimeMessage(deeplinkBaseUrl);
-            msg.setReplyTo(InternetAddress.parse(smtpFrom, false));
-            msg.setFrom(InternetAddress.parse(smtpFrom, false)[0]);
+            // msg.setReplyTo(InternetAddress.parse(smtpFrom, false));
+            // msg.setFrom(InternetAddress.parse(smtpFrom, false)[0]);
             msg.setSubject(task.getId() + " - " + task.getState() + " - " + jurisdiction.toUpperCase(), "UTF-8");
             msg.setText(stringWriter.toString(), "UTF-8", "html");
 
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailTo, false));
-            Transport.send(msg);
+            // msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailTo, false));
+            // Transport.send(msg);
+            Store store = session.getStore("imap");
+            store.connect();
+            Folder folderInbox = store.getFolder("INBOX");
+            folderInbox.open(Folder.READ_WRITE);
+            folderInbox.appendMessages(new Message[]{msg});
             log.info("Email sending successful");
         } catch (Exception e) {
             throw new EmailSendingException("Failed to send email", e);
@@ -110,6 +117,14 @@ public class EmailSendingService implements IEmailSendingService {
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.ssl.trust", "*");
+
+        props.put("mail.imap.host", smtpHost);
+        props.put("mail.imap.port", 993);
+        props.setProperty("mail.imap.socketFactory.class",
+            "javax.net.ssl.SSLSocketFactory");
+        props.setProperty("mail.imap.socketFactory.fallback", "false");
+        props.setProperty("mail.imap.socketFactory.port",
+            String.valueOf(993));
 
         Authenticator auth = new Authenticator() {
             @Override
