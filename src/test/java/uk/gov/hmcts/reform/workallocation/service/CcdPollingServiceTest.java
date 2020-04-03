@@ -77,6 +77,11 @@ public class CcdPollingServiceTest {
         when(ccdConnectorService.searchProbateCases(anyString(), anyString(), anyString(), anyString()))
             .thenReturn(probateResponse);
 
+        Map<String, Object> bulkScanResponse = bulkScanSearchResult();
+        probateResponse.put("case_type_id", "GrantOfRepresentation");
+        when(ccdConnectorService.searchBulkScanningCases(anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(bulkScanResponse);
+
         when(idamService.generateServiceAuthorization()).thenReturn("service_token");
         when(idamService.getIdamOauth2Token()).thenReturn("idam_token");
         when(lastRunTimeService.getMinDate()).thenReturn(LocalDateTime.of(2019, 9, 20, 12, 0, 0, 0));
@@ -192,6 +197,37 @@ public class CcdPollingServiceTest {
 
     @SuppressWarnings("unchecked")
     private Map<String, Object> probateSearchResult() throws IOException {
+        String json = "{\n"
+            + "\"total\": 1,\n"
+            + "  \"cases\": [\n"
+            + "  {\n"
+            + "     \"id\": 1572038226693576,\n"
+            + "     \"jurisdiction\": \"PROBATE\",\n"
+            + "     \"state\": \"BOReadyForExamination\",\n"
+            + "     \"version\": null,\n"
+            + "     \"case_type_id\": null,\n"
+            + "     \"created_date\": null,\n"
+            + "     \"last_modified\": \"2019-10-25T21:24:18.143\",\n"
+            + "     \"security_classification\": null,\n"
+            + "     \"case_data\":{\n"
+            + "         \"evidenceHandled\": \"Yes\",\n"
+            + "         \"applicationType\": \"Personal\"\n"
+            + "     },\n"
+            + "     \"data_classification\": null,\n"
+            + "     \"after_submit_callback_response\": null,\n"
+            + "     \"callback_response_status_code\": null,\n"
+            + "     \"callback_response_status\": null,\n"
+            + "     \"delete_draft_response_status_code\": null,\n"
+            + "     \"delete_draft_response_status\": null,\n"
+            + "     \"security_classifications\": null\n"
+            + "     }\n"
+            + "]\n"
+            + "}";
+        return new ObjectMapper().readValue(json, Map.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> bulkScanSearchResult() throws IOException {
         String json = "{\n"
             + "\"total\": 1,\n"
             + "  \"cases\": [\n"

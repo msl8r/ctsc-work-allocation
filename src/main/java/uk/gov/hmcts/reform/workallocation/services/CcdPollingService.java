@@ -119,7 +119,7 @@ public class CcdPollingService {
         telemetryClient.trackMetric("num_of_probate_cases", (Integer) probateData.get("total"));
 
         // Bulk Scanning cases
-        Map<String, Object> bulkScanningData = ccdConnectorService.searchProbateCases(userAuthToken, serviceToken,
+        Map<String, Object> bulkScanningData = ccdConnectorService.searchBulkScanningCases(userAuthToken, serviceToken,
             queryFromDateTime, queryToDateTime);
         log.info("Connecting to CCD was successful");
         log.info("total number of bulk scanning cases: {}", bulkScanningData.get("total"));
