@@ -38,7 +38,7 @@ public class Task {
         if (CcdConnectorService.CASE_TYPE_ID_PROBATE.equals(caseTypeId)) {
             return fromCcdProbateCase(caseData);
         }
-        if (CcdConnectorService.CASE_TYPE_ID_BULK_SCANNING.equals(caseTypeId)){
+        if (CcdConnectorService.CASE_TYPE_ID_BULK_SCANNING.equals(caseTypeId)) {
             return fromCcdBulkScanCase(caseData);
         }
         throw new CaseTransformException("Unknown case type: " + caseTypeId);
@@ -115,10 +115,12 @@ public class Task {
     private static String getBulkScanningState(Map<String, Object> caseData) {
         String state = (String) caseData.get("state");
         Map<String, Object> caseProperties = (Map<String, Object>) caseData.get("case_data");
-        if ("ScannedRecordReceived".equals(state) && "NEW_APPLICATION".equals(caseProperties.get("journeyClassification"))) {
+        if ("ScannedRecordReceived".equals(state)
+            && "NEW_APPLICATION".equals(caseProperties.get("journeyClassification"))) {
             return "BulkScanning – NewPay";
         }
-        if ("ScannedRecordReceived".equals(state) && "SUPPLEMENTARY_EVIDENCE".equals(caseProperties.get("journeyClassification"))) {
+        if ("ScannedRecordReceived".equals(state)
+            && "SUPPLEMENTARY_EVIDENCE".equals(caseProperties.get("journeyClassification"))) {
             return "BulkScanning – Supp";
         }
         return state;
