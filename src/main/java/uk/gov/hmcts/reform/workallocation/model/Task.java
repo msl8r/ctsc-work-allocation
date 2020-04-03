@@ -111,6 +111,7 @@ public class Task {
         return state;
     }
 
+    @SuppressWarnings("unchecked")
     private static String getBulkScanningState(Map<String, Object> caseData) {
         String state = (String) caseData.get("state");
         Map<String, Object> caseProperties = (Map<String, Object>) caseData.get("case_data");
