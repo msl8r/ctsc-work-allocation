@@ -99,7 +99,8 @@ public class CcdPollingServiceTest {
         List<Task> task3 = getBulkScanTasks();
         verify(ccdConnectorService, times(1))
             .searchDivorceCases(eq("idam_token"), eq("service_token"), eq(queryFromDate), anyString());
-        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2, task3.get(0), task3.get(1), task3.get(2))), any());
+        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2,
+            task3.get(0), task3.get(1), task3.get(2))), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -115,7 +116,8 @@ public class CcdPollingServiceTest {
         List<Task> task3 = getBulkScanTasks();
         verify(ccdConnectorService, times(1))
             .searchDivorceCases(eq("idam_token"), eq("service_token"), eq(queryDate), anyString());
-        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2, task3.get(0), task3.get(1), task3.get(2))), any());
+        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2,
+            task3.get(0), task3.get(1), task3.get(2))), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -132,7 +134,8 @@ public class CcdPollingServiceTest {
         List<Task> task3 = getBulkScanTasks();
         verify(ccdConnectorService, times(1))
             .searchDivorceCases(eq("idam_token"), eq("service_token"), eq("2019-09-25T11:55"), anyString());
-        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2, task3.get(0), task3.get(1), task3.get(2))), any());
+        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2,
+            task3.get(0), task3.get(1), task3.get(2))), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -149,7 +152,8 @@ public class CcdPollingServiceTest {
         List<Task> task3 = getBulkScanTasks();
         verify(ccdConnectorService, times(1))
             .searchDivorceCases(eq("idam_token"), eq("service_token"), eq("2019-09-25T11:55"), anyString());
-        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2, task3.get(0), task3.get(1), task3.get(2))), any());
+        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2,
+            task3.get(0), task3.get(1), task3.get(2))), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -169,7 +173,8 @@ public class CcdPollingServiceTest {
         List<Task> task3 = getBulkScanTasks();
         verify(ccdConnectorService, times(1))
             .searchDivorceCases(eq("idam_token"), eq("service_token"), eq("2019-09-20T11:55"), anyString());
-        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task2, task3.get(0), task3.get(1), task3.get(2))), any());
+        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task2,
+            task3.get(0), task3.get(1), task3.get(2))), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
