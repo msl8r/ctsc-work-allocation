@@ -99,14 +99,8 @@ public class Task {
         if ("CasePrinted".equals(state) && "No".equals(caseProperties.get("evidenceHandled"))) {
             return "AwaitingDocumentation";
         }
-        if ("BOReadyForExamination".equals(state) && "Personal".equals(caseProperties.get("applicationType"))) {
-            return "ReadyforExamination-Personal";
-        }
-        if ("BOReadyForExamination".equals(state) && "Solicitor".equals(caseProperties.get("applicationType"))) {
-            return "ReadyforExamination-Solicitor";
-        }
-        if ("BOCaseStopped".equals(state) && caseProperties.get("evidenceHandled") != null) {
-            return "CaseStopped";
+        if ("BOCaseStopped".equals(state) && caseProperties.get("evidenceHandled") != "No") {
+            return "CaseStopped - N";
         }
         return state;
     }
