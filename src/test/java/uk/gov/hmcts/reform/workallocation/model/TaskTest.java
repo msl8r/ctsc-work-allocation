@@ -30,7 +30,7 @@ public class TaskTest {
         probate = new HashMap<>();
         probate.put("id", 1572038226693576L);
         probate.put("jurisdiction", "PROBATE");
-        probate.put("state", "BOReadyForExamination");
+        probate.put("state", "BOCaseStopped");
         probate.put("version", null);
         probate.put("case_type_id", "GrantOfRepresentation");
         probate.put("created_date", null);
@@ -38,7 +38,7 @@ public class TaskTest {
         probate.put("security_classification", null);
         Map<String, Object> caseData = new HashMap<>();
         probate.put("case_data", caseData);
-        caseData.put("evidenceHandled", "Yes");
+        caseData.put("evidenceHandled", "No");
         caseData.put("applicationType", "Personal");
     }
 
@@ -54,12 +54,12 @@ public class TaskTest {
     @SuppressWarnings("unchecked")
     public void testProbateConversion() throws CaseTransformException {
         Task task = Task.fromCcdCase(probate, CcdConnectorService.CASE_TYPE_ID_PROBATE);
-        assertEquals("ReadyforExamination-Personal", task.getState());
+        assertEquals("CaseStopped - N", task.getState());
         assertEquals("PROBATE", task.getJurisdiction());
 
-        ((Map<String, Object>)probate.get("case_data")).put("applicationType", "Solicitor");
+        probate.put("state", "CasePrinted");
         task = Task.fromCcdCase(probate, CcdConnectorService.CASE_TYPE_ID_PROBATE);
-        assertEquals("ReadyforExamination-Solicitor", task.getState());
+        assertEquals("AwaitingDocumentation", task.getState());
     }
 
 

@@ -99,7 +99,7 @@ public class Task {
         if ("CasePrinted".equals(state) && "No".equals(caseProperties.get("evidenceHandled"))) {
             return "AwaitingDocumentation";
         }
-        if ("BOCaseStopped".equals(state) && caseProperties.get("evidenceHandled") != "No") {
+        if ("BOCaseStopped".equals(state) && "No".equals(caseProperties.get("evidenceHandled"))) {
             return "CaseStopped - N";
         }
         return state;
