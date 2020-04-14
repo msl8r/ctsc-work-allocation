@@ -55,7 +55,7 @@ public class CcdConnectorService {
         + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"ScannedRecordReceived\"}},"
         + "{\"match\":{\"data.journeyClassification\":\"SUPPLEMENTARY_EVIDENCE\"}}],"
         + "\"must_not\":{\"exists\":{\"field\":\"data.containsPayments\"}}}}]}}]}},"
-        + "\"size\":50,\"_source\":[\"reference\",\"jurisdiction\",\"state\",\"last_modified\",\"data\"]}";
+        + "\"size\":1000,\"_source\":[\"reference\",\"jurisdiction\",\"state\",\"last_modified\",\"data\"]}";
 
     @Autowired
     public CcdConnectorService(CcdClient ccdClient) {

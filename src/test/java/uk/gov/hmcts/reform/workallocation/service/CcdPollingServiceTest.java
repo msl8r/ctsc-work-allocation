@@ -270,21 +270,21 @@ public class CcdPollingServiceTest {
             .caseTypeId("PROBATE_ExceptionRecord")
             .id("1585761273173755")
             .jurisdiction("PROBATE")
-            .state("BulkScanning – NewPay")
+            .state("BulkScanning - NewPay")
             .lastModifiedDate(LocalDateTime.of(2020,04,02,14,58,01, 417000000)) //2020-04-02T14:58:01.417
             .build();
         Task task2 = Task.builder()
             .caseTypeId("PROBATE_ExceptionRecord")
             .id("1585827388328608")
             .jurisdiction("PROBATE")
-            .state("BulkScanning – NewPay")
+            .state("BulkScanning - NewPay")
             .lastModifiedDate(LocalDateTime.of(2020,04,02,14,58,04, 985000000)) //2020-04-02T14:58:04.985
             .build();
         Task task3 = Task.builder()
             .caseTypeId("PROBATE_ExceptionRecord")
             .id("1585760187504931")
             .jurisdiction("PROBATE")
-            .state("BulkScanning – NewPay")
+            .state("BulkScanning - NewPay")
             .lastModifiedDate(LocalDateTime.of(2020,04,02,14,57,58, 999000000)) //2020-04-02T14:57:58.999
             .build();
         tasks.add(task1);
