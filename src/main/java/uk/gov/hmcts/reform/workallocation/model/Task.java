@@ -111,11 +111,11 @@ public class Task {
         Map<String, Object> caseProperties = (Map<String, Object>) caseData.get("case_data");
         if ("ScannedRecordReceived".equals(state)
             && "NEW_APPLICATION".equals(caseProperties.get("journeyClassification"))) {
-            return "BulkScanning – NewPay";
+            return "BulkScanning - NewPay";
         }
         if ("ScannedRecordReceived".equals(state)
             && "SUPPLEMENTARY_EVIDENCE".equals(caseProperties.get("journeyClassification"))) {
-            return "BulkScanning – Supp";
+            return "BulkScanning - Supp";
         }
         return state;
     }
