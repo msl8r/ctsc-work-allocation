@@ -53,8 +53,7 @@ public class CcdConnectorService {
         + "{\"match\":{\"data.journeyClassification\":\"NEW_APPLICATION\"}},"
         + "{\"match\":{\"data.containsPayments\":\"Yes\"}}]}},"
         + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"ScannedRecordReceived\"}},"
-        + "{\"match\":{\"data.journeyClassification\":\"SUPPLEMENTARY_EVIDENCE\"}}],"
-        + "\"must_not\":{\"exists\":{\"field\":\"data.containsPayments\"}}}}]}}]}},"
+        + "{\"match\":{\"data.journeyClassification\":\"SUPPLEMENTARY_EVIDENCE\"}}]}}]}}]}},"
         + "\"size\":1000,\"_source\":[\"reference\",\"jurisdiction\",\"state\",\"last_modified\",\"data\"]}";
 
     @Autowired
