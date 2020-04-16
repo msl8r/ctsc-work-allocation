@@ -87,12 +87,16 @@ http:
     timeout: 5
 
 service:
-  email: ${SERVICE_EMAIL_ADDRESS:service_email@mail.com}
+  divorce:
+    email: ${SERVICE_EMAIL_ADDRESS:service_email@mail.com}
+    password: ${SERVICE_EMAIL_PASSWORD:password}
   poll_interval_minutes: ${POLL_INTERVAL_MINUTES:5}
   poll_cron: ${POLL_CRON:0 */5 * * * *}
   last_modified_minus_minutes: ${LAST_MODIFIED_MINUS_MINUTES:5}
   probate:
     email: ${SERVICE_PROBATE_EMAIL_ADDRESS:service_probate_email@mail.com}
+    password: ${SERVICE_PROBATE_EMAIL_PASSWORD:password}
+
 
 smtp:
   enabled: ${SMTP_ENABLED:false}
@@ -100,6 +104,10 @@ smtp:
   password: ${SMTP_PASSWORD:password}
   port: ${SMTP_PORT:587}
   user: ${SMTP_USER:from@mail.com}
+
+imap:
+  host: ${SMTP_HOST:smtp.office365.com}
+  port: ${IMAP_PORT:993}
 
 servicebus:
   queue:

@@ -12,18 +12,18 @@ import uk.gov.hmcts.reform.workallocation.email.IEmailSendingService;
 import uk.gov.hmcts.reform.workallocation.exception.EmailSendingException;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 import javax.mail.Authenticator;
+import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
+import javax.mail.Store;
 import javax.mail.internet.MimeMessage;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 @Service
 @Slf4j
@@ -34,30 +34,28 @@ public class EmailSendingService implements IEmailSendingService {
     private static final String NO_JURISDICTION = "No Jurisdiction";
 
     private final VelocityEngine velocityEngine;
-    private final Session session;
-    private final String smtpFrom;
-    private final Map<String, String> serviceEmails = new HashMap<>();
+    private final Map<String, Session> serviceEmailSessions = new HashMap<>();
 
     @Autowired
-    public EmailSendingService(@Value("${smtp.host}") String smtpHost,
-                               @Value("${smtp.port}") String smtpPort,
-                               @Value("${smtp.user}") String smtpUser,
-                               @Value("${smtp.password}") String smtpPassword,
-                               @Value("${service.email}") String divorceServiceEmail,
+    public EmailSendingService(@Value("${imap.host}") String imapHost,
+                               @Value("${imap.port}") String imapPort,
+                               @Value("${service.divorce.email}") String divorceServiceEmail,
+                               @Value("${service.divorce.password}") String divorceServicePassword,
                                @Value("${service.probate.email}") String probateServiceEmail,
+                               @Value("${service.probate.password}") String probateServicePassword,
                                VelocityEngine velocityEngine) {
-        this.session = createSession(smtpHost, smtpPort, smtpUser, smtpPassword);
         this.velocityEngine = velocityEngine;
-        this.smtpFrom = smtpUser;
-        this.serviceEmails.put("DIVORCE", divorceServiceEmail);
-        this.serviceEmails.put("PROBATE", probateServiceEmail);
+        this.serviceEmailSessions.put("DIVORCE",
+            createSession(imapHost, imapPort, divorceServiceEmail, divorceServicePassword));
+        this.serviceEmailSessions.put("PROBATE",
+            createSession(imapHost, imapPort, probateServiceEmail, probateServicePassword));
     }
 
     @Override
     public void sendEmail(Task task, String deeplinkBaseUrl) throws EmailSendingException {
-        String emailTo = serviceEmails.get(task.getJurisdiction());
-        log.info("Sending Email for Task {} With Deep Link URL {} to Email address {}",
-            task, deeplinkBaseUrl, emailTo);
+        Session session = serviceEmailSessions.get(task.getJurisdiction());
+        log.info("Creating Email for Task {} With Deep Link URL {} in {} inbox",
+            task, deeplinkBaseUrl, session.getProperty(""));
 
         try {
             VelocityContext velocityContext = new VelocityContext();
@@ -79,22 +77,23 @@ public class EmailSendingService implements IEmailSendingService {
             Template template = velocityEngine.getTemplate(TEMPLATE_DIR + templateFileName);
             template.merge(velocityContext, stringWriter);
 
-            MimeMessage msg = createMimeMessage(deeplinkBaseUrl);
-            msg.setReplyTo(InternetAddress.parse(smtpFrom, false));
-            msg.setFrom(InternetAddress.parse(smtpFrom, false)[0]);
+            MimeMessage msg = createMimeMessage(deeplinkBaseUrl, session);
             msg.setSubject(task.getId() + " - " + task.getState() + " - " + jurisdiction.toUpperCase(), "UTF-8");
             msg.setText(stringWriter.toString(), "UTF-8", "html");
 
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailTo, false));
-            Transport.send(msg);
+            Store store = session.getStore("imap");
+            store.connect();
+            Folder folderInbox = store.getFolder("INBOX");
+            folderInbox.open(Folder.READ_WRITE);
+            folderInbox.appendMessages(new Message[]{msg});
             log.info("Email sending successful");
         } catch (Exception e) {
             throw new EmailSendingException("Failed to send email", e);
         }
     }
 
-    private MimeMessage createMimeMessage(String deepLinkUrl) throws MessagingException {
-        MimeMessage msg = new MimeMessage(this.session);
+    private MimeMessage createMimeMessage(String deepLinkUrl, Session session) throws MessagingException {
+        MimeMessage msg = new MimeMessage(session);
         msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
         msg.addHeader("format", "flowed");
         msg.addHeader("Content-Transfer-Encoding", "8bit");
@@ -103,13 +102,13 @@ public class EmailSendingService implements IEmailSendingService {
     }
 
 
-    private Session createSession(String smtpHost, String smtpPort, String smtpUser, String smtpPassword) {
+    private Session createSession(String imapHost, String imapPort, String smtpUser, String smtpPassword) {
         Properties props = new Properties();
-        props.put("mail.smtp.host", smtpHost);
-        props.put("mail.smtp.port", smtpPort);
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.ssl.trust", "*");
+        props.put("mail.imap.host", imapHost);
+        props.put("mail.imap.port", imapPort);
+        props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.setProperty("mail.imap.socketFactory.fallback", "false");
+        props.setProperty("mail.imap.socketFactory.port", imapPort);
 
         Authenticator auth = new Authenticator() {
             @Override
