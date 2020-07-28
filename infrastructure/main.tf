@@ -108,7 +108,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 module "servicebus-namespace" {
-  source                = "git@github.com:hmcts/terraform-module-servicebus-namespace?ref=master"
+  source                = "git@github.com:hmcts/terraform-module-servicebus-namespace?ref=common-tag-team-name"
   name                  = "${var.product}-servicebus-${var.env}"
   location              = "${var.location_app}"
   resource_group_name   = "${azurerm_resource_group.rg.name}"
