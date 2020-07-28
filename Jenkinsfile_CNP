@@ -51,7 +51,6 @@ withPipeline(type, product, app) {
     overrideVaultEnvironments(vaultOverrides)
     loadVaultSecrets(secrets)
     enableDbMigration('ctsc')
-    installCharts()
     enableSlackNotifications('#ctstc-tech-internal')
     disableLegacyDeployment()
     enableAksStagingDeployment()

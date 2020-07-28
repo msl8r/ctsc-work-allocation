@@ -27,6 +27,12 @@
       <cve>CVE-2019-16943</cve>
       <cve>CVE-2019-17267</cve>
       <cve>CVE-2019-17531</cve>
+      <cve>CVE-2020-11619</cve>
+      <cve>CVE-2020-11620</cve>
+      <cve>CVE-2020-14060</cve>
+      <cve>CVE-2020-14061</cve>
+      <cve>CVE-2020-14062</cve>
+      <cve>CVE-2020-14195</cve>
     </suppress>
     <suppress>
       <notes>currently commons collections is not updated in the libraries so suppressing for now</notes>
@@ -74,5 +80,19 @@
       <notes><![CDATA[file name: commons-collections-3.2.1.jar]]></notes>
       <packageUrl regex="true">^pkg:maven/commons\-collections/commons\-collections@.*$</packageUrl>
       <vulnerabilityName>Remote code execution</vulnerabilityName>
+    </suppress>
+    <suppress>
+      <packageUrl regex="true">pkg:maven/org.hibernate/hibernate-core@5.4.17.Final</packageUrl>
+      <cve>CVE-2019-14900</cve>
+    </suppress>
+    <suppress>
+      <gav regex="true">org.apache.tomcat.embed:.*:9.0.36</gav>
+      <cve>CVE-2020-13934</cve>
+      <cve>CVE-2020-13935</cve>
+    </suppress>
+    <suppress>
+      <gav regex="true">org.apache.logging.log4j:.*:2.12.1</gav>
+      <cve>CVE-2020-13934</cve>
+      <cve>CVE-2020-9488</cve>
     </suppress>
 </suppressions>
