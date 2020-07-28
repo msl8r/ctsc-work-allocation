@@ -1,4 +1,4 @@
-capacity = "2"
+capacity     = "2"
 smtp_enabled = "false"
-ccd_dry_run = "true"
+ccd_dry_run  = "true"
 
