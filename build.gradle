@@ -159,7 +159,6 @@ def versions = [
   junit           : '5.5.0',
   reformLogging   : '5.0.1',
   springBoot      : springBoot.class.package.implementationVersion,
-  springfoxSwagger: '2.9.2'
 ]
 
 configurations.all {
@@ -190,7 +189,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.0.4'
   compile group: 'uk.gov.hmcts.reform', name: 'health-spring-boot-starter', version: '0.0.5'
 
-  compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
+  compile group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
 
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging', version: versions.reformLogging
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.2.RELEASE'
