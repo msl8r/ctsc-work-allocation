@@ -44,4 +44,4 @@ To run the application at local developer machine use following command
 $ gradle  bootRun  or ./gradlew bootRun
 
 Once application server is started use swagger ui to find the endpoints and test these.
-http://localhost:8080/swagger-ui.html
+http://localhost:8080/v2/api-docs
