@@ -211,7 +211,7 @@ dependencies {
 
   testCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.1.2'
   testCompile group: 'io.rest-assured', name: 'json-path', version: '4.3.1'
-  testCompile group: 'io.rest-assured', name: 'xml-path', version: '4.3.0'
+  testCompile group: 'io.rest-assured', name: 'xml-path', version: '4.3.1'
 
 
 
