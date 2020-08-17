@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.workallocation;
 
+import net.serenitybdd.junit.runners.SerenityRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
@@ -11,6 +13,7 @@ import uk.gov.hmcts.reform.workallocation.controllers.RootController;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@RunWith(SerenityRunner.class)
 public class RootControllerTest {
 
     private MockMvc mockMvc;

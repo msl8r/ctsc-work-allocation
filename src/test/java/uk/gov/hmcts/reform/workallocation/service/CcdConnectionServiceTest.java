@@ -1,9 +1,11 @@
 package uk.gov.hmcts.reform.workallocation.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.serenitybdd.junit.runners.SerenityRunner;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -18,6 +20,7 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@RunWith(SerenityRunner.class)
 public class CcdConnectionServiceTest {
 
     @Mock

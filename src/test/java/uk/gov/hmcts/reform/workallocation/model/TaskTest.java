@@ -1,7 +1,10 @@
 package uk.gov.hmcts.reform.workallocation.model;
 
+import net.serenitybdd.junit.runners.SerenityRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import uk.gov.hmcts.reform.workallocation.exception.CaseTransformException;
 import uk.gov.hmcts.reform.workallocation.services.CcdConnectorService;
 
@@ -10,6 +13,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(SerenityRunner.class)
 public class TaskTest {
 
     private Map<String, Object> divorce;

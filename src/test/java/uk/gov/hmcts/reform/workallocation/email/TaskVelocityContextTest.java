@@ -1,9 +1,11 @@
 package uk.gov.hmcts.reform.workallocation.email;
 
+import net.serenitybdd.junit.runners.SerenityRunner;
 import org.apache.velocity.VelocityContext;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+@RunWith(SerenityRunner.class)
 public class TaskVelocityContextTest {
 
     private TaskVelocityContext context;

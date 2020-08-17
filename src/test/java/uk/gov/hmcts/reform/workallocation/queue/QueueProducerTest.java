@@ -6,9 +6,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
+import net.serenitybdd.junit.runners.SerenityRunner;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import uk.gov.hmcts.reform.workallocation.model.Task;
 
@@ -20,6 +22,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+@RunWith(SerenityRunner.class)
 public class QueueProducerTest {
 
     private ObjectMapper mapper;

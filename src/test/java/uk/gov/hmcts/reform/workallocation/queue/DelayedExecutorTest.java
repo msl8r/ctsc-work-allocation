@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.workallocation.queue;
 
+import net.serenitybdd.junit.runners.SerenityRunner;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ import java.util.function.Supplier;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
+@RunWith(SerenityRunner.class)
 public class DelayedExecutorTest {
 
     @Test

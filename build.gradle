@@ -1,3 +1,12 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath("net.serenity-bdd:serenity-gradle-plugin:2.2.12")
+  }
+}
+
 plugins {
   id 'idea'
   id 'application'
@@ -11,6 +20,8 @@ plugins {
   id "io.freefair.lombok" version "5.1.0"
   id 'org.flywaydb.flyway' version '6.5.3'
 }
+
+apply plugin: 'net.serenity-bdd.aggregator'
 
 group = 'uk.gov.hmcts.reform'
 version = '0.0.1'
@@ -159,6 +170,7 @@ def versions = [
   junit           : '5.5.0',
   reformLogging   : '5.0.1',
   springBoot      : springBoot.class.package.implementationVersion,
+  serenity        : '2.2.12'
 ]
 
 configurations.all {
@@ -211,7 +223,8 @@ dependencies {
   testCompile group: 'io.rest-assured', name: 'json-path', version: '4.3.1'
   testCompile group: 'io.rest-assured', name: 'xml-path', version: '4.3.1'
 
-
+  testCompile group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
+  testCompile group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
 
   testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
     exclude(module: 'commons-logging')
@@ -236,7 +249,7 @@ dependencies {
 }
 
 test {
-
+  finalizedBy aggregate
 }
 
 mainClassName = 'uk.gov.hmcts.reform.workallocation.Application'
@@ -276,6 +289,7 @@ idea {
 task smokeTest(type: Test, description: 'Runs the smoke tests', group: 'Verification') {
   testClassesDirs = sourceSets.smokeTest.output.classesDirs
   classpath = sourceSets.smokeTest.runtimeClasspath
+  finalizedBy aggregate
 }
 
 flyway {
