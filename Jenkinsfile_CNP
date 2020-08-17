@@ -54,4 +54,9 @@ withPipeline(type, product, app) {
     enableSlackNotifications('#ctstc-tech-internal')
     disableLegacyDeployment()
     enableAksStagingDeployment()
+
+
+    after('functionalTest:preview') {
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+    }
 }

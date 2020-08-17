@@ -10,9 +10,12 @@ import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.MessageBody;
 import com.microsoft.azure.servicebus.MessageHandlerOptions;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
+import net.serenitybdd.junit.runners.SerenityRunner;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import uk.gov.hmcts.reform.workallocation.model.Task;
 import uk.gov.hmcts.reform.workallocation.services.EmailSendingService;
 
@@ -31,6 +34,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(SerenityRunner.class)
 public class QueueConsumerTest {
 
     private ObjectMapper mapper;

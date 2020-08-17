@@ -2,8 +2,10 @@ package uk.gov.hmcts.reform.workallocation.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.TelemetryClient;
+import net.serenitybdd.junit.runners.SerenityRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import uk.gov.hmcts.reform.workallocation.exception.CcdConnectionException;
@@ -32,6 +34,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(SerenityRunner.class)
 public class CcdPollingServiceTest {
 
     private CcdPollingService ccdPollingService;

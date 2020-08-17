@@ -1,15 +1,19 @@
 package uk.gov.hmcts.reform.workallocation.data.migration;
 
+import net.serenitybdd.junit.runners.SerenityRunner;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationInfo;
 import org.flywaydb.core.api.MigrationInfoService;
 import org.flywaydb.core.api.MigrationState;
 import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
+
 import uk.gov.hmcts.reform.workallocation.exception.PendingMigrationScriptException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,8 +21,11 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.reset;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SerenityRunner.class)
 public class FlywayNoOpStrategyTest {
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
     private Flyway flyway;
@@ -38,7 +45,7 @@ public class FlywayNoOpStrategyTest {
 
     @Test
     public void should_not_throw_exception_when_all_migrations_are_applied() {
-        MigrationInfo[] infos = { info, info };
+        MigrationInfo[] infos = {info, info};
         given(flyway.info()).willReturn(infoService);
         given(infoService.all()).willReturn(infos);
         given(info.getState()).willReturn(MigrationState.SUCCESS);
@@ -49,7 +56,7 @@ public class FlywayNoOpStrategyTest {
 
     @Test
     public void should_throw_exception_when_one_migration_is_pending() {
-        MigrationInfo[] infos = { info, info };
+        MigrationInfo[] infos = {info, info};
         given(flyway.info()).willReturn(infoService);
         given(infoService.all()).willReturn(infos);
         given(info.getState()).willReturn(MigrationState.SUCCESS, MigrationState.PENDING);

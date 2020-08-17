@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.workallocation.model;
 
+import net.serenitybdd.junit.runners.SerenityRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -9,6 +11,7 @@ import java.time.ZonedDateTime;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(SerenityRunner.class)
 public class AuditLogTest {
 
     @Test
