@@ -59,7 +59,7 @@ spring:
 
 idam:
   s2s-auth:
-    totp_secret: ${S2S_SECRET:ABCD1F2BABCD1F2B}
+    totp_secret: ${S2S_SECRET:IFBEGRBRIYZEEQKCINCDCRRSII======}
     microservice: ${S2S_MICROSERVICE_NAME:ctsc_work_allocation}
     url: ${S2S_AUTH_URL:http://localhost:23443}
   service-user:
@@ -71,7 +71,7 @@ auth:
     client:
       baseUrl: ${IDAM_CLIENT_BASE_URL:http://localhost:23443}
       client_id: ${IDAM_CLIENT_ID:ctsc_work_allocation}
-      client_secret: ${IDAM_CLIENT_SECRET:ABCD1F2BABCD1F2B}
+      client_secret: ${IDAM_CLIENT_SECRET:IFBEGRBRIYZEEQKCINCDCRRSII======}
       redirect_uri: /oauth2/callback
 ccd:
   dry_run: ${CCD_DRY_RUN:true}
