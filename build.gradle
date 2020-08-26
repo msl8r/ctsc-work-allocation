@@ -213,7 +213,7 @@ dependencies {
   compile group: 'org.apache.velocity', name: 'velocity', version: '1.7'
 
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.11.2'
-  compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.11.1'
+  compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.11.2'
 
   compile group: 'io.vavr', name: 'vavr', version: '0.10.3'
   compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.5'
