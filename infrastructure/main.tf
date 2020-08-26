@@ -8,7 +8,6 @@ locals {
     map(
       "Team Name", "CTSC"
   ))}"
-  ase_name  = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
   vaultName = "${var.product}-${var.env}"
   asp_name  = "${var.product}-${var.env}"
 }
