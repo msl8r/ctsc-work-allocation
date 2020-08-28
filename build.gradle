@@ -176,12 +176,9 @@ def versions = [
 configurations.all {
   resolutionStrategy {
     eachDependency { DependencyResolveDetails details ->
-      if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
-        details.useVersion '2.9.9'
-      }
-
-      if (details.requested.name == 'jackson-databind') {
-        details.useVersion '2.9.9.1'
+      if (details.requested.group == 'org.codehaus.groovy') {
+        details.useVersion "3.0.3"
+        details.because "needed by rest-assured>=4.3"
       }
     }
   }
