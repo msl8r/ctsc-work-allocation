@@ -6,7 +6,7 @@ java:
     SPRING_DATASOURCE_URL: "jdbc:postgresql://{{ .Release.Name }}-postgresql:5432/{{ .Values.postgresql.postgresqlDatabase}}"
     SPRING_DATASOURCE_USERNAME: "{{ .Values.postgresql.postgresqlUsername}}"
     SPRING_DATASOURCE_PASSWORD: "{{ .Values.postgresql.postgresqlPassword}}"
-
+    PGGSSENCMODE: disable
     SERVICE_BUS_QUEUE_NAME: ctsc-work-allocation-queue-preview
     DEEPLINK_BASE_URL: https://www-ccd.aat.platform.hmcts.net/case/
     TEST_ENDPOINTS_ENABLED: true
