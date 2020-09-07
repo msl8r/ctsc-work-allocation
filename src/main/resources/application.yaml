@@ -21,7 +21,7 @@ spring:
     allow-bean-definition-overriding: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/workallocation?gssencmode=disable}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/workallocation}?gssEncMode=disable
     username: ${SPRING_DATASOURCE_USERNAME:workallocation}
     password: ${SPRING_DATASOURCE_PASSWORD:workallocation}
     properties:
