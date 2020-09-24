@@ -95,4 +95,18 @@
       <cve>CVE-2020-13934</cve>
       <cve>CVE-2020-9488</cve>
     </suppress>
+    <suppress>
+        <packageUrl regex="true">pkg:maven/net.minidev/accessors-smart@1.2</packageUrl>
+        <cve>CVE-2020-10663</cve>
+    </suppress>
+    <suppress>
+        <packageUrl regex="true">pkg:maven/net.minidev/json-smart@2.3</packageUrl>
+        <cve>CVE-2020-7712</cve>
+    </suppress>
+    <suppress>
+        <packageUrl regex="true">pkg:maven/com.nimbusds/oauth2-oidc-sdk@7.1.1</packageUrl>
+        <cve>CVE-2007-1651</cve>
+        <cve>CVE-2007-1652</cve>
+    </suppress>
+
 </suppressions>
