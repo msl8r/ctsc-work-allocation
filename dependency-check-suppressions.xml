@@ -100,7 +100,7 @@
         <cve>CVE-2020-10663</cve>
     </suppress>
     <suppress>
-        <packageUrl regex="true">pkg:maven/net.minidev/json-smart@2.3</packageUrl>
+        <packageUrl regex="true">pkg:maven/org.springframework.boot/spring-boot-starter-json@2.3.3.RELEASE</packageUrl>
         <cve>CVE-2020-7712</cve>
     </suppress>
     <suppress>
