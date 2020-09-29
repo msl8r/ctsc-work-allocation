@@ -1,19 +1,15 @@
 variable "product" {
-  type    = "string"
   default = "ctsc-work-allocation"
 }
 
 variable "component" {
-  type = "string"
 }
 
 variable "location_app" {
-  type    = "string"
   default = "UK South"
 }
 
 variable "env" {
-  type = "string"
 }
 
 variable "ilbIp" {}
@@ -25,7 +21,7 @@ variable "capacity" {
 }
 
 variable "common_tags" {
-  type = "map"
+  type = map(string)
 }
 
 variable "idam_s2s_url_prefix" {
@@ -49,12 +45,10 @@ variable "idam_client_id" {
 }
 
 variable "database_name" {
-  type    = "string"
   default = "workallocation"
 }
 
 variable "postgresql_user" {
-  type    = "string"
   default = "workallocation"
 }
 
