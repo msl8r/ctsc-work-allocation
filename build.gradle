@@ -213,7 +213,7 @@ dependencies {
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.11.3'
 
   compile group: 'io.vavr', name: 'vavr', version: '0.10.3'
-  compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.5'
+  compile group: 'org.flywaydb', name: 'flyway-core', version: '7.0.0'
 
 
   testCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.3.1'
