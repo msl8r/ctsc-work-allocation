@@ -64,7 +64,7 @@ public class EmailSendingService implements IEmailSendingService {
             velocityContext.put("jurisdiction", task.getJurisdiction());
             velocityContext.put("lastModifiedDate", task.getLastModifiedDate());
             // it's an ugly hack now but the url structure of prod/non prod ccd is very different
-            if (deeplinkBaseUrl.contains("manage-case.platform.hmcts.net")) {
+            if (deeplinkBaseUrl.contains("www.ccd.platform.hmcts.net") || deeplinkBaseUrl.contains("manage-case.platform.hmcts.net")) {
                 velocityContext.put("deepLinkUrl", deeplinkBaseUrl + task.getId());
             } else {
                 velocityContext.put("deepLinkUrl", deeplinkBaseUrl + task.getJurisdiction()
