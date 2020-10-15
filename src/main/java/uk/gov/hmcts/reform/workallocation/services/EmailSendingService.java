@@ -70,6 +70,7 @@ public class EmailSendingService implements IEmailSendingService {
                 velocityContext.put("deepLinkUrl", deeplinkBaseUrl + task.getJurisdiction()
                     +  "/" + task.getCaseTypeId() + "/" + task.getId());
             }
+            log.info("Final Deep Link URL {} to Email address {}", velocityContext.get("deepLinkUrl"), emailTo);
             String jurisdiction = task.getJurisdiction() != null ? task.getJurisdiction() : NO_JURISDICTION;
             String templateFileName = jurisdiction.equalsIgnoreCase(NO_JURISDICTION)
                 ? "default.vm"
