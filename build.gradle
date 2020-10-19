@@ -238,7 +238,7 @@ dependencies {
   functionalTestCompile sourceSets.test.runtimeClasspath
   functionalTestCompile sourceSets.main.runtimeClasspath
 
-  testCompile 'junit:junit:4.13'
+  testCompile 'junit:junit:4.13.1'
   testCompile 'org.assertj:assertj-core:3.17.2'
   testCompile 'com.tngtech.java:junit-dataprovider:1.13.1'
 
