@@ -29,7 +29,7 @@ public class CcdConnectorService {
     private String ctids;
 
     private static final String QUERY_DIVORCE_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
-        + "{\"last_modified\":{\"gte\":\""
+        + "{\"last_modified\":{\"gt\":\""
         + FROM_PLACE_HOLDER + "\", \"lte\":\"" + TO_PLACE_HOLDER + "\"}}}"
         + ",{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested\","
         + "\"operator\": \"or\"}}}]}},"
@@ -37,7 +37,7 @@ public class CcdConnectorService {
         + "\"size\": 1000}";
 
     private static final String QUERY_PROBATE_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
-        + "{\"last_modified\":{\"gte\":\"" + FROM_PLACE_HOLDER + "\",\"lte\":\"" + TO_PLACE_HOLDER + "\"}}},"
+        + "{\"last_modified\":{\"gt\":\"" + FROM_PLACE_HOLDER + "\",\"lte\":\"" + TO_PLACE_HOLDER + "\"}}},"
         + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"state\":\"CasePrinted\"}},{\"match\":"
         + "{\"data.evidenceHandled\":\"No\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":"
         + "{\"must\":[{\"match\":{\"state\":\"CaseCreated\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},"
