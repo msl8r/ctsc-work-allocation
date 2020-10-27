@@ -29,10 +29,10 @@
     <gav regex="true">^commons-collections:commons-collections:.*$</gav>
     <cve>CVE-2015-6420</cve>
   </suppress>
-  <suppress until="2030-01-01">
-    <notes><![CDATA[
-     Suppressing as it's a false positive (see: https://nvd.nist.gov/vuln/detail/CVE-2020-13943)
-   ]]></notes>
+  <suppress>
+    <notes><![CDATA[False positive. Jetty configuration does not include HTTP/2 now.]]></notes>
+    <notes><![CDATA[HTTP/2 is not used. Also already updated to the appropriate version.]]></notes>
+    <gav regex="true">.*tomcat-embed.*$</gav>
     <cve>CVE-2020-13943</cve>
   </suppress>
 </suppressions>
