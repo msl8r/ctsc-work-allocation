@@ -7,6 +7,7 @@
     <gav regex="true">^org\.springframework\.security:spring-security-crypto:5.1.5.RELEASE</gav>
     <cpe>cpe:/a:pivotal_software:spring_security</cpe>
     <cve>CVE-2018-1258</cve>
+    <cve>CVE-2020-13943</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
@@ -28,11 +29,5 @@
    ]]></notes>
     <gav regex="true">^commons-collections:commons-collections:.*$</gav>
     <cve>CVE-2015-6420</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[False positive. Jetty configuration does not include HTTP/2 now.]]></notes>
-    <notes><![CDATA[HTTP/2 is not used. Also already updated to the appropriate version.]]></notes>
-    <gav regex="true">.*tomcat-embed.*$</gav>
-    <cve>CVE-2020-13943</cve>
   </suppress>
 </suppressions>
