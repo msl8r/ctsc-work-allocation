@@ -157,6 +157,11 @@ dependencyManagement {
     dependencySet(group: 'com.google.guava', version: '30.0-jre') {
       entry 'guava'
     }
+    // CVE-2020-13943
+    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.38') {
+      entry 'tomcat-embed-core'
+      entry 'tomcat-embed-websocket'
+    }
   }
 }
 
