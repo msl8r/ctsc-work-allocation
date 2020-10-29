@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class TaskTest {
 
     private Map<String, Object> divorce;
+    private Map<String, Object> divorceException;
     private Map<String, Object> probate;
 
     @Before
@@ -30,6 +31,16 @@ public class TaskTest {
         divorce.put("created_date", null);
         divorce.put("last_modified", "2019-07-18T14:36:25.862");
         divorce.put("security_classification", "PUBLIC");
+
+        divorceException = new HashMap<>();
+        divorceException.put("id", 1563460551477777L);
+        divorceException.put("jurisdiction", "DIVORCE");
+        divorceException.put("state", "ScannedRecordReceived");
+        divorceException.put("version", null);
+        divorceException.put("case_type_id", "DIVORCE_ExceptionRecord");
+        divorceException.put("created_date", null);
+        divorceException.put("last_modified", "2020-07-20T14:36:20.962");
+        divorceException.put("security_classification", "PUBLIC");
 
         probate = new HashMap<>();
         probate.put("id", 1572038226693576L);
@@ -53,6 +64,15 @@ public class TaskTest {
         assertEquals("DIVORCE", task.getJurisdiction());
         assertEquals("DIVORCE", task.getCaseTypeId());
     }
+
+    @Test
+    public void convertDivorceExceptionCaseToTaskHappyPath() throws CaseTransformException {
+        Task task = Task.fromCcdCase(divorceException, CcdConnectorService.CASE_TYPE_ID_DIVORCE_EXCEPTION);
+        assertEquals("1563460551477777", task.getId());
+        assertEquals("DIVORCE", task.getJurisdiction());
+        assertEquals("DIVORCE_ExceptionRecord", task.getCaseTypeId());
+    }
+
 
     @Test
     @SuppressWarnings("unchecked")

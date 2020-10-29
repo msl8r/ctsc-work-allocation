@@ -18,6 +18,7 @@ public class CcdConnectorService {
     public static final String FROM_PLACE_HOLDER = "[FROM]";
     public static final String TO_PLACE_HOLDER = "[TO]";
     public static final String CASE_TYPE_ID_DIVORCE = "DIVORCE";
+    public static final String CASE_TYPE_ID_DIVORCE_EXCEPTION = "DIVORCE_ExceptionRecord";
     public static final String CASE_TYPE_ID_PROBATE = "GrantOfRepresentation";
 
     private final CcdClient ccdClient;
@@ -31,7 +32,7 @@ public class CcdConnectorService {
     private static final String QUERY_DIVORCE_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
         + "{\"last_modified\":{\"gt\":\""
         + FROM_PLACE_HOLDER + "\", \"lte\":\"" + TO_PLACE_HOLDER + "\"}}}"
-        + ",{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested\","
+        + ",{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested ScannedRecordReceived\","
         + "\"operator\": \"or\"}}}]}},"
         + "\"_source\": [\"reference\", \"jurisdiction\", \"state\", \"last_modified\"],"
         + "\"size\": 1000}";
@@ -61,14 +62,15 @@ public class CcdConnectorService {
     public Map<String, Object> searchDivorceCases(String userAuthToken,
                                                   String serviceToken,
                                                   String queryFromDateTime,
-                                                  String queryToDateTime) throws CcdConnectionException {
+                                                  String queryToDateTime,
+                                                  String caseTypeId) throws CcdConnectionException {
         String query = QUERY_DIVORCE_TEMPLATE.replace(FROM_PLACE_HOLDER, queryFromDateTime)
             .replace(TO_PLACE_HOLDER, queryToDateTime);
         return searchCases(
             userAuthToken,
             serviceToken,
             query,
-            CASE_TYPE_ID_DIVORCE
+            caseTypeId
         );
     }
 

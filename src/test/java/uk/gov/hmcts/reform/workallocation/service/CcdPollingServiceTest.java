@@ -22,6 +22,7 @@ import uk.gov.hmcts.reform.workallocation.services.LastRunTimeService;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -72,8 +73,13 @@ public class CcdPollingServiceTest {
 
         Map<String, Object> divorceResponse = divorceSearchResult();
         divorceResponse.put("case_type_id", "DIVORCE");
-        when(ccdConnectorService.searchDivorceCases(anyString(), anyString(), anyString(), anyString()))
+        when(ccdConnectorService.searchDivorceCases(anyString(), anyString(), anyString(), anyString(), eq("DIVORCE")))
             .thenReturn(divorceResponse);
+
+        Map<String, Object> divorceExceptionResponse = divorceExceptionSearchResult();
+        divorceExceptionResponse.put("case_type_id", "DIVORCE_ExceptionRecord");
+        when(ccdConnectorService.searchDivorceCases(anyString(), anyString(), anyString(), anyString(),
+                eq("DIVORCE_ExceptionRecord"))).thenReturn(divorceExceptionResponse);
 
         Map<String, Object> probateResponse = probateSearchResult();
         probateResponse.put("case_type_id", "GrantOfRepresentation");
@@ -92,10 +98,11 @@ public class CcdPollingServiceTest {
         ccdPollingService.pollCcdEndpoint();
         String queryFromDate = "2019-09-25T11:55";
         Task task1 = getDivorceTask();
-        Task task2 = getProbateTask();
-        verify(ccdConnectorService, times(1))
-            .searchDivorceCases(eq("idam_token"), eq("service_token"), eq(queryFromDate), anyString());
-        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2)), any());
+        Task task2 = getDivorceExceptionTask();
+        Task task3 = getProbateTask();
+        verify(ccdConnectorService, times(2))
+            .searchDivorceCases(eq("idam_token"), eq("service_token"), eq(queryFromDate), anyString(), anyString());
+        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2, task3)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -105,12 +112,12 @@ public class CcdPollingServiceTest {
 
         ccdPollingService.pollCcdEndpoint();
         String queryDate = "2019-09-20T11:55";
-        String queryToDate = LocalDateTime.now().toString();
         Task task1 = getDivorceTask();
-        Task task2 = getProbateTask();
-        verify(ccdConnectorService, times(1))
-            .searchDivorceCases(eq("idam_token"), eq("service_token"), eq(queryDate), anyString());
-        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2)), any());
+        Task task2 = getDivorceExceptionTask();
+        Task task3 = getProbateTask();
+        verify(ccdConnectorService, times(2))
+            .searchDivorceCases(eq("idam_token"), eq("service_token"), eq(queryDate), anyString(), anyString());
+        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2, task3)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -123,10 +130,12 @@ public class CcdPollingServiceTest {
         when(queueConsumer.runConsumer(any(), any())).thenReturn(consumerResponse);
         ccdPollingService.pollCcdEndpoint();
         Task task1 = getDivorceTask();
-        Task task2 = getProbateTask();
-        verify(ccdConnectorService, times(1))
-            .searchDivorceCases(eq("idam_token"), eq("service_token"), eq("2019-09-25T11:55"), anyString());
-        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2)), any());
+        Task task2 = getDivorceExceptionTask();
+        Task task3 = getProbateTask();
+        verify(ccdConnectorService, times(2))
+            .searchDivorceCases(eq("idam_token"), eq("service_token"), eq("2019-09-25T11:55"),
+                    anyString(), anyString());
+        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2, task3)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -139,10 +148,12 @@ public class CcdPollingServiceTest {
         when(deadQueueConsumer.runConsumer(any(), any())).thenReturn(consumerResponse);
         ccdPollingService.pollCcdEndpoint();
         Task task1 = getDivorceTask();
-        Task task2 = getProbateTask();
-        verify(ccdConnectorService, times(1))
-            .searchDivorceCases(eq("idam_token"), eq("service_token"), eq("2019-09-25T11:55"), anyString());
-        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2)), any());
+        Task task2 = getDivorceExceptionTask();
+        Task task3 = getProbateTask();
+        verify(ccdConnectorService, times(2))
+            .searchDivorceCases(eq("idam_token"), eq("service_token"), eq("2019-09-25T11:55"),
+                    anyString(), anyString());
+        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2, task3)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -154,13 +165,14 @@ public class CcdPollingServiceTest {
         List<Object> cases = (List<Object>) searchResult.get("cases");
         Map<String, Object> ccdCase = (Map<String, Object>) cases.get(0);
         ccdCase.remove("id");
-        when(ccdConnectorService.searchDivorceCases(anyString(), anyString(), anyString(), anyString()))
+        when(ccdConnectorService.searchDivorceCases(anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenReturn(searchResult);
         ccdPollingService.pollCcdEndpoint();
         Task task2 = getProbateTask();
-        verify(ccdConnectorService, times(1))
-            .searchDivorceCases(eq("idam_token"), eq("service_token"), eq("2019-09-20T11:55"), anyString());
-        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task2)), any());
+        verify(ccdConnectorService, times(2))
+            .searchDivorceCases(eq("idam_token"), eq("service_token"), eq("2019-09-20T11:55"),
+                    anyString(), anyString());
+        verify(queueProducer, times(1)).placeItemsInQueue(eq(Collections.singletonList(task2)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -168,10 +180,32 @@ public class CcdPollingServiceTest {
     public void testWhenLastRunLessThanThirtyMinutes() throws CcdConnectionException, IdamConnectionException {
         when(lastRunTimeService.getMinDate()).thenReturn(LocalDateTime.now().minusMinutes(25L));
         ccdPollingService.pollCcdEndpoint();
-        verify(ccdConnectorService, times(0)).searchDivorceCases(any(), any(), any(), any());
+        verify(ccdConnectorService, times(0)).searchDivorceCases(any(), any(), any(), any(), any());
         verify(queueProducer, times(0)).placeItemsInQueue(any(), any());
         verify(lastRunTimeService, times(0)).updateLastRuntime(any(LocalDateTime.class));
     }
+
+    //CHECKSTYLE:OFF
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> divorceExceptionSearchResult() throws IOException {
+        String json = "{\n"
+                + "\"total\": 1,\n"
+                + "  \"cases\": [\n"
+                + "  {\n"
+                + "    \"id\": 1563460551495377,\n"
+                + "    \"jurisdiction\": \"DIVORCE\",\n"
+                + "    \"state\": \"ScannedRecordReceived\",\n"
+                + "    \"version\": null,\n"
+                + "    \"case_type_id\": null,\n"
+                + "    \"created_date\": \"2019-07-18T14:35:51.473\",\n"
+                + "    \"last_modified\": \"2019-07-18T14:36:25.862\",\n"
+                + "    \"security_classification\": null\n"
+                + "  }\n"
+                + "]\n"
+                + "}";
+        return new ObjectMapper().readValue(json, Map.class);
+    }
+    //CHECKSTYLE:ON
 
     @SuppressWarnings("unchecked")
     private Map<String, Object> divorceSearchResult() throws IOException {
@@ -224,6 +258,16 @@ public class CcdPollingServiceTest {
         return new ObjectMapper().readValue(json, Map.class);
     }
 
+    private Task getDivorceExceptionTask() {
+        return Task.builder()
+                .caseTypeId("DIVORCE_ExceptionRecord")
+                .id("1563460551495377")
+                .jurisdiction("DIVORCE")
+                .state("ScannedRecordReceived")
+                .lastModifiedDate(LocalDateTime.of(2019,7,18,14,36,25, 862000000))
+                .build();
+    }
+
     private Task getDivorceTask() {
         return Task.builder()
             .caseTypeId("DIVORCE")
@@ -242,11 +286,5 @@ public class CcdPollingServiceTest {
             .state("ReadyforExamination-Personal")
             .lastModifiedDate(LocalDateTime.of(2019,10,25,21,24,18, 143000000))
             .build();
-    }
-
-    private String composeQuery(String date) {
-        return "{\"query\":{\"bool\":{\"must\":[{\"range\":{\"last_modified\":{\"gte\":\""
-            + date + "\"}}},{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested\","
-            + "\"operator\": \"or\"}}}]}},\"size\": 500}";
     }
 }

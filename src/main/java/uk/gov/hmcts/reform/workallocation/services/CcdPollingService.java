@@ -106,10 +106,17 @@ public class CcdPollingService {
         String queryToDateTime = now.minusMinutes(lastModifiedTimeMinusMinutes).toString();
         // Divorce cases
         Map<String, Object> divorceData = ccdConnectorService.searchDivorceCases(userAuthToken, serviceToken,
-            queryFromDateTime, queryToDateTime);
-        log.info("Connecting to CCD was successful");
+            queryFromDateTime, queryToDateTime, CcdConnectorService.CASE_TYPE_ID_DIVORCE);
+        log.info("Connecting (divorce) to CCD was successful");
         log.info("total number of divorce cases: {}", divorceData.get("total"));
         telemetryClient.trackMetric("num_of_divorce_cases", (Integer) divorceData.get("total"));
+
+        // Divorce Exception cases
+        Map<String, Object> divorceExceptionData = ccdConnectorService.searchDivorceCases(userAuthToken, serviceToken,
+                queryFromDateTime, queryToDateTime,  CcdConnectorService.CASE_TYPE_ID_DIVORCE_EXCEPTION);
+        log.info("Connecting (divorceExceptionData) to CCD was successful");
+        log.info("total number of divorce exception cases: {}", divorceExceptionData.get("total"));
+        telemetryClient.trackMetric("num_of_divorce_exception_cases", (Integer) divorceExceptionData.get("total"));
 
         // Probate cases
         Map<String, Object> probateData = ccdConnectorService.searchProbateCases(userAuthToken, serviceToken,
@@ -120,7 +127,7 @@ public class CcdPollingService {
 
         // 5. Process data
         @SuppressWarnings("unchecked")
-        List<Task> tasks = mergeResponse(divorceData, probateData);
+        List<Task> tasks = mergeResponse(divorceData, divorceExceptionData, probateData);
         log.info("total number of tasks: {}", tasks.size());
         telemetryClient.trackMetric("num_of_tasks", tasks.size());
 
