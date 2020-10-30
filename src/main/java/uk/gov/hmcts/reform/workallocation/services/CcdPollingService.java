@@ -118,6 +118,14 @@ public class CcdPollingService {
         log.info("total number of divorce exception cases: {}", divorceExceptionData.get("total"));
         telemetryClient.trackMetric("num_of_divorce_exception_cases", (Integer) divorceExceptionData.get("total"));
 
+        // Divorce Evidence Handled cases
+        Map<String, Object> divorceEvidenceData = ccdConnectorService.searchDivorceEvidenceHandledCases(userAuthToken,
+                serviceToken, queryFromDateTime, queryToDateTime, CcdConnectorService.CASE_TYPE_ID_DIVORCE);
+        log.info("Connecting (divorce Evidence) to CCD was successful");
+        log.info("Divorce Evidence EVIDENCE_FLOW: {}", divorceEvidenceData.get("EVIDENCE_FLOW"));
+        log.info("total number of divorce Evidence cases: {}", divorceEvidenceData.get("total"));
+        telemetryClient.trackMetric("num_of_divorce_cases", (Integer) divorceEvidenceData.get("total"));
+
         // Probate cases
         Map<String, Object> probateData = ccdConnectorService.searchProbateCases(userAuthToken, serviceToken,
             queryFromDateTime, queryToDateTime);
@@ -127,7 +135,7 @@ public class CcdPollingService {
 
         // 5. Process data
         @SuppressWarnings("unchecked")
-        List<Task> tasks = mergeResponse(divorceData, divorceExceptionData, probateData);
+        List<Task> tasks = mergeResponse(divorceData, divorceExceptionData, divorceEvidenceData, probateData);
         log.info("total number of tasks: {}", tasks.size());
         telemetryClient.trackMetric("num_of_tasks", tasks.size());
 
@@ -149,10 +157,11 @@ public class CcdPollingService {
         List<Task> tasks = new ArrayList<>();
         Arrays.stream(data).forEach(stringObjectMap -> {
             String caseTypeId = (String)stringObjectMap.get("case_type_id");
+            String evidenceFlow = (String)stringObjectMap.get("EVIDENCE_FLOW");
             List<Map<String, Object>> cases = (List<Map<String, Object>>) stringObjectMap.get("cases");
             cases.stream().forEach(o -> {
                 try {
-                    tasks.add(Task.fromCcdCase(o, caseTypeId));
+                    tasks.add(Task.fromCcdCase(o, caseTypeId, evidenceFlow));
                 } catch (Exception e) {
                     log.error("Failed to parse case", e);
                 }

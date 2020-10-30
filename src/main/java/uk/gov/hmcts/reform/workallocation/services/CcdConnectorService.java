@@ -29,12 +29,20 @@ public class CcdConnectorService {
     @Value("${ccd.ctids}")
     private String ctids;
 
+    private static final String QUERY_DIVORCE_EVIDENCE_HANDLED_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
+            + "{\"last_modified\":{\"gt\":\""
+            + FROM_PLACE_HOLDER + "\", \"lte\":\"" + TO_PLACE_HOLDER + "\"}}}"
+            + ",{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested ScannedRecordReceived\","
+            + "\"operator\": \"or\"}}}]}},"
+            + "\"_source\": [\"reference\", \"jurisdiction\", \"state\", \"last_modified\", \"data.caseType\"],"
+            + "\"size\": 1000}";
+
     private static final String QUERY_DIVORCE_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
         + "{\"last_modified\":{\"gt\":\""
         + FROM_PLACE_HOLDER + "\", \"lte\":\"" + TO_PLACE_HOLDER + "\"}}}"
         + ",{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested ScannedRecordReceived\","
         + "\"operator\": \"or\"}}}]}},"
-        + "\"_source\": [\"reference\", \"jurisdiction\", \"state\", \"last_modified\"],"
+        + "\"_source\": [\"reference\", \"jurisdiction\", \"state\", \"last_modified\", \"data.caseType\"],"
         + "\"size\": 1000}";
 
     private static final String QUERY_PROBATE_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
@@ -57,6 +65,24 @@ public class CcdConnectorService {
     @Autowired
     public CcdConnectorService(CcdClient ccdClient) {
         this.ccdClient = ccdClient;
+    }
+
+    public Map<String, Object> searchDivorceEvidenceHandledCases(String userAuthToken,
+                                                  String serviceToken,
+                                                  String queryFromDateTime,
+                                                  String queryToDateTime,
+                                                  String caseTypeId) throws CcdConnectionException {
+        String query = QUERY_DIVORCE_EVIDENCE_HANDLED_TEMPLATE.replace(FROM_PLACE_HOLDER, queryFromDateTime)
+                .replace(TO_PLACE_HOLDER, queryToDateTime);
+
+        Map<String, Object> evidenceHandledCases = searchCases(
+                userAuthToken,
+                serviceToken,
+                query,
+                caseTypeId
+        );
+        evidenceHandledCases.put("EVIDENCE_FLOW", "evidenceHandled");
+        return evidenceHandledCases;
     }
 
     public Map<String, Object> searchDivorceCases(String userAuthToken,

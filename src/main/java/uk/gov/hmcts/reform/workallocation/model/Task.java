@@ -31,9 +31,15 @@ public class Task {
     private String caseTypeId;
     private LocalDateTime lastModifiedDate;
 
-    public static Task fromCcdCase(Map<String, Object> caseData, String caseTypeId) throws CaseTransformException {
+    public static Task fromCcdCase(Map<String, Object> caseData, String caseTypeId, String evidenceFlow)
+            throws CaseTransformException {
         if (CcdConnectorService.CASE_TYPE_ID_DIVORCE.equals(caseTypeId)
-                || CcdConnectorService.CASE_TYPE_ID_DIVORCE_EXCEPTION.equals(caseTypeId)) {
+                && evidenceFlow != null) {
+            caseData.put("state", "SupplementaryEvidence");
+            return fromCcdDivorceCase(caseData, caseTypeId);
+        }
+        if ((CcdConnectorService.CASE_TYPE_ID_DIVORCE.equals(caseTypeId)
+                || CcdConnectorService.CASE_TYPE_ID_DIVORCE_EXCEPTION.equals(caseTypeId)) && evidenceFlow == null) {
             return fromCcdDivorceCase(caseData, caseTypeId);
         }
         if (CcdConnectorService.CASE_TYPE_ID_PROBATE.equals(caseTypeId)) {
