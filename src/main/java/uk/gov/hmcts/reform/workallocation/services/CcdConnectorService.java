@@ -40,10 +40,18 @@ public class CcdConnectorService {
     private static final String QUERY_DIVORCE_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
         + "{\"last_modified\":{\"gt\":\""
         + FROM_PLACE_HOLDER + "\", \"lte\":\"" + TO_PLACE_HOLDER + "\"}}}"
-        + ",{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested ScannedRecordReceived\","
+        + ",{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested\","
         + "\"operator\": \"or\"}}}]}},"
-        + "\"_source\": [\"reference\", \"jurisdiction\", \"state\", \"last_modified\", \"data.caseType\"],"
+        + "\"_source\": [\"reference\", \"jurisdiction\", \"state\", \"last_modified\"],"
         + "\"size\": 1000}";
+
+    private static final String QUERY_DIVORCE_EXCEPTION_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
+            + "{\"last_modified\":{\"gt\":\""
+            + FROM_PLACE_HOLDER + "\", \"lte\":\"" + TO_PLACE_HOLDER + "\"}}}"
+            + ",{\"match\":{\"state\":{\"query\": \"ScannedRecordReceived\","
+            + "\"operator\": \"or\"}}}]}},"
+            + "\"_source\": [\"reference\", \"jurisdiction\", \"state\", \"last_modified\"],"
+            + "\"size\": 1000}";
 
     private static final String QUERY_PROBATE_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
         + "{\"last_modified\":{\"gt\":\"" + FROM_PLACE_HOLDER + "\",\"lte\":\"" + TO_PLACE_HOLDER + "\"}}},"
@@ -92,6 +100,12 @@ public class CcdConnectorService {
                                                   String caseTypeId) throws CcdConnectionException {
         String query = QUERY_DIVORCE_TEMPLATE.replace(FROM_PLACE_HOLDER, queryFromDateTime)
             .replace(TO_PLACE_HOLDER, queryToDateTime);
+
+        if (caseTypeId.equalsIgnoreCase(QUERY_DIVORCE_EXCEPTION_TEMPLATE)) {
+            query = QUERY_DIVORCE_EXCEPTION_TEMPLATE.replace(FROM_PLACE_HOLDER, queryFromDateTime)
+                    .replace(TO_PLACE_HOLDER, queryToDateTime);
+        }
+
         return searchCases(
             userAuthToken,
             serviceToken,
