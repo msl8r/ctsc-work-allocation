@@ -29,13 +29,11 @@ public class CcdConnectorService {
     @Value("${ccd.ctids}")
     private String ctids;
 
-    private static final String QUERY_DIVORCE_EVIDENCE_HANDLED_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
-            + "{\"last_modified\":{\"gt\":\""
-            + FROM_PLACE_HOLDER + "\", \"lte\":\"" + TO_PLACE_HOLDER + "\"}}}"
-            + ",{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested ScannedRecordReceived\","
-            + "\"operator\": \"or\"}}}]}},"
-            + "\"_source\": [\"reference\", \"jurisdiction\", \"state\", \"last_modified\", \"data.caseType\"],"
-            + "\"size\": 1000}";
+    private static final String QUERY_DIVORCE_EVIDENCE_HANDLED_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\""
+        + ":{\"last_modified\":{\"gt\":\"" + FROM_PLACE_HOLDER + "\",\"lte\":\"" + TO_PLACE_HOLDER + "\"}}},"
+        + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"data.evidenceHandled\":\"No\"}},"
+        + "{\"match\":{\"data.D8DivorceUnit\":\"serviceCentre\"}}]}}]}}]}},"
+        + "\"_source\":[\"reference\",\"jurisdiction\",\"state\",\"last_modified\"],\"size\":1000}";
 
     private static final String QUERY_DIVORCE_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
         + "{\"last_modified\":{\"gt\":\""
