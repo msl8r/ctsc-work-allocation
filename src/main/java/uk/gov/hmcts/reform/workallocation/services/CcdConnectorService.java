@@ -29,30 +29,27 @@ public class CcdConnectorService {
     @Value("${ccd.ctids}")
     private String ctids;
 
-    private static final String QUERY_DIVORCE_EVIDENCE_HANDLED_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\""
-        + ":{\"last_modified\":{\"gt\":\"" + FROM_PLACE_HOLDER + "\",\"lte\":\"" + TO_PLACE_HOLDER + "\"}}},"
+    private static final String DATE_RANGE = "{\"query\":{\"bool\":{\"must\":[{\"range\""
+            + ":{\"last_modified\":{\"gt\":\"" + FROM_PLACE_HOLDER + "\",\"lte\":\"" + TO_PLACE_HOLDER + "\"}}},";
+
+    private static final String QUERY_DIVORCE_EVIDENCE_HANDLED_TEMPLATE = DATE_RANGE
         + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"data.evidenceHandled\":\"No\"}},"
         + "{\"match\":{\"data.D8DivorceUnit\":\"serviceCentre\"}}]}}]}}]}},"
         + "\"_source\":[\"reference\",\"jurisdiction\",\"state\",\"last_modified\"],\"size\":1000}";
 
-    private static final String QUERY_DIVORCE_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
-        + "{\"last_modified\":{\"gt\":\""
-        + FROM_PLACE_HOLDER + "\", \"lte\":\"" + TO_PLACE_HOLDER + "\"}}}"
-        + ",{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested\","
+    private static final String QUERY_DIVORCE_TEMPLATE = DATE_RANGE
+        + "{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested\","
         + "\"operator\": \"or\"}}}]}},"
         + "\"_source\": [\"reference\", \"jurisdiction\", \"state\", \"last_modified\"],"
         + "\"size\": 1000}";
 
-    private static final String QUERY_DIVORCE_EXCEPTION_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
-            + "{\"last_modified\":{\"gt\":\""
-            + FROM_PLACE_HOLDER + "\", \"lte\":\"" + TO_PLACE_HOLDER + "\"}}}"
-            + ",{\"match\":{\"state\":{\"query\": \"ScannedRecordReceived\","
+    private static final String QUERY_DIVORCE_EXCEPTION_TEMPLATE = DATE_RANGE
+            + "{\"match\":{\"state\":{\"query\": \"ScannedRecordReceived\","
             + "\"operator\": \"or\"}}}]}},"
             + "\"_source\": [\"reference\", \"jurisdiction\", \"state\", \"last_modified\"],"
             + "\"size\": 1000}";
 
-    private static final String QUERY_PROBATE_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
-        + "{\"last_modified\":{\"gt\":\"" + FROM_PLACE_HOLDER + "\",\"lte\":\"" + TO_PLACE_HOLDER + "\"}}},"
+    private static final String QUERY_PROBATE_TEMPLATE = DATE_RANGE
         + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"state\":\"CasePrinted\"}},{\"match\":"
         + "{\"data.evidenceHandled\":\"No\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":"
         + "{\"must\":[{\"match\":{\"state\":\"CaseCreated\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},"
