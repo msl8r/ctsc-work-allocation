@@ -74,6 +74,26 @@ public class CcdConnectionServiceTest {
         Assert.assertFalse(((List)result.get("cases")).isEmpty());
     }
 
+    @Test
+    public void dryRunForEvidenceHandledTask() throws CcdConnectionException {
+        ReflectionTestUtils.setField(ccdConnectorService, "ctids", "DIVORCE");
+        Map<String, Object> result = ccdConnectorService.searchDivorceEvidenceHandledCases("", "", "", "",
+                CcdConnectorService.CASE_TYPE_ID_DIVORCE);
+        Assert.assertEquals(0, result.get("total"));
+        Assert.assertTrue(((List)result.get("cases")).isEmpty());
+    }
+
+    @Test
+    public void normalRunEvidenceHandledTask() throws CcdConnectionException, IOException {
+        ReflectionTestUtils.setField(ccdConnectorService, "ctids", "DIVORCE");
+        ReflectionTestUtils.setField(ccdConnectorService, "dryRun", false);
+        when(ccdClient.searchCases(any(), any(), any(), any())).thenReturn(evidenceHandledCaseSearchResult());
+        Map<String, Object> result = ccdConnectorService.searchDivorceEvidenceHandledCases("", "", "", "",
+                CcdConnectorService.CASE_TYPE_ID_DIVORCE);
+        Assert.assertEquals(1, result.get("total"));
+        Assert.assertFalse(((List)result.get("cases")).isEmpty());
+    }
+
     //CHECKSTYLE:OFF
     @SuppressWarnings("unchecked")
     private Map<String, Object> caseSearchResult() throws IOException {
@@ -106,6 +126,26 @@ public class CcdConnectionServiceTest {
                 + "    \"state\": \"ScannedRecordReceived\",\n"
                 + "    \"version\": null,\n"
                 + "    \"case_type_id\": \"DIVORCE_ExceptionRecord\",\n"
+                + "    \"created_date\": \"2019-07-18T14:35:51.473\",\n"
+                + "    \"last_modified\": \"2019-07-18T14:36:25.862\",\n"
+                + "    \"security_classification\": \"PUBLIC\"\n"
+                + "  }\n"
+                + "]\n"
+                + "}";
+        return new ObjectMapper().readValue(json, Map.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> evidenceHandledCaseSearchResult() throws IOException {
+        String json = "{\n"
+                + "\"total\": 1,\n"
+                + "  \"cases\": [\n"
+                + "  {\n"
+                + "    \"id\": 1563460551494444,\n"
+                + "    \"jurisdiction\": \"DIVORCE\",\n"
+                + "    \"state\": null,\n"
+                + "    \"version\": null,\n"
+                + "    \"case_type_id\": \"DIVORCE\",\n"
                 + "    \"created_date\": \"2019-07-18T14:35:51.473\",\n"
                 + "    \"last_modified\": \"2019-07-18T14:36:25.862\",\n"
                 + "    \"security_classification\": \"PUBLIC\"\n"

@@ -96,7 +96,7 @@ public class CcdConnectorService {
         String query = QUERY_DIVORCE_TEMPLATE.replace(FROM_PLACE_HOLDER, queryFromDateTime)
             .replace(TO_PLACE_HOLDER, queryToDateTime);
 
-        if (caseTypeId.equalsIgnoreCase(QUERY_DIVORCE_EXCEPTION_TEMPLATE)) {
+        if (caseTypeId.equalsIgnoreCase(CASE_TYPE_ID_DIVORCE_EXCEPTION)) {
             query = QUERY_DIVORCE_EXCEPTION_TEMPLATE.replace(FROM_PLACE_HOLDER, queryFromDateTime)
                     .replace(TO_PLACE_HOLDER, queryToDateTime);
         }
