@@ -44,10 +44,10 @@ public class CcdConnectorService {
         + "\"size\": 1000}";
 
     private static final String QUERY_DIVORCE_EXCEPTION_TEMPLATE = DATE_RANGE
-            + "{\"match\":{\"state\":{\"query\": \"ScannedRecordReceived\","
-            + "\"operator\": \"or\"}}}]}},"
-            + "\"_source\": [\"reference\", \"jurisdiction\", \"state\", \"last_modified\"],"
-            + "\"size\": 1000}";
+        + "{\"bool\":{\"must\":[{\"match\":{\"data.evidenceHandled\":\"No\"}},"
+        + "{\"match\":{\"data.D8DivorceUnit\":\"serviceCentre\"}}]}}]}},"
+        + "\"_source\":[\"reference\",\"jurisdiction\",\"state\",\"last_modified\","
+        + "\"data.D8DivorceUnit\",\"data.evidenceHandled\"],\"size\":1000}";
 
     private static final String QUERY_PROBATE_TEMPLATE = DATE_RANGE
         + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"state\":\"CasePrinted\"}},{\"match\":"
