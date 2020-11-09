@@ -98,7 +98,7 @@ public class CcdConnectorService {
             query = QUERY_DIVORCE_EXCEPTION_TEMPLATE.replace(FROM_PLACE_HOLDER, queryFromDateTime)
                     .replace(TO_PLACE_HOLDER, queryToDateTime);
         }
-
+        log.info("DIVORCE query caseTypeId {}, query {}", caseTypeId, query);
         return searchCases(
             userAuthToken,
             serviceToken,
