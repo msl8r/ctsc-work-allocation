@@ -16,6 +16,5 @@ public class FlywayNoOpStrategy implements FlywayMigrationStrategy {
             .ifPresent(info -> {
                 throw new PendingMigrationScriptException(info.getScript());
             });
-        flyway.migrate();
     }
 }
