@@ -239,7 +239,7 @@ dependencies {
   functionalTestCompile sourceSets.main.runtimeClasspath
 
   testCompile 'junit:junit:4.13.1'
-  testCompile 'org.assertj:assertj-core:3.18.0'
+  testCompile 'org.assertj:assertj-core:3.18.1'
   testCompile 'com.tngtech.java:junit-dataprovider:1.13.1'
 
   compileOnly 'com.google.code.findbugs:annotations:3.0.1u2'
