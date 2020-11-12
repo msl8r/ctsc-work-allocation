@@ -24,7 +24,6 @@ import uk.gov.hmcts.reform.workallocation.data.migration.FlywayNoOpStrategy;
 public class FlywayConfiguration {
 
     @Bean
-    @ConditionalOnProperty(prefix = "flyway.noop", name = "strategy", matchIfMissing = true)
     public FlywayMigrationStrategy flywayMigrationStrategy() {
         return new FlywayNoOpStrategy();
     }
