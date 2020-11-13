@@ -24,12 +24,13 @@ public class QueueProducer<T> {
     @Autowired
     private final CtscQueueSupplier queueClientSupplier;
 
-    @Value("${servicebus.queue.messageTTLInDays}")
     private int messageTtl;
 
-    public QueueProducer(CtscQueueSupplier queueClientSupplier, ObjectMapper objectMapper) {
+    public QueueProducer(CtscQueueSupplier queueClientSupplier, ObjectMapper objectMapper,
+                         @Value("${servicebus.queue.messageTTLInDays}") int messageTtl) {
         this.queueClientSupplier = queueClientSupplier;
         this.objectMapper = objectMapper;
+        this.messageTtl = messageTtl;
     }
 
     public void placeItemsInQueue(List<T> items, Function<T, String> extractId) {
