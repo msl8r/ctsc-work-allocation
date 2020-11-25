@@ -20,6 +20,8 @@ public class TaskTest {
     private Map<String, Object> divorceException;
     private Map<String, Object> divorceEvidence;
     private Map<String, Object> probate;
+    private Map<String, Object> probateCaveat;
+    private Map<String, Object> probateException;
 
     @Before
     public void setUp() {
@@ -53,9 +55,9 @@ public class TaskTest {
         divorceEvidence.put("security_classification", "PUBLIC");
 
         probate = new HashMap<>();
-        probate.put("id", 1572038226693576L);
+        probate.put("id", 1572038226692222L);
         probate.put("jurisdiction", "PROBATE");
-        probate.put("state", "BOReadyForExamination");
+        probate.put("state", "BOCaseStopped");
         probate.put("version", null);
         probate.put("case_type_id", "GrantOfRepresentation");
         probate.put("created_date", null);
@@ -63,8 +65,36 @@ public class TaskTest {
         probate.put("security_classification", null);
         Map<String, Object> caseData = new HashMap<>();
         probate.put("case_data", caseData);
-        caseData.put("evidenceHandled", "Yes");
         caseData.put("applicationType", "Personal");
+        caseData.put("caseType", "gop");
+
+        probateCaveat = new HashMap<>();
+        probateCaveat.put("id", 1572038226691111L);
+        probateCaveat.put("jurisdiction", "PROBATE");
+        probateCaveat.put("state", "CaveatRaised");
+        probateCaveat.put("version", null);
+        probateCaveat.put("case_type_id", "GrantOfRepresentation");
+        probateCaveat.put("created_date", null);
+        probateCaveat.put("last_modified", "2019-10-25T21:24:18.143");
+        probateCaveat.put("security_classification", null);
+        Map<String, Object> caveatCaseData = new HashMap<>();
+        probateCaveat.put("case_data", caveatCaseData);
+        caveatCaseData.put("applicationType", "Personal");
+        caveatCaseData.put("registryLocation", "ctsc");
+
+        probateException = new HashMap<>();
+        probateException.put("id", 1572038226694444L);
+        probateException.put("jurisdiction", "PROBATE");
+        probateException.put("state", "ScannedRecordReceived");
+        probateException.put("version", null);
+        probateException.put("case_type_id", "PROBATE_ExceptionRecord");
+        probateException.put("created_date", null);
+        probateException.put("last_modified", "2019-10-25T21:24:18.143");
+        probateException.put("security_classification", null);
+        Map<String, Object> exceptionCaseData = new HashMap<>();
+        probateException.put("case_data", exceptionCaseData);
+        exceptionCaseData.put("containsPayments", "No");
+        exceptionCaseData.put("journeyClassification", "NEW_APPLICATION");
     }
 
     @Test
@@ -94,26 +124,93 @@ public class TaskTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testProbateConversion() throws CaseTransformException {
-        Task task = Task.fromCcdCase(probate, CcdConnectorService.CASE_TYPE_ID_PROBATE, null);
-        assertEquals("ReadyforExamination-Personal", task.getState());
+    public void probateGoPConversion() throws CaseTransformException {
+        Task task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
+        assertEquals("Case Stopped Personal (Probate)", task.getState());
         assertEquals("PROBATE", task.getJurisdiction());
 
+        ((Map<String, Object>)probate.get("case_data")).put("caseType", "intestacy");
+        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
+        assertEquals("Case Stopped Personal (Intestacy)", task.getState());
+
         ((Map<String, Object>)probate.get("case_data")).put("applicationType", "Solicitor");
-        task = Task.fromCcdCase(probate, CcdConnectorService.CASE_TYPE_ID_PROBATE, null);
+        ((Map<String, Object>)probate.get("case_data")).put("caseType", "gop");
+        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
+        assertEquals("Case Stopped Solicitors (Probate)", task.getState());
+
+        ((Map<String, Object>)probate.get("case_data")).put("caseType", "intestacy");
+        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
+        assertEquals("Case Stopped Solicitors (Intestacy)", task.getState());
+        assertEquals("PROBATE", task.getJurisdiction());
+
+        probate.put("state", "CaseCreated");
+        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
+        assertEquals("CaseCreated", task.getState());
+
+        probate.put("state", "CasePrinted");
+        ((Map<String, Object>)probate.get("case_data")).put("evidenceHandled", "No");
+        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
+        assertEquals("AwaitingDocumentation", task.getState());
+
+        probate.put("state", "BOReadyForExamination");
+        ((Map<String, Object>)probate.get("case_data")).put("applicationType", "Personal");
+        ((Map<String, Object>)probate.get("case_data")).put("caseType", "gop");
+        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
+        assertEquals("ReadyforExamination-Personal", task.getState());
+
+        ((Map<String, Object>)probate.get("case_data")).put("applicationType", "Solicitor");
+        ((Map<String, Object>)probate.get("case_data")).put("caseType", "gop");
+        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
         assertEquals("ReadyforExamination-Solicitor", task.getState());
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void probateCaveatConversion() throws CaseTransformException {
+        Task task = Task.fromCcdCase(probateCaveat, CcdConnectorService.PROBATE_CASE_TYPE_ID_CAVEAT, null);
+        assertEquals("Caveats (Personal)", task.getState());
+        assertEquals("PROBATE", task.getJurisdiction());
+
+        ((Map<String, Object>)probateCaveat.get("case_data")).put("applicationType", "Solicitor");
+        task = Task.fromCcdCase(probateCaveat, CcdConnectorService.PROBATE_CASE_TYPE_ID_CAVEAT, null);
+        assertEquals("Caveats (Solicitor)", task.getState());
+        assertEquals("PROBATE", task.getJurisdiction());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void probateBspExceptionConversion() throws CaseTransformException {
+        Task task = Task.fromCcdCase(probateException, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION, null);
+        assertEquals("Bulk Scan New Applications (Payments No)", task.getState());
+        assertEquals("PROBATE", task.getJurisdiction());
+
+        ((Map<String, Object>)probateException.get("case_data")).put("containsPayments", "Yes");
+        task = Task.fromCcdCase(probateException, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION, null);
+        assertEquals("Bulk Scan New Applications (Payments Yes)", task.getState());
+        assertEquals("PROBATE", task.getJurisdiction());
+
+        ((Map<String, Object>)probateException.get("case_data")).put("containsPayments", "No");
+        ((Map<String, Object>)probateException.get("case_data")).put("journeyClassification",
+                "SUPPLEMENTARY_EVIDENCE_WITH_OCR");
+        task = Task.fromCcdCase(probateException, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION, null);
+        assertEquals("Bulk Supplementary evidence Applications (Payments No)", task.getState());
+        assertEquals("PROBATE", task.getJurisdiction());
+
+        ((Map<String, Object>)probateException.get("case_data")).put("journeyClassification", "SUPPLEMENTARY_EVIDENCE");
+        task = Task.fromCcdCase(probateException, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION, null);
+        assertEquals("Bulk Supplementary evidence Applications (Payments No)", task.getState());
+        assertEquals("PROBATE", task.getJurisdiction());
+    }
 
     @Test(expected = CaseTransformException.class)
     public void testConvertCaseToTaskWithoutId() throws CaseTransformException {
         divorce.remove("id");
-        Task.fromCcdCase(divorce, CcdConnectorService.CASE_TYPE_ID_PROBATE, null);
+        Task.fromCcdCase(divorce, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
     }
 
     @Test(expected = CaseTransformException.class)
     public void testConvertCaseToTaskWitWrongDateFormat() throws CaseTransformException {
         divorce.put("last_modified", "asdasd121234");
-        Task.fromCcdCase(divorce, CcdConnectorService.CASE_TYPE_ID_PROBATE, null);
+        Task.fromCcdCase(divorce, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
     }
 }
