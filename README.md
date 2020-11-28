@@ -5,7 +5,7 @@
 The purpose of this application to integrate the different **HMCTS** services with 8x8 contact center.
 
 ## Overview
-The application is written in Java based on Spring Boot framework.
+The application is written in Java based on Spring Boot framework..
 There are two ways of integration:
   * indirectly through CCD elastic search:
 	  * A scheduled task running every 30 minutes and running a query on `/searchCases` endpoint. This endpoint is the elastic search endpoint of CCD. For every service there is a predefined query to get the relevant cases what needs to be appear in the 8x8 queue. The queries only searching for changes since the last run time shifted by -5 minutes to give enough time to elastic search to index the data.
