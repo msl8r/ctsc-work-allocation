@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(SerenityRunner.class)
-public class CcdConnectionServiceTest {
+public class CcdConnectorServiceTest {
 
     @Mock
     private CcdClient ccdClient;

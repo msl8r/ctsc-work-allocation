@@ -140,15 +140,29 @@ public class CcdPollingService {
         telemetryClient.trackMetric("num_of_probate_caveat_cases", (Integer) probateCaveatData.get("total"));
         // Probate bsp exception cases
         Map<String, Object> probateBspExpData = ccdConnectorService.findProbateCases(userAuthToken, serviceToken,
-                queryFromDateTime, queryToDateTime, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION);
+            queryFromDateTime, queryToDateTime, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION);
         log.info("Connecting to CCD - bsp was successful");
         log.info("Total number of probate bsp cases: {}", probateBspExpData.get("total"));
         telemetryClient.trackMetric("num_of_probate_bsp_cases", (Integer) probateBspExpData.get("total"));
 
+        // FR cases
+        Map<String, Object> frData = ccdConnectorService.findFinancialRemedyCases(userAuthToken, serviceToken,
+            queryFromDateTime, queryToDateTime, CcdConnectorService.FR_CASE_TYPE);
+        log.info("Connecting (fr) to CCD was successful");
+        log.info("total number of fr cases: {}", frData.get("total"));
+        telemetryClient.trackMetric("num_of_fr_cases", (Integer) frData.get("total"));
+
+        // FR Exception cases
+        Map<String, Object> frExceptionData = ccdConnectorService.findFinancialRemedyCases(userAuthToken, serviceToken,
+            queryFromDateTime, queryToDateTime, CcdConnectorService.FR_EXCEPTION_CASE_TYPE);
+        log.info("Connecting (frException) to CCD was successful");
+        log.info("total number of fr exception cases: {}", frExceptionData.get("total"));
+        telemetryClient.trackMetric("num_of_fr_exception_cases", (Integer) frExceptionData.get("total"));
+
         // 5. Process data
         @SuppressWarnings("unchecked")
         List<Task> tasks = mergeResponse(divorceData, divorceExceptionData, divorceEvidenceData,
-                probateGoPData, probateCaveatData, probateBspExpData);
+                probateGoPData, probateCaveatData, probateBspExpData, frData, frExceptionData);
         log.info("Total number of tasks: {}", tasks.size());
         telemetryClient.trackMetric("num_of_tasks", tasks.size());
 
