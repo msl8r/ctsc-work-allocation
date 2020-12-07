@@ -80,8 +80,8 @@ public class EmailSendingService implements IEmailSendingService {
             template.merge(velocityContext, stringWriter);
 
             MimeMessage msg = createMimeMessage(deeplinkBaseUrl);
-            //msg.setReplyTo(InternetAddress.parse(smtpFrom, false));
-            msg.setFrom(InternetAddress.parse(emailTo, false)[0]);
+            msg.setReplyTo(InternetAddress.parse(smtpFrom, false));
+            msg.setFrom(InternetAddress.parse(smtpFrom, false)[0]);
             msg.setSubject(task.getId() + " - " + task.getState() + " - " + jurisdiction.toUpperCase(), "UTF-8");
             msg.setText(stringWriter.toString(), "UTF-8", "html");
 
