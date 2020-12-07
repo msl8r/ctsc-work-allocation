@@ -69,6 +69,8 @@ public class TaskTest {
         probate.put("case_data", caseData);
         caseData.put("applicationType", "Personal");
         caseData.put("caseType", "gop");
+        caseData.put("registryLocation", "ctsc");
+        caseData.put("evidenceHandled", "No");
 
         probateCaveat = new HashMap<>();
         probateCaveat.put("id", 1572038226691111L);
@@ -148,22 +150,39 @@ public class TaskTest {
     @SuppressWarnings("unchecked")
     public void probateGoPConversion() throws CaseTransformException {
         Task task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
-        assertEquals("Case Stopped Personal (Probate)", task.getState());
+        assertEquals("CaseStoppedPersonalEvidenceNotHandled", task.getState());
         assertEquals("PROBATE", task.getJurisdiction());
-
-        ((Map<String, Object>)probate.get("case_data")).put("caseType", "intestacy");
-        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
-        assertEquals("Case Stopped Personal (Intestacy)", task.getState());
 
         ((Map<String, Object>)probate.get("case_data")).put("applicationType", "Solicitor");
-        ((Map<String, Object>)probate.get("case_data")).put("caseType", "gop");
         task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
-        assertEquals("Case Stopped Solicitors (Probate)", task.getState());
+        assertEquals("CaseStoppedSolicitorsEvidenceNotHandled", task.getState());
+        assertEquals("PROBATE", task.getJurisdiction());
 
         ((Map<String, Object>)probate.get("case_data")).put("caseType", "intestacy");
         task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
-        assertEquals("Case Stopped Solicitors (Intestacy)", task.getState());
-        assertEquals("PROBATE", task.getJurisdiction());
+        assertEquals("CaseStoppedSolicitorsIntestacyEvidenceNotHandled", task.getState());
+
+        ((Map<String, Object>)probate.get("case_data")).put("applicationType", "Personal");
+        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
+        assertEquals("CaseStoppedPersonalIntestacyEvidenceNotHandled", task.getState());
+
+
+        ((Map<String, Object>)probate.get("case_data")).put("evidenceHandled", "Yes");
+        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
+        assertEquals("CaseStoppedPersonalIntestacyEvidenceHandled", task.getState());
+
+        ((Map<String, Object>)probate.get("case_data")).put("applicationType", "Solicitor");
+        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
+        assertEquals("CaseStoppedSolicitorsIntestacyEvidenceHandled", task.getState());
+
+        ((Map<String, Object>)probate.get("case_data")).put("caseType", "gop");
+        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
+        assertEquals("CaseStoppedSolicitorsEvidenceHandled", task.getState());
+
+        ((Map<String, Object>)probate.get("case_data")).put("applicationType", "Personal");
+        ((Map<String, Object>)probate.get("case_data")).put("caseType", "gop");
+        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
+        assertEquals("CaseStoppedPersonalEvidenceHandled", task.getState());
 
         probate.put("state", "CaseCreated");
         task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);

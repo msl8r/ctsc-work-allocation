@@ -120,20 +120,40 @@ public class Task {
             return "ReadyforExamination-Solicitor";
         }
         if ("BOCaseStopped".equals(state) && "Personal".equals(caseProperties.get("applicationType"))
-                && "gop".equals(caseProperties.get("caseType"))) {
-            return "Case Stopped Personal (Probate)";
+                && "gop".equals(caseProperties.get("caseType")) && "No".equals(caseProperties.get("evidenceHandled"))) {
+            return "CaseStoppedPersonalEvidenceNotHandled";
         }
         if ("BOCaseStopped".equals(state) && "Solicitor".equals(caseProperties.get("applicationType"))
-                && "gop".equals(caseProperties.get("caseType"))) {
-            return "Case Stopped Solicitors (Probate)";
+                && "gop".equals(caseProperties.get("caseType")) && "No".equals(caseProperties.get("evidenceHandled"))) {
+            return "CaseStoppedSolicitorsEvidenceNotHandled";
         }
         if ("BOCaseStopped".equals(state) && "Personal".equals(caseProperties.get("applicationType"))
-                && "intestacy".equals(caseProperties.get("caseType"))) {
-            return "Case Stopped Personal (Intestacy)";
+                && "intestacy".equals(caseProperties.get("caseType"))
+                && "No".equals(caseProperties.get("evidenceHandled"))) {
+            return "CaseStoppedPersonalIntestacyEvidenceNotHandled";
         }
         if ("BOCaseStopped".equals(state) && "Solicitor".equals(caseProperties.get("applicationType"))
-                && "intestacy".equals(caseProperties.get("caseType"))) {
-            return "Case Stopped Solicitors (Intestacy)";
+                && "intestacy".equals(caseProperties.get("caseType"))
+                && "No".equals(caseProperties.get("evidenceHandled"))) {
+            return "CaseStoppedSolicitorsIntestacyEvidenceNotHandled";
+        }
+        if ("BOCaseStopped".equals(state) && "Personal".equals(caseProperties.get("applicationType"))
+            && "gop".equals(caseProperties.get("caseType")) && "Yes".equals(caseProperties.get("evidenceHandled"))) {
+            return "CaseStoppedPersonalEvidenceHandled";
+        }
+        if ("BOCaseStopped".equals(state) && "Solicitor".equals(caseProperties.get("applicationType"))
+            && "gop".equals(caseProperties.get("caseType")) && "Yes".equals(caseProperties.get("evidenceHandled"))) {
+            return "CaseStoppedSolicitorsEvidenceHandled";
+        }
+        if ("BOCaseStopped".equals(state) && "Personal".equals(caseProperties.get("applicationType"))
+            && "intestacy".equals(caseProperties.get("caseType"))
+            && "Yes".equals(caseProperties.get("evidenceHandled"))) {
+            return "CaseStoppedPersonalIntestacyEvidenceHandled";
+        }
+        if ("BOCaseStopped".equals(state) && "Solicitor".equals(caseProperties.get("applicationType"))
+            && "intestacy".equals(caseProperties.get("caseType"))
+            && "Yes".equals(caseProperties.get("evidenceHandled"))) {
+            return "CaseStoppedSolicitorsIntestacyEvidenceHandled";
         }
         if ("CaveatRaised".equals(state) && "Personal".equals(caseProperties.get("applicationType"))) {
             return "Caveats (Personal)";
