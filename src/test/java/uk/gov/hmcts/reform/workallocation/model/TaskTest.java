@@ -222,24 +222,24 @@ public class TaskTest {
     @SuppressWarnings("unchecked")
     public void probateBspExceptionConversion() throws CaseTransformException {
         Task task = Task.fromCcdCase(probateException, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION, null);
-        assertEquals("Bulk Scan New Applications (Payments No)", task.getState());
+        assertEquals("BulkScanNewApplicationsReceived*WithoutPayments*", task.getState());
         assertEquals("PROBATE", task.getJurisdiction());
 
         ((Map<String, Object>)probateException.get("case_data")).put("containsPayments", "Yes");
         task = Task.fromCcdCase(probateException, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION, null);
-        assertEquals("Bulk Scan New Applications (Payments Yes)", task.getState());
+        assertEquals("BulkScanNewApplicationsReceived*WithPayments*", task.getState());
         assertEquals("PROBATE", task.getJurisdiction());
 
         ((Map<String, Object>)probateException.get("case_data")).put("containsPayments", "No");
         ((Map<String, Object>)probateException.get("case_data")).put("journeyClassification",
                 "SUPPLEMENTARY_EVIDENCE_WITH_OCR");
         task = Task.fromCcdCase(probateException, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION, null);
-        assertEquals("Bulk Supplementary evidence Applications (Payments No)", task.getState());
+        assertEquals("BulkScanSupplementaryEvidenceWithoutPayments", task.getState());
         assertEquals("PROBATE", task.getJurisdiction());
 
         ((Map<String, Object>)probateException.get("case_data")).put("journeyClassification", "SUPPLEMENTARY_EVIDENCE");
         task = Task.fromCcdCase(probateException, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION, null);
-        assertEquals("Bulk Supplementary evidence Applications (Payments No)", task.getState());
+        assertEquals("BulkScanSupplementaryEvidenceWithoutPayments", task.getState());
         assertEquals("PROBATE", task.getJurisdiction());
     }
 
