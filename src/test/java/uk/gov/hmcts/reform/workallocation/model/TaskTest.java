@@ -191,18 +191,24 @@ public class TaskTest {
         probate.put("state", "CasePrinted");
         ((Map<String, Object>)probate.get("case_data")).put("evidenceHandled", "No");
         task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
-        assertEquals("AwaitingDocumentation", task.getState());
+        assertEquals("AwaitingDocumentationPersonalEvidenceNotHandled", task.getState());
+
+        probate.put("state", "CasePrinted");
+        ((Map<String, Object>)probate.get("case_data")).put("applicationType", "Solicitor");
+        ((Map<String, Object>)probate.get("case_data")).put("evidenceHandled", "No");
+        task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
+        assertEquals("AwaitingDocumentationSolicitorEvidenceNotHandled", task.getState());
 
         probate.put("state", "BOReadyForExamination");
         ((Map<String, Object>)probate.get("case_data")).put("applicationType", "Personal");
         ((Map<String, Object>)probate.get("case_data")).put("caseType", "gop");
         task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
-        assertEquals("ReadyforExamination-Personal", task.getState());
+        assertEquals("ReadyForExaminationPersonal", task.getState());
 
         ((Map<String, Object>)probate.get("case_data")).put("applicationType", "Solicitor");
         ((Map<String, Object>)probate.get("case_data")).put("caseType", "gop");
         task = Task.fromCcdCase(probate, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP, null);
-        assertEquals("ReadyforExamination-Solicitor", task.getState());
+        assertEquals("ReadyForExaminationSolicitor", task.getState());
     }
 
     @Test

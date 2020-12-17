@@ -343,7 +343,7 @@ public class CcdPollingServiceTest {
             + "  {\n"
             + "     \"id\": 1572038226693576,\n"
             + "     \"jurisdiction\": \"PROBATE\",\n"
-            + "     \"state\": \"BOReadyForExamination\",\n"
+            + "     \"state\": \"ReadyForExaminationPersonal\",\n"
             + "     \"version\": null,\n"
             + "     \"case_type_id\": null,\n"
             + "     \"created_date\": null,\n"
@@ -515,7 +515,7 @@ public class CcdPollingServiceTest {
             .caseTypeId("GrantOfRepresentation")
             .id("1572038226693576")
             .jurisdiction("PROBATE")
-            .state("ReadyforExamination-Personal")
+            .state("ReadyForExaminationPersonal")
             .lastModifiedDate(LocalDateTime.of(2019,10,25,21,24,18, 143000000))
             .build();
     }

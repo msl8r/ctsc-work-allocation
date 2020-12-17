@@ -110,14 +110,25 @@ public class Task {
         if ("CaseCreated".equals(state)) {
             return "CaseCreated";
         }
-        if ("CasePrinted".equals(state) && "No".equals(caseProperties.get("evidenceHandled"))) {
-            return "AwaitingDocumentation";
+        if ("CasePrinted".equals(state) && "Personal".equals(caseProperties.get("applicationType"))
+            && "gop".equals(caseProperties.get("caseType")) && "No".equals(caseProperties.get("evidenceHandled"))
+            && "ctsc".equals(caseProperties.get("registryLocation"))) {
+            return "AwaitingDocumentationPersonalEvidenceNotHandled";
         }
-        if ("BOReadyForExamination".equals(state) && "Personal".equals(caseProperties.get("applicationType"))) {
-            return "ReadyforExamination-Personal";
+        if ("CasePrinted".equals(state) && "Solicitor".equals(caseProperties.get("applicationType"))
+            && "gop".equals(caseProperties.get("caseType")) && "No".equals(caseProperties.get("evidenceHandled"))
+            && "ctsc".equals(caseProperties.get("registryLocation"))) {
+            return "AwaitingDocumentationSolicitorEvidenceNotHandled";
         }
-        if ("BOReadyForExamination".equals(state) && "Solicitor".equals(caseProperties.get("applicationType"))) {
-            return "ReadyforExamination-Solicitor";
+        if ("BOReadyForExamination".equals(state) && "Personal".equals(caseProperties.get("applicationType"))
+            && "gop".equals(caseProperties.get("caseType")) && "No".equals(caseProperties.get("evidenceHandled"))
+            && "ctsc".equals(caseProperties.get("registryLocation"))) {
+            return "ReadyForExaminationPersonal";
+        }
+        if ("BOReadyForExamination".equals(state) && "Solicitor".equals(caseProperties.get("applicationType"))
+            && "gop".equals(caseProperties.get("caseType")) && "No".equals(caseProperties.get("evidenceHandled"))
+            && "ctsc".equals(caseProperties.get("registryLocation"))) {
+            return "ReadyForExaminationSolicitor";
         }
         if ("BOCaseStopped".equals(state) && "Personal".equals(caseProperties.get("applicationType"))
                 && "gop".equals(caseProperties.get("caseType")) && "No".equals(caseProperties.get("evidenceHandled"))) {
