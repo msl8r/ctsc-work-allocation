@@ -525,7 +525,7 @@ public class CcdPollingServiceTest {
                 .caseTypeId("Caveat")
                 .id("1572044446693576")
                 .jurisdiction("PROBATE")
-                .state("Caveats (Personal)")
+                .state("CaveatPersonal")
                 .lastModifiedDate(LocalDateTime.of(2019,10,25,21,24,18, 143000000))
                 .build();
     }

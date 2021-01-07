@@ -215,12 +215,12 @@ public class TaskTest {
     @SuppressWarnings("unchecked")
     public void probateCaveatConversion() throws CaseTransformException {
         Task task = Task.fromCcdCase(probateCaveat, CcdConnectorService.PROBATE_CASE_TYPE_ID_CAVEAT, null);
-        assertEquals("Caveats (Personal)", task.getState());
+        assertEquals("CaveatPersonal", task.getState());
         assertEquals("PROBATE", task.getJurisdiction());
 
         ((Map<String, Object>)probateCaveat.get("case_data")).put("applicationType", "Solicitor");
         task = Task.fromCcdCase(probateCaveat, CcdConnectorService.PROBATE_CASE_TYPE_ID_CAVEAT, null);
-        assertEquals("Caveats (Solicitor)", task.getState());
+        assertEquals("CaveatSolicitor", task.getState());
         assertEquals("PROBATE", task.getJurisdiction());
     }
 

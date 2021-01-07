@@ -167,10 +167,10 @@ public class Task {
             return "CaseStoppedSolicitorsIntestacyEvidenceHandled";
         }
         if ("CaveatRaised".equals(state) && "Personal".equals(caseProperties.get("applicationType"))) {
-            return "Caveats (Personal)";
+            return "CaveatPersonal";
         }
         if ("CaveatRaised".equals(state) && "Solicitor".equals(caseProperties.get("applicationType"))) {
-            return "Caveats (Solicitor)";
+            return "CaveatSolicitor";
         }
         if ("ScannedRecordReceived".equals(state) && "No".equals(caseProperties.get("containsPayments"))
                 && "NEW_APPLICATION".equals(caseProperties.get("journeyClassification"))) {
