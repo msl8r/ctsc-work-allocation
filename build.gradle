@@ -209,7 +209,7 @@ dependencies {
 
   compile group: 'org.apache.velocity', name: 'velocity', version: '1.7'
 
-  compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.11.3'
+  compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.12.1'
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.11.3'
 
   compile group: 'io.vavr', name: 'vavr', version: '0.10.3'
