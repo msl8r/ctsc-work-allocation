@@ -207,6 +207,7 @@ public class CcdConnectorService {
             query = FR_EXCEPTION_QUERY.replace(FROM_PLACE_HOLDER, queryFromDateTime)
                 .replace(TO_PLACE_HOLDER, queryToDateTime);
         }
+        log.info("FindFinancialRemedyCases query {} and caseTypeId {}", query, caseTypeId);
         return searchCases(
             userAuthToken,
             serviceToken,
@@ -224,6 +225,8 @@ public class CcdConnectorService {
         }
         try {
             response = ccdClient.searchCases(userAuthToken, serviceToken, caseTypeId, query);
+            log.info("caseTypeId {}", caseTypeId);
+            log.info("response: {}", response);
             response.put("case_type_id", caseTypeId);
         } catch (Exception e) {
             throw new CcdConnectionException("Failed to connect ccd.", e);
