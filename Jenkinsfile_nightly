@@ -40,7 +40,6 @@ withNightlyPipeline(type, product, component) {
   overrideVaultEnvironments(vaultOverrides)
   loadVaultSecrets(secrets)
   enableDbMigration('ctsc')
-  enableFullFunctionalTest()
   enableSlackNotifications('#ctstc-tech-internal')
 
 }
