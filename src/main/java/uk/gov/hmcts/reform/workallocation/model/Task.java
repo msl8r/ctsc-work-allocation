@@ -174,11 +174,11 @@ public class Task {
         }
         if ("ScannedRecordReceived".equals(state) && "No".equals(caseProperties.get("containsPayments"))
                 && "NEW_APPLICATION".equals(caseProperties.get("journeyClassification"))) {
-            return "BulkScanNewApplicationsReceived*WithoutPayments*";
+            return "BulkScanNewApplicationsReceivedWithoutPayments";
         }
         if ("ScannedRecordReceived".equals(state) && "Yes".equals(caseProperties.get("containsPayments"))
                 && "NEW_APPLICATION".equals(caseProperties.get("journeyClassification"))) {
-            return "BulkScanNewApplicationsReceived*WithPayments*";
+            return "BulkScanNewApplicationsReceivedWithPayments";
         }
         if ("ScannedRecordReceived".equals(state) && "No".equals(caseProperties.get("containsPayments"))
                 && ("SUPPLEMENTARY_EVIDENCE_WITH_OCR".equals(caseProperties.get("journeyClassification")))

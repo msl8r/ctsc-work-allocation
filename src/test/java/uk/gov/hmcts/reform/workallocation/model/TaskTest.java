@@ -228,12 +228,12 @@ public class TaskTest {
     @SuppressWarnings("unchecked")
     public void probateBspExceptionConversion() throws CaseTransformException {
         Task task = Task.fromCcdCase(probateException, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION, null);
-        assertEquals("BulkScanNewApplicationsReceived*WithoutPayments*", task.getState());
+        assertEquals("BulkScanNewApplicationsReceivedWithoutPayments", task.getState());
         assertEquals("PROBATE", task.getJurisdiction());
 
         ((Map<String, Object>)probateException.get("case_data")).put("containsPayments", "Yes");
         task = Task.fromCcdCase(probateException, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION, null);
-        assertEquals("BulkScanNewApplicationsReceived*WithPayments*", task.getState());
+        assertEquals("BulkScanNewApplicationsReceivedWithPayments", task.getState());
         assertEquals("PROBATE", task.getJurisdiction());
 
         ((Map<String, Object>)probateException.get("case_data")).put("containsPayments", "No");
