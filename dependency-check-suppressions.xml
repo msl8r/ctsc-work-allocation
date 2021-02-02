@@ -139,6 +139,7 @@
      ]]></notes>
       <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-core@.*$</packageUrl>
       <cve>CVE-2020-17527</cve>
+      <cve>CVE-2021-24122</cve>
     </suppress>
     <suppress>
       <notes><![CDATA[
@@ -146,5 +147,6 @@
      ]]></notes>
       <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-websocket@.*$</packageUrl>
       <cve>CVE-2020-17527</cve>
+      <cve>CVE-2021-24122</cve>
     </suppress>
 </suppressions>
