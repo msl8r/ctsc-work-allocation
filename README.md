@@ -23,7 +23,7 @@ There are two ways of integration:
 Once the service has the case details either way it will put the cases into an azure service-bus. The same time another thread starts to connect the service-bus as a consumer and waiting for the cases to appear. Anytime a new case appears on the service-bus the consumer gets it and converts it into email based on the predefined template for the give service and sends it as an email to one of the HMCTS mail account. On 8x8 side there is an imap client connected to the mailbox and puts converts the mail message to task and puts in on the queue.
 
 ### Prerequisites
-You will need jdk and maven installed on your machine or use mvnw to install the prerequisites.
+You will need jdk11 and maven installed on your machine or use mvnw to install the prerequisites.
 
 ### Installing
 1. Clone the repo to your machine using git clone https://github.com/hmcts/ctsc-work-allocation.git
