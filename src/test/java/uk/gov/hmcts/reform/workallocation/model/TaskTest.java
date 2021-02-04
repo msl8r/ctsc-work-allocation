@@ -17,6 +17,8 @@ import static org.junit.Assert.assertEquals;
 public class TaskTest {
 
     private Map<String, Object> divorce;
+    private Map<String, Object> divorceException;
+    private Map<String, Object> divorceEvidence;
     private Map<String, Object> probate;
 
     @Before
@@ -30,6 +32,25 @@ public class TaskTest {
         divorce.put("created_date", null);
         divorce.put("last_modified", "2019-07-18T14:36:25.862");
         divorce.put("security_classification", "PUBLIC");
+
+        divorceException = new HashMap<>();
+        divorceException.put("id", 1563460551477777L);
+        divorceException.put("jurisdiction", "DIVORCE");
+        divorceException.put("state", "ScannedRecordReceived");
+        divorceException.put("version", null);
+        divorceException.put("case_type_id", "DIVORCE_ExceptionRecord");
+        divorceException.put("created_date", null);
+        divorceException.put("last_modified", "2020-07-20T14:36:20.962");
+        divorceException.put("security_classification", "PUBLIC");
+
+        divorceEvidence = new HashMap<>();
+        divorceEvidence.put("id", 1563460551499999L);
+        divorceEvidence.put("jurisdiction", "DIVORCE");
+        divorceEvidence.put("version", null);
+        divorceEvidence.put("case_type_id", "DIVORCE");
+        divorceEvidence.put("created_date", null);
+        divorceEvidence.put("last_modified", "2019-07-18T14:36:25.862");
+        divorceEvidence.put("security_classification", "PUBLIC");
 
         probate = new HashMap<>();
         probate.put("id", 1572038226693576L);
@@ -48,21 +69,38 @@ public class TaskTest {
 
     @Test
     public void testConvertCaseToTaskHappyPath() throws CaseTransformException {
-        Task task = Task.fromCcdCase(divorce, CcdConnectorService.CASE_TYPE_ID_DIVORCE);
+        Task task = Task.fromCcdCase(divorce, CcdConnectorService.CASE_TYPE_ID_DIVORCE, null);
         assertEquals("1563460551495313", task.getId());
         assertEquals("DIVORCE", task.getJurisdiction());
         assertEquals("DIVORCE", task.getCaseTypeId());
     }
 
     @Test
+    public void convertDivorceExceptionCaseToTaskHappyPath() throws CaseTransformException {
+        Task task = Task.fromCcdCase(divorceException, CcdConnectorService.CASE_TYPE_ID_DIVORCE_EXCEPTION, null);
+        assertEquals("1563460551477777", task.getId());
+        assertEquals("DIVORCE", task.getJurisdiction());
+        assertEquals("DIVORCE_ExceptionRecord", task.getCaseTypeId());
+    }
+
+    @Test
+    public void divorceEvidenceHappyPath() throws CaseTransformException {
+        Task task = Task.fromCcdCase(divorceEvidence, CcdConnectorService.CASE_TYPE_ID_DIVORCE, "evidenceHandled");
+        assertEquals("1563460551499999", task.getId());
+        assertEquals("DIVORCE", task.getJurisdiction());
+        assertEquals("DIVORCE", task.getCaseTypeId());
+    }
+
+
+    @Test
     @SuppressWarnings("unchecked")
     public void testProbateConversion() throws CaseTransformException {
-        Task task = Task.fromCcdCase(probate, CcdConnectorService.CASE_TYPE_ID_PROBATE);
+        Task task = Task.fromCcdCase(probate, CcdConnectorService.CASE_TYPE_ID_PROBATE, null);
         assertEquals("ReadyforExamination-Personal", task.getState());
         assertEquals("PROBATE", task.getJurisdiction());
 
         ((Map<String, Object>)probate.get("case_data")).put("applicationType", "Solicitor");
-        task = Task.fromCcdCase(probate, CcdConnectorService.CASE_TYPE_ID_PROBATE);
+        task = Task.fromCcdCase(probate, CcdConnectorService.CASE_TYPE_ID_PROBATE, null);
         assertEquals("ReadyforExamination-Solicitor", task.getState());
     }
 
@@ -70,12 +108,12 @@ public class TaskTest {
     @Test(expected = CaseTransformException.class)
     public void testConvertCaseToTaskWithoutId() throws CaseTransformException {
         divorce.remove("id");
-        Task.fromCcdCase(divorce, CcdConnectorService.CASE_TYPE_ID_PROBATE);
+        Task.fromCcdCase(divorce, CcdConnectorService.CASE_TYPE_ID_PROBATE, null);
     }
 
     @Test(expected = CaseTransformException.class)
     public void testConvertCaseToTaskWitWrongDateFormat() throws CaseTransformException {
         divorce.put("last_modified", "asdasd121234");
-        Task.fromCcdCase(divorce, CcdConnectorService.CASE_TYPE_ID_PROBATE);
+        Task.fromCcdCase(divorce, CcdConnectorService.CASE_TYPE_ID_PROBATE, null);
     }
 }
