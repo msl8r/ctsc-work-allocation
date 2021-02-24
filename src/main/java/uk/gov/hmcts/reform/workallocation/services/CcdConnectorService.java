@@ -18,6 +18,7 @@ public class CcdConnectorService {
     public static final String FROM_PLACE_HOLDER = "[FROM]";
     public static final String TO_PLACE_HOLDER = "[TO]";
     public static final String CASE_TYPE_ID_DIVORCE = "DIVORCE";
+    public static final String CASE_TYPE_ID_DIVORCE_EXCEPTION = "DIVORCE_ExceptionRecord";
     public static final String CASE_TYPE_ID_PROBATE = "GrantOfRepresentation";
 
     private final CcdClient ccdClient;
@@ -28,16 +29,25 @@ public class CcdConnectorService {
     @Value("${ccd.ctids}")
     private String ctids;
 
-    private static final String QUERY_DIVORCE_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
-        + "{\"last_modified\":{\"gt\":\""
-        + FROM_PLACE_HOLDER + "\", \"lte\":\"" + TO_PLACE_HOLDER + "\"}}}"
-        + ",{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested\","
+    private static final String DATE_RANGE = "{\"query\":{\"bool\":{\"must\":[{\"range\""
+            + ":{\"last_modified\":{\"gt\":\"" + FROM_PLACE_HOLDER + "\",\"lte\":\"" + TO_PLACE_HOLDER + "\"}}},";
+
+    private static final String QUERY_DIVORCE_EVIDENCE_HANDLED_TEMPLATE = DATE_RANGE
+        + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"data.evidenceHandled\":\"No\"}},"
+        + "{\"match\":{\"data.D8DivorceUnit\":\"serviceCentre\"}}]}}]}}]}},"
+        + "\"_source\":[\"reference\",\"jurisdiction\",\"state\",\"last_modified\"],\"size\":1000}";
+
+    private static final String QUERY_DIVORCE_TEMPLATE = DATE_RANGE
+        + "{\"match\":{\"state\":{\"query\": \"Submitted AwaitingHWFDecision DARequested\","
         + "\"operator\": \"or\"}}}]}},"
         + "\"_source\": [\"reference\", \"jurisdiction\", \"state\", \"last_modified\"],"
         + "\"size\": 1000}";
 
-    private static final String QUERY_PROBATE_TEMPLATE = "{\"query\":{\"bool\":{\"must\":[{\"range\":"
-        + "{\"last_modified\":{\"gt\":\"" + FROM_PLACE_HOLDER + "\",\"lte\":\"" + TO_PLACE_HOLDER + "\"}}},"
+    private static final String QUERY_DIVORCE_EXCEPTION_TEMPLATE = DATE_RANGE
+        + "{\"match\":{\"state\":{\"query\":\"ScannedRecordReceived\",\"operator\":\"or\"}}}]}},"
+        + "\"_source\":[\"reference\",\"jurisdiction\",\"state\",\"last_modified\"],\"size\":1000}";
+
+    private static final String QUERY_PROBATE_TEMPLATE = DATE_RANGE
         + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"state\":\"CasePrinted\"}},{\"match\":"
         + "{\"data.evidenceHandled\":\"No\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":"
         + "{\"must\":[{\"match\":{\"state\":\"CaseCreated\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},"
@@ -58,17 +68,41 @@ public class CcdConnectorService {
         this.ccdClient = ccdClient;
     }
 
+    public Map<String, Object> searchDivorceEvidenceHandledCases(String userAuthToken,
+                                                  String serviceToken,
+                                                  String queryFromDateTime,
+                                                  String queryToDateTime,
+                                                  String caseTypeId) throws CcdConnectionException {
+        String query = QUERY_DIVORCE_EVIDENCE_HANDLED_TEMPLATE.replace(FROM_PLACE_HOLDER, queryFromDateTime)
+                .replace(TO_PLACE_HOLDER, queryToDateTime);
+
+        Map<String, Object> evidenceHandledCases = searchCases(
+                userAuthToken,
+                serviceToken,
+                query,
+                caseTypeId
+        );
+        evidenceHandledCases.put("EVIDENCE_FLOW", "evidenceHandled");
+        return evidenceHandledCases;
+    }
+
     public Map<String, Object> searchDivorceCases(String userAuthToken,
                                                   String serviceToken,
                                                   String queryFromDateTime,
-                                                  String queryToDateTime) throws CcdConnectionException {
+                                                  String queryToDateTime,
+                                                  String caseTypeId) throws CcdConnectionException {
         String query = QUERY_DIVORCE_TEMPLATE.replace(FROM_PLACE_HOLDER, queryFromDateTime)
             .replace(TO_PLACE_HOLDER, queryToDateTime);
+
+        if (caseTypeId.equalsIgnoreCase(CASE_TYPE_ID_DIVORCE_EXCEPTION)) {
+            query = QUERY_DIVORCE_EXCEPTION_TEMPLATE.replace(FROM_PLACE_HOLDER, queryFromDateTime)
+                    .replace(TO_PLACE_HOLDER, queryToDateTime);
+        }
         return searchCases(
             userAuthToken,
             serviceToken,
             query,
-            CASE_TYPE_ID_DIVORCE
+            caseTypeId
         );
     }
 
