@@ -67,7 +67,15 @@ public class QueueConsumer<T> extends BaseQueueConsumer {
                                 messageObject = objectMapper.readValue(body, clazz);
                                 log.info("Received message: " + messageObject);
                                 // TODO: make email sending generic
-                                emailSendingService.sendEmail((Task) messageObject, deeplinkBaseUrl);
+                                /**
+                                 * DTSBPS-395 Stopping task poller for Probate
+                                 * */
+                                Task messageObj = (Task) messageObject;
+                                if (messageObj.getJurisdiction().equals("DIVORCE")) {
+                                    emailSendingService.sendEmail(messageObj, deeplinkBaseUrl);
+                                } else {
+                                    log.info("Ignore probate message id {}: ",messageObj.getId());
+                                }
                             } catch (Exception e) {
                                 log.error("failed to parse/send message: ", e);
                                 CompletableFuture<Void> failure = new CompletableFuture<>();
