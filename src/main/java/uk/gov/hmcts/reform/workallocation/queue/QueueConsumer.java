@@ -67,9 +67,6 @@ public class QueueConsumer<T> extends BaseQueueConsumer {
                                 messageObject = objectMapper.readValue(body, clazz);
                                 log.info("Received message: " + messageObject);
                                 // TODO: make email sending generic
-                                /**
-                                 * DTSBPS-395 Stopping task poller for Probate
-                                 * */
                                 Task messageObj = (Task) messageObject;
                                 if (messageObj.getJurisdiction().equals("DIVORCE")) {
                                     emailSendingService.sendEmail(messageObj, deeplinkBaseUrl);
