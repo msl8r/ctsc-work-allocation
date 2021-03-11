@@ -47,10 +47,6 @@ public class Task {
                 || CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION.equals(caseTypeId)) {
             return fromCcdProbateCase(caseData, caseTypeId);
         }
-        if (CcdConnectorService.FR_CASE_TYPE.equals(caseTypeId)
-            || CcdConnectorService.FR_EXCEPTION_CASE_TYPE.equals(caseTypeId)) {
-            return fromCcdFinancialRemedyCase(caseData, caseTypeId);
-        }
         throw new CaseTransformException("Unknown case type: " + caseTypeId);
     }
 
@@ -83,22 +79,6 @@ public class Task {
                 .build();
         } catch (Exception e) {
             throw new CaseTransformException("Failed to transform the case", e);
-        }
-    }
-
-    private static Task fromCcdFinancialRemedyCase(Map<String, Object> caseData, String caseTypeId)
-        throws CaseTransformException {
-        try {
-            LocalDateTime lastModifiedDate = LocalDateTime.parse(caseData.get("last_modified").toString());
-            return Task.builder()
-                .id(((Long)caseData.get("id")).toString())
-                .state(getFrState(caseData))
-                .jurisdiction((String) caseData.get("jurisdiction"))
-                .caseTypeId(caseTypeId)
-                .lastModifiedDate(lastModifiedDate)
-                .build();
-        } catch (Exception e) {
-            throw new CaseTransformException("Failed to transform fr the case", e);
         }
     }
 
@@ -184,24 +164,6 @@ public class Task {
                 && ("SUPPLEMENTARY_EVIDENCE_WITH_OCR".equals(caseProperties.get("journeyClassification")))
                 || ("SUPPLEMENTARY_EVIDENCE".equals(caseProperties.get("journeyClassification")))) {
             return "BulkScanSupplementaryEvidenceWithoutPayments";
-        }
-        return state;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static String getFrState(Map<String, Object> caseData) {
-        String state = (String) caseData.get("state");
-        if ("applicationSubmitted".equals(state)) {
-            return "ConsentAppSubmitted";
-        }
-        if ("consentOrderApproved".equals(state)) {
-            return "consentOrderApproved";
-        }
-        if ("orderMade".equals(state)) {
-            return "consentOrderNotApproved";
-        }
-        if ("ScannedRecordReceived".equals(state)) {
-            return "ScannedRecordReceivedFormA";
         }
         return state;
     }

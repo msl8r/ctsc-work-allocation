@@ -22,8 +22,6 @@ public class CcdConnectorService {
     public static final String PROBATE_CASE_TYPE_ID_GOP = "GrantOfRepresentation";
     public static final String PROBATE_CASE_TYPE_ID_CAVEAT = "Caveat";
     public static final String PROBATE_CASE_TYPE_ID_BSP_EXCEPTION = "PROBATE_ExceptionRecord";
-    public static final String FR_CASE_TYPE = "FinancialRemedyMVP2";
-    public static final String FR_EXCEPTION_CASE_TYPE = "FINREM_ExceptionRecord";
 
     private final CcdClient ccdClient;
 
@@ -117,17 +115,6 @@ public class CcdConnectorService {
         + ".evidenceHandled\",\"data.caseType\",\"data.registryLocation\",\"data.containsPayments\","
         + "\"data.journeyClassification\"],\"size\":1000}";
 
-    private static final String FR_QUERY = DATE_RANGE
-        + "{\"match\":{\"state\":{\"query\":\"applicationSubmitted consentOrderApproved orderMade\","
-        + "\"operator\":\"or\"}}}]}},\"_source\":[\"reference\",\"jurisdiction\",\"state\","
-        + "\"last_modified\"],\"size\":1000}";
-
-    private static final String FR_EXCEPTION_QUERY = DATE_RANGE
-        + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"ScannedRecordReceived\"}},"
-        + "{\"match\":{\"data.scannedDocuments.value.subtype\":\"FormA\"}}]}}]}},"
-        + "\"_source\":[\"reference\",\"jurisdiction\",\"state\",\"last_modified\","
-        + "\"data.scannedDocuments\"],\"size\":1000}";
-
     @Autowired
     public CcdConnectorService(CcdClient ccdClient) {
         this.ccdClient = ccdClient;
@@ -193,26 +180,6 @@ public class CcdConnectorService {
                 serviceToken,
                 query,
                 caseTypeId);
-    }
-
-    public Map<String, Object> findFinancialRemedyCases(String userAuthToken,
-                                                String serviceToken,
-                                                String queryFromDateTime,
-                                                String queryToDateTime,
-                                                String caseTypeId) throws CcdConnectionException {
-        String query = FR_QUERY.replace(FROM_PLACE_HOLDER, queryFromDateTime)
-            .replace(TO_PLACE_HOLDER, queryToDateTime);
-
-        if (caseTypeId.equalsIgnoreCase(FR_EXCEPTION_CASE_TYPE)) {
-            query = FR_EXCEPTION_QUERY.replace(FROM_PLACE_HOLDER, queryFromDateTime)
-                .replace(TO_PLACE_HOLDER, queryToDateTime);
-        }
-
-        return searchCases(
-            userAuthToken,
-            serviceToken,
-            query,
-            caseTypeId);
     }
 
     private Map<String, Object> searchCases(String userAuthToken, String serviceToken, String query, String caseTypeId)

@@ -75,20 +75,6 @@ public class CcdConnectorServiceTest {
     }
 
     @Test
-    public void testDryFrRun() throws CcdConnectionException {
-        Map<String, Object> result = ccdConnectorService.findFinancialRemedyCases("", "", "", "",
-               CcdConnectorService.FR_CASE_TYPE);
-        Assert.assertEquals(0, result.get("total"));
-        Assert.assertTrue(((List)result.get("cases")).isEmpty());
-
-        result = ccdConnectorService.findFinancialRemedyCases("", "", "", "",
-               CcdConnectorService.FR_EXCEPTION_CASE_TYPE);
-        Assert.assertEquals(0, result.get("total"));
-        Assert.assertTrue(((List)result.get("cases")).isEmpty());
-    }
-
-
-    @Test
     public void divorceNormalRun() throws CcdConnectionException, IOException {
         ReflectionTestUtils.setField(ccdConnectorService, "dryRun", false);
         when(ccdClient.searchCases(any(), any(), any(), any())).thenReturn(caseSearchResult());
@@ -133,25 +119,6 @@ public class CcdConnectorServiceTest {
         when(ccdClient.searchCases(any(), any(), any(), any())).thenReturn(probateExpSearchResult());
         result = ccdConnectorService.findProbateCases("", "", "", "",
                 CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION);
-        Assert.assertEquals(1, result.get("total"));
-        Assert.assertFalse(((List)result.get("cases")).isEmpty());
-    }
-
-    @Test
-    public void frNormalRun() throws CcdConnectionException, IOException {
-        ReflectionTestUtils.setField(ccdConnectorService, "ctids", "FinancialRemedyMVP2");
-        ReflectionTestUtils.setField(ccdConnectorService, "dryRun", false);
-        when(ccdClient.searchCases(any(), any(), any(), any())).thenReturn(frSearchResult());
-        Map<String, Object> result = ccdConnectorService.findFinancialRemedyCases("", "", "", "",
-                CcdConnectorService.FR_CASE_TYPE);
-        Assert.assertEquals(1, result.get("total"));
-        Assert.assertFalse(((List)result.get("cases")).isEmpty());
-
-
-        ReflectionTestUtils.setField(ccdConnectorService, "ctids", "FINREM_ExceptionRecord");
-        when(ccdClient.searchCases(any(), any(), any(), any())).thenReturn(frExpSearchResult());
-        result = ccdConnectorService.findProbateCases("", "", "", "",
-                                                      CcdConnectorService.FR_EXCEPTION_CASE_TYPE);
         Assert.assertEquals(1, result.get("total"));
         Assert.assertFalse(((List)result.get("cases")).isEmpty());
     }
@@ -287,68 +254,6 @@ public class CcdConnectorServiceTest {
             + "  {\n"
             + "     \"id\": 1572038555593576,\n"
             + "     \"jurisdiction\": \"PROBATE\",\n"
-            + "     \"state\": \"ScannedRecordReceived\",\n"
-            + "     \"version\": null,\n"
-            + "     \"case_type_id\": null,\n"
-            + "     \"created_date\": null,\n"
-            + "     \"last_modified\": \"2019-10-25T21:24:18.143\",\n"
-            + "     \"security_classification\": null,\n"
-            + "     \"case_data\":{\n"
-            + "         \"containsPayments\": \"No\",\n"
-            + "         \"applicationType\": \"Personal\"\n"
-            + "     },\n"
-            + "     \"data_classification\": null,\n"
-            + "     \"after_submit_callback_response\": null,\n"
-            + "     \"callback_response_status_code\": null,\n"
-            + "     \"callback_response_status\": null,\n"
-            + "     \"delete_draft_response_status_code\": null,\n"
-            + "     \"delete_draft_response_status\": null,\n"
-            + "     \"security_classifications\": null\n"
-            + "     }\n"
-            + "]\n"
-            + "}";
-        return new ObjectMapper().readValue(json, Map.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> frSearchResult() throws IOException {
-        String json = "{\n"
-            + "\"total\": 1,\n"
-            + "  \"cases\": [\n"
-            + "  {\n"
-            + "     \"id\": 1544448226693576,\n"
-            + "     \"jurisdiction\": \"DIVORCE\",\n"
-            + "     \"state\": \"ConsentAppSubmitted\",\n"
-            + "     \"version\": null,\n"
-            + "     \"case_type_id\": null,\n"
-            + "     \"created_date\": null,\n"
-            + "     \"last_modified\": \"2019-10-25T21:24:18.143\",\n"
-            + "     \"security_classification\": null,\n"
-            + "     \"case_data\":{\n"
-            + "         \"evidenceHandled\": \"Yes\",\n"
-            + "         \"applicationType\": \"Personal\"\n"
-            + "     },\n"
-            + "     \"data_classification\": null,\n"
-            + "     \"after_submit_callback_response\": null,\n"
-            + "     \"callback_response_status_code\": null,\n"
-            + "     \"callback_response_status\": null,\n"
-            + "     \"delete_draft_response_status_code\": null,\n"
-            + "     \"delete_draft_response_status\": null,\n"
-            + "     \"security_classifications\": null\n"
-            + "     }\n"
-            + "]\n"
-            + "}";
-        return new ObjectMapper().readValue(json, Map.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> frExpSearchResult() throws IOException {
-        String json = "{\n"
-            + "\"total\": 1,\n"
-            + "  \"cases\": [\n"
-            + "  {\n"
-            + "     \"id\": 1555558555593576,\n"
-            + "     \"jurisdiction\": \"DIVORCE\",\n"
             + "     \"state\": \"ScannedRecordReceived\",\n"
             + "     \"version\": null,\n"
             + "     \"case_type_id\": null,\n"

@@ -145,24 +145,11 @@ public class CcdPollingService {
         log.info("Total number of probate bsp cases: {}", probateBspExpData.get("total"));
         telemetryClient.trackMetric("num_of_probate_bsp_cases", (Integer) probateBspExpData.get("total"));
 
-        // FR cases
-        Map<String, Object> frData = ccdConnectorService.findFinancialRemedyCases(userAuthToken, serviceToken,
-            queryFromDateTime, queryToDateTime, CcdConnectorService.FR_CASE_TYPE);
-        log.info("Connecting (fr) to CCD was successful");
-        log.info("total number of fr cases: {}", frData.get("total"));
-        telemetryClient.trackMetric("num_of_fr_cases", (Integer) frData.get("total"));
-
-        // FR Exception cases
-        Map<String, Object> frExceptionData = ccdConnectorService.findFinancialRemedyCases(userAuthToken, serviceToken,
-            queryFromDateTime, queryToDateTime, CcdConnectorService.FR_EXCEPTION_CASE_TYPE);
-        log.info("Connecting (frException) to CCD was successful");
-        log.info("total number of fr exception cases: {}", frExceptionData.get("total"));
-        telemetryClient.trackMetric("num_of_fr_exception_cases", (Integer) frExceptionData.get("total"));
 
         // 5. Process data
         @SuppressWarnings("unchecked")
         List<Task> tasks = mergeResponse(divorceData, divorceExceptionData, divorceEvidenceData,
-                probateGoPData, probateCaveatData, probateBspExpData, frData, frExceptionData);
+                probateGoPData, probateCaveatData, probateBspExpData);
         log.info("Total number of tasks: {}", tasks.size());
         telemetryClient.trackMetric("num_of_tasks", tasks.size());
 
