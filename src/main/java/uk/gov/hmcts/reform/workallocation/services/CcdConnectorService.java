@@ -188,7 +188,7 @@ public class CcdConnectorService {
             );
         } else {
             /*
-              This is done just to prevent Proabte to do ES query.
+              This is done just to prevent Probate to do ES query.
               If Probate query need to turn on then change the change
               enable_probate: false to enable_probate: true in application
               yaml
