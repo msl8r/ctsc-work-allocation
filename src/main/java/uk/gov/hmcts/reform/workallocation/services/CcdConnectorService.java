@@ -178,7 +178,7 @@ public class CcdConnectorService {
             query = PROBATE_BSP_EXCEPTION_QUERY.replace(FROM_PLACE_HOLDER, queryFromDateTime)
                     .replace(TO_PLACE_HOLDER, queryToDateTime);
         }
-
+        log.info("enableProbate.{} ", enableProbate);
         if (enableProbate) {
             return searchCases(
                 userAuthToken,
