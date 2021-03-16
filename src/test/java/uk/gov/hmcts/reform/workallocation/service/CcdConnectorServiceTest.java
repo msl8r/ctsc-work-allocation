@@ -102,6 +102,7 @@ public class CcdConnectorServiceTest {
     public void probateNormalRun() throws CcdConnectionException, IOException {
         ReflectionTestUtils.setField(ccdConnectorService, "ctids", "GrantOfRepresentation");
         ReflectionTestUtils.setField(ccdConnectorService, "dryRun", false);
+        ReflectionTestUtils.setField(ccdConnectorService, "enableProbate", true);
         when(ccdClient.searchCases(any(), any(), any(), any())).thenReturn(probateSearchResult());
         Map<String, Object> result = ccdConnectorService.findProbateCases("", "", "", "",
                 CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP);
