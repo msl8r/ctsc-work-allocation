@@ -30,6 +30,9 @@ public class CcdConnectorService {
     @Value("${ccd.dry_run}")
     private boolean dryRun;
 
+    @Value("${ccd.enable_probate}")
+    private boolean enableProbate;
+
     @Value("${ccd.ctids}")
     private String ctids;
 
@@ -188,11 +191,26 @@ public class CcdConnectorService {
             query = PROBATE_BSP_EXCEPTION_QUERY.replace(FROM_PLACE_HOLDER, queryFromDateTime)
                     .replace(TO_PLACE_HOLDER, queryToDateTime);
         }
-        return searchCases(
+        log.info("enableProbate.{} ", enableProbate);
+        if (enableProbate) {
+            return searchCases(
                 userAuthToken,
                 serviceToken,
                 query,
-                caseTypeId);
+                caseTypeId
+            );
+        } else {
+            /*
+              This is done just to prevent Probate to do ES query.
+              If Probate query need to turn on then change the change
+              enable_probate: false to enable_probate: true in application
+              yaml
+             */
+            log.info("Do not query probate ES.");
+            Map<String, Object> response = prepareDryResponse();
+            response.put("case_type_id", caseTypeId);
+            return response;
+        }
     }
 
     public Map<String, Object> findFinancialRemedyCases(String userAuthToken,
