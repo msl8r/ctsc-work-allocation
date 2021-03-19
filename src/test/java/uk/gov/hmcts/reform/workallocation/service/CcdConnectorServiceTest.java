@@ -143,6 +143,7 @@ public class CcdConnectorServiceTest {
     public void frNormalRun() throws CcdConnectionException, IOException {
         ReflectionTestUtils.setField(ccdConnectorService, "ctids", "FinancialRemedyMVP2");
         ReflectionTestUtils.setField(ccdConnectorService, "dryRun", false);
+        ReflectionTestUtils.setField(ccdConnectorService, "enableProbate", true);
         when(ccdClient.searchCases(any(), any(), any(), any())).thenReturn(frSearchResult());
         Map<String, Object> result = ccdConnectorService.findFinancialRemedyCases("", "", "", "",
             CcdConnectorService.FR_CASE_TYPE);
