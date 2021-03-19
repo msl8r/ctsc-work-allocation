@@ -149,4 +149,11 @@
       <cve>CVE-2020-17527</cve>
       <cve>CVE-2021-24122</cve>
     </suppress>
+    <suppress>
+      <notes><![CDATA[
+     file name: velocity-1.7.jar
+     ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.apache\.velocity/velocity@.*$</packageUrl>
+      <cve>CVE-2020-13936</cve>
+    </suppress>
 </suppressions>

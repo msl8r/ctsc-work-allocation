@@ -19,12 +19,17 @@ public class CcdConnectorService {
     public static final String TO_PLACE_HOLDER = "[TO]";
     public static final String CASE_TYPE_ID_DIVORCE = "DIVORCE";
     public static final String CASE_TYPE_ID_DIVORCE_EXCEPTION = "DIVORCE_ExceptionRecord";
-    public static final String CASE_TYPE_ID_PROBATE = "GrantOfRepresentation";
+    public static final String PROBATE_CASE_TYPE_ID_GOP = "GrantOfRepresentation";
+    public static final String PROBATE_CASE_TYPE_ID_CAVEAT = "Caveat";
+    public static final String PROBATE_CASE_TYPE_ID_BSP_EXCEPTION = "PROBATE_ExceptionRecord";
 
     private final CcdClient ccdClient;
 
     @Value("${ccd.dry_run}")
     private boolean dryRun;
+
+    @Value("${ccd.enable_probate}")
+    private boolean enableProbate;
 
     @Value("${ccd.ctids}")
     private String ctids;
@@ -47,21 +52,71 @@ public class CcdConnectorService {
         + "{\"match\":{\"state\":{\"query\":\"ScannedRecordReceived\",\"operator\":\"or\"}}}]}},"
         + "\"_source\":[\"reference\",\"jurisdiction\",\"state\",\"last_modified\"],\"size\":1000}";
 
-    private static final String QUERY_PROBATE_TEMPLATE = DATE_RANGE
-        + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"state\":\"CasePrinted\"}},{\"match\":"
-        + "{\"data.evidenceHandled\":\"No\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":"
-        + "{\"must\":[{\"match\":{\"state\":\"CaseCreated\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},"
-        + "{\"bool\":{\"must\":[{\"match\":{\"state\":"
-        + "\"BOReadyForExamination\"}},{\"match\":{\"data.applicationType\":\"Personal\"}},{\"match\":"
-        + "{\"data.caseType\":\"gop\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":"
-        + "{\"must\":[{\"match\":{\"state\":\"BOReadyForExamination\"}},{\"match\":{\"data.applicationType\":"
-        + "\"Solicitor\"}},{\"match\":{\"data.caseType\":\"gop\"}},{\"match\":{\"data.registryLocation\":"
+    private static final String PROBATE_GOP_QUERY = DATE_RANGE
+        + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"state\":\"CasePrinted\"}},"
+        + "{\"match\":{\"data.evidenceHandled\":\"No\"}},{\"match\":{\"data.applicationType\":\"Personal\"}},"
+        + "{\"match\":{\"data.registryLocation\":\"ctsc\"}},{\"match\":{\"data.caseType\":\"gop\"}}]}},"
+        + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"CasePrinted\"}},{\"match\":{\"data.evidenceHandled\":\"No\"}},"
+        + "{\"match\":{\"data.applicationType\":\"Solicitor\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}},"
+        + "{\"match\":{\"data.caseType\":\"gop\"}}]}},{\"bool\":{\"must\":[{\"match\":{\"state\":\"CaseCreated\"}},"
+        + "{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":{\"must\":[{\"match\":{\"state\":"
+        + "\"BOReadyForExamination\"}},{\"match\":{\"data.evidenceHandled\":\"No\"}},{\"match\":"
+        + "{\"data.applicationType\":\"Personal\"}},{\"match\":{\"data.caseType\":\"gop\"}},"
+        + "{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":{\"must\":[{\"match\":"
+        + "{\"state\":\"BOReadyForExamination\"}},{\"match\":{\"data.evidenceHandled\":\"No\"}},"
+        + "{\"match\":{\"data.applicationType\":\"Solicitor\"}},{\"match\":{\"data.caseType\":\"gop\"}},"
+        + "{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":{\"must\":[{\"match\":"
+        + "{\"state\":\"BOCaseStopped\"}},{\"match\":{\"data.applicationType\":\"Personal\"}},{\"match\":"
+        + "{\"data.evidenceHandled\":\"No\"}},{\"match\":{\"data.caseType\":\"gop\"}},{\"match\":"
+        + "{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":{\"must\":[{\"match\":{\"state\":\"BOCaseStopped\"}},"
+        + "{\"match\":{\"data.applicationType\":\"Solicitor\"}},{\"match\":{\"data.evidenceHandled\":\"No\"}},"
+        + "{\"match\":{\"data.caseType\":\"gop\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},"
+        + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"BOCaseStopped\"}},{\"match\":{\"data.applicationType\":"
+        + "\"Personal\"}},{\"match\":{\"data.caseType\":\"intestacy\"}},{\"match\":{\"data.evidenceHandled\":\"No\"}},"
+        + "{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":{\"must\":[{\"match\":{\"state\":"
+        + "\"BOCaseStopped\"}},{\"match\":{\"data.applicationType\":\"Solicitor\"}},{\"match\":{\"data.solsWillType\":"
+        + "\"NoWill\"}},{\"match\":{\"data.evidenceHandled\":\"No\"}},{\"match\":{\"data.registryLocation\":"
         + "\"ctsc\"}}]}},{\"bool\":{\"must\":[{\"match\":{\"state\":\"BOCaseStopped\"}},{\"match\":"
-        + "{\"data.evidenceHandled\":\"Yes\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},"
-        + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"BOCaseStopped\"}},{\"match\":{\"data.evidenceHandled\":"
-        + "\"No\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}}]}}]}},\"_source\":[\"reference\","
-        + "\"jurisdiction\",\"state\",\"last_modified\",\"data.applicationType\",\"data.evidenceHandled\","
-        + "\"data.caseType\",\"data.registryLocation\"],\"size\":1000}";
+        + "{\"data.applicationType\":\"Personal\"}},{\"match\":{\"data.evidenceHandled\":\"Yes\"}},{\"match\":"
+        + "{\"data.caseType\":\"gop\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":{\"must\":"
+        + "[{\"match\":{\"state\":\"BOCaseStopped\"}},{\"match\":{\"data.applicationType\":\"Solicitor\"}},"
+        + "{\"match\":{\"data.evidenceHandled\":\"Yes\"}},{\"match\":{\"data.caseType\":\"gop\"}},{\"match\":"
+        + "{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":{\"must\":[{\"match\":{\"state\":\"BOCaseStopped\"}},"
+        + "{\"match\":{\"data.applicationType\":\"Personal\"}},{\"match\":{\"data.caseType\":\"intestacy\"}},{\"match\""
+        + ":{\"data.evidenceHandled\":\"Yes\"}},{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},{\"bool\":{\"must\""
+        + ":[{\"match\":{\"state\":\"BOCaseStopped\"}},{\"match\":{\"data.applicationType\":\"Solicitor\"}},"
+        + "{\"match\":{\"data.solsWillType\":\"NoWill\"}},{\"match\":{\"data.evidenceHandled\":\"Yes\"}},"
+        + "{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}}]}}]}},\"_source\":[\"reference\",\"jurisdiction\","
+        + "\"state\",\"last_modified\",\"data.applicationType\",\"data.evidenceHandled\",\"data.caseType\","
+        + "\"data.registryLocation\",\"data.solsWillType\"],\"size\":1000}";
+
+    private static final String PROBATE_CAVEAT_QUERY = DATE_RANGE
+        + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"state"
+        + "\":\"CaveatRaised\"}},{\"match\":{\"data.applicationType\":\"Personal\"}},"
+        + "{\"match\":{\"data.registryLocation\":\"ctsc\"}}]}},"
+        + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"CaveatRaised\"}},"
+        + "{\"match\":{\"data.applicationType\":\"Solicitor\"}},{\"match\":{\"data"
+        + ".registryLocation\":\"ctsc\"}}]}}]}}]}},\"_source\":[\"reference\",\"jurisdiction\","
+        + "\"state\",\"last_modified\",\"data.applicationType\",\"data.evidenceHandled\",\"data"
+        + ".caseType\",\"data.registryLocation\"],\"size\":1000}";
+
+    private static final String PROBATE_BSP_EXCEPTION_QUERY = DATE_RANGE
+        + "{\"bool\":{\"should\":[{\"bool\":{\"must\":[{\"match\":{\"state"
+        + "\":\"ScannedRecordReceived\"}},{\"match\":{\"data"
+        + ".journeyClassification\":\"NEW_APPLICATION\"}},{\"match\":{\"data"
+        + ".containsPayments\":\"Yes\"}}]}},"
+        + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"ScannedRecordReceived\"}},"
+        + "{\"match\":{\"data.journeyClassification\":\"NEW_APPLICATION\"}},{\"match\":{\"data"
+        + ".containsPayments\":\"No\"}}]}},"
+        + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"ScannedRecordReceived\"}},"
+        + "{\"match\":{\"data.journeyClassification\":\"SUPPLEMENTARY_EVIDENCE_WITH_OCR\"}},"
+        + "{\"match\":{\"data.containsPayments\":\"No\"}}]}},"
+        + "{\"bool\":{\"must\":[{\"match\":{\"state\":\"ScannedRecordReceived\"}},"
+        + "{\"match\":{\"data.journeyClassification\":\"SUPPLEMENTARY_EVIDENCE\"}},"
+        + "{\"match\":{\"data.containsPayments\":\"No\"}}]}}]}}]}},\"_source\":[\"reference\","
+        + "\"jurisdiction\",\"state\",\"last_modified\",\"data.applicationType\",\"data"
+        + ".evidenceHandled\",\"data.caseType\",\"data.registryLocation\",\"data.containsPayments\","
+        + "\"data.journeyClassification\"],\"size\":1000}";
 
     @Autowired
     public CcdConnectorService(CcdClient ccdClient) {
@@ -106,18 +161,43 @@ public class CcdConnectorService {
         );
     }
 
-    public Map<String, Object> searchProbateCases(String userAuthToken,
+    public Map<String, Object> findProbateCases(String userAuthToken,
                                                   String serviceToken,
                                                   String queryFromDateTime,
-                                                  String queryToDateTime) throws CcdConnectionException {
-        String query = QUERY_PROBATE_TEMPLATE.replace(FROM_PLACE_HOLDER, queryFromDateTime)
-            .replace(TO_PLACE_HOLDER, queryToDateTime);
-        return searchCases(
-            userAuthToken,
-            serviceToken,
-            query,
-            CASE_TYPE_ID_PROBATE
-        );
+                                                  String queryToDateTime,
+                                                  String caseTypeId) throws CcdConnectionException {
+        String query = PROBATE_GOP_QUERY.replace(FROM_PLACE_HOLDER, queryFromDateTime)
+                .replace(TO_PLACE_HOLDER, queryToDateTime);
+
+        if (caseTypeId.equalsIgnoreCase(PROBATE_CASE_TYPE_ID_CAVEAT)) {
+            query = PROBATE_CAVEAT_QUERY.replace(FROM_PLACE_HOLDER, queryFromDateTime)
+                    .replace(TO_PLACE_HOLDER, queryToDateTime);
+        }
+
+        if (caseTypeId.equalsIgnoreCase(PROBATE_CASE_TYPE_ID_BSP_EXCEPTION)) {
+            query = PROBATE_BSP_EXCEPTION_QUERY.replace(FROM_PLACE_HOLDER, queryFromDateTime)
+                    .replace(TO_PLACE_HOLDER, queryToDateTime);
+        }
+        log.info("enableProbate.{} ", enableProbate);
+        if (enableProbate) {
+            return searchCases(
+                userAuthToken,
+                serviceToken,
+                query,
+                caseTypeId
+            );
+        } else {
+            /*
+              This is done just to prevent Probate to do ES query.
+              If Probate query need to turn on then change the change
+              enable_probate: false to enable_probate: true in application
+              yaml
+             */
+            log.info("Do not query probate ES.");
+            Map<String, Object> response = prepareDryResponse();
+            response.put("case_type_id", caseTypeId);
+            return response;
+        }
     }
 
     private Map<String, Object> searchCases(String userAuthToken, String serviceToken, String query, String caseTypeId)

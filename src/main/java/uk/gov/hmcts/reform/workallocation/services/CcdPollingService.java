@@ -124,19 +124,33 @@ public class CcdPollingService {
         log.info("Connecting (divorce Evidence) to CCD was successful");
         log.info("Divorce Evidence EVIDENCE_FLOW: {}", divorceEvidenceData.get("EVIDENCE_FLOW"));
         log.info("total number of divorce Evidence cases: {}", divorceEvidenceData.get("total"));
-        telemetryClient.trackMetric("num_of_divorce_cases", (Integer) divorceEvidenceData.get("total"));
+        telemetryClient.trackMetric("num_of_divorce_evidence_cases", (Integer) divorceEvidenceData.get("total"));
 
-        // Probate cases
-        Map<String, Object> probateData = ccdConnectorService.searchProbateCases(userAuthToken, serviceToken,
-            queryFromDateTime, queryToDateTime);
-        log.info("Connecting to CCD was successful");
-        log.info("total number of probate cases: {}", probateData.get("total"));
-        telemetryClient.trackMetric("num_of_probate_cases", (Integer) probateData.get("total"));
+        // Probate gop cases
+        Map<String, Object> probateGoPData = ccdConnectorService.findProbateCases(userAuthToken, serviceToken,
+                queryFromDateTime, queryToDateTime, CcdConnectorService.PROBATE_CASE_TYPE_ID_GOP);
+        log.info("Connecting to CCD - GoP was successful");
+        log.info("Total number of probate gop cases: {}", probateGoPData.get("total"));
+        telemetryClient.trackMetric("num_of_probate_gop_cases", (Integer) probateGoPData.get("total"));
+        // Probate caveat cases
+        Map<String, Object> probateCaveatData = ccdConnectorService.findProbateCases(userAuthToken, serviceToken,
+                queryFromDateTime, queryToDateTime, CcdConnectorService.PROBATE_CASE_TYPE_ID_CAVEAT);
+        log.info("Connecting to CCD - Caveat was successful");
+        log.info("Total number of probate caveat cases: {}", probateCaveatData.get("total"));
+        telemetryClient.trackMetric("num_of_probate_caveat_cases", (Integer) probateCaveatData.get("total"));
+        // Probate bsp exception cases
+        Map<String, Object> probateBspExpData = ccdConnectorService.findProbateCases(userAuthToken, serviceToken,
+            queryFromDateTime, queryToDateTime, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION);
+        log.info("Connecting to CCD - bsp was successful");
+        log.info("Total number of probate bsp cases: {}", probateBspExpData.get("total"));
+        telemetryClient.trackMetric("num_of_probate_bsp_cases", (Integer) probateBspExpData.get("total"));
+
 
         // 5. Process data
         @SuppressWarnings("unchecked")
-        List<Task> tasks = mergeResponse(divorceData, divorceExceptionData, divorceEvidenceData, probateData);
-        log.info("total number of tasks: {}", tasks.size());
+        List<Task> tasks = mergeResponse(divorceData, divorceExceptionData, divorceEvidenceData,
+                probateGoPData, probateCaveatData, probateBspExpData);
+        log.info("Total number of tasks: {}", tasks.size());
         telemetryClient.trackMetric("num_of_tasks", tasks.size());
 
         // 6. send to azure service bus

@@ -79,6 +79,7 @@ ccd:
   deeplinkBaseUrl: ${DEEPLINK_BASE_URL:https://manage-case.demo.platform.hmcts.net/case/}
   ctids: DIVORCE
   minus_time_from_current: ${MINUS_TIME_FROM_CURRENT:7}
+  enable_probate: false
 
 server-url: ${SERVER_URL:http://localhost:8080}
 

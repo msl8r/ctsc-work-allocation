@@ -3,7 +3,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath("net.serenity-bdd:serenity-gradle-plugin:2.3.31")
+    classpath("net.serenity-bdd:serenity-gradle-plugin:2.3.13")
   }
 }
 
@@ -14,11 +14,11 @@ plugins {
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'org.springframework.boot' version '2.4.3'
-  id 'org.owasp.dependencycheck' version '6.1.1'
-  id 'com.github.ben-manes.versions' version '0.36.0'
+  id 'org.owasp.dependencycheck' version '6.1.2'
+  id 'com.github.ben-manes.versions' version '0.38.0'
   id 'org.sonarqube' version '3.1.1'
   id "io.freefair.lombok" version "5.3.0"
-  id 'org.flywaydb.flyway' version '7.5.4'
+  id 'org.flywaydb.flyway' version '7.7.0'
 }
 
 apply plugin: 'net.serenity-bdd.aggregator'
@@ -210,11 +210,11 @@ dependencies {
 
   compile group: 'org.apache.velocity', name: 'velocity', version: '1.7'
 
-  compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.12.1'
-  compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.1'
+  compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.12.2'
+  compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.2'
 
   compile group: 'io.vavr', name: 'vavr', version: '0.10.3'
-  compile group: 'org.flywaydb', name: 'flyway-core', version: '7.5.4'
+  compile group: 'org.flywaydb', name: 'flyway-core', version: '7.7.0'
 
 
   testCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.3.3'
