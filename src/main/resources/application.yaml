@@ -17,6 +17,8 @@ management:
 spring:
   application:
     name: CTSC Work Allocation
+  config:
+    import: "optional:configtree:/mnt/secrets/ctsc/"
   main:
     allow-bean-definition-overriding: true
   datasource:
