@@ -157,7 +157,7 @@ dependencyManagement {
     dependencySet(group: 'com.google.guava', version: '30.1.1-jre') {
       entry 'guava'
     }
-    dependencySet(group: 'io.netty', version: '4.1.60.Final') {
+    dependencySet(group: 'io.netty', version: '4.1.61.Final') {
       entry 'netty-buffer'
       entry 'netty-codec'
       entry 'netty-codec-http'
@@ -170,6 +170,9 @@ dependencyManagement {
       entry 'netty-transport-native-epoll'
       entry 'netty-transport-native-kqueue'
       entry 'netty-transport-native-unix-common'
+      entry 'netty-codec-dns'
+      entry 'netty-resolver-dns'
+      entry 'netty-resolver-dns-native-macos'
     }
   }
 }
