@@ -84,15 +84,6 @@
       <vulnerabilityName>Remote code execution</vulnerabilityName>
     </suppress>
     <suppress>
-      <packageUrl regex="true">pkg:maven/org.hibernate/hibernate-core@5.4.17.Final</packageUrl>
-      <cve>CVE-2019-14900</cve>
-    </suppress>
-    <suppress>
-      <gav regex="true">org.apache.tomcat.embed:.*:9.0.36</gav>
-      <cve>CVE-2020-13934</cve>
-      <cve>CVE-2020-13935</cve>
-    </suppress>
-    <suppress>
       <gav regex="true">org.apache.logging.log4j:.*:2.12.1</gav>
       <cve>CVE-2020-13934</cve>
       <cve>CVE-2020-9488</cve>
@@ -101,20 +92,6 @@
         <packageUrl regex="true">pkg:maven/com.nimbusds/oauth2-oidc-sdk@7.1.1</packageUrl>
         <cve>CVE-2007-1651</cve>
         <cve>CVE-2007-1652</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: tomcat-embed-core-9.0.38.jar
-   ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-core@.*$</packageUrl>
-        <cve>CVE-2020-13943</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: tomcat-embed-websocket-9.0.38.jar
-   ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-websocket@.*$</packageUrl>
-        <cve>CVE-2020-13943</cve>
     </suppress>
     <suppress>
       <notes><![CDATA[
