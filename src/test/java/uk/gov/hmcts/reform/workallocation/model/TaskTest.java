@@ -22,6 +22,8 @@ public class TaskTest {
     private Map<String, Object> probate;
     private Map<String, Object> probateCaveat;
     private Map<String, Object> probateException;
+    private Map<String, Object> fr;
+    private Map<String, Object> frException;
 
     @Before
     public void setUp() {
@@ -97,6 +99,26 @@ public class TaskTest {
         probateException.put("case_data", exceptionCaseData);
         exceptionCaseData.put("containsPayments", "No");
         exceptionCaseData.put("journeyClassification", "NEW_APPLICATION");
+
+        fr = new HashMap<>();
+        fr.put("id", 1563666651495313L);
+        fr.put("jurisdiction", "DIVORCE");
+        fr.put("state", "applicationSubmitted");
+        fr.put("version", null);
+        fr.put("case_type_id", "FinancialRemedyMVP2");
+        fr.put("created_date", null);
+        fr.put("last_modified", "2019-07-18T14:36:25.862");
+        fr.put("security_classification", "PUBLIC");
+
+        frException = new HashMap<>();
+        frException.put("id", 1563777751477777L);
+        frException.put("jurisdiction", "DIVORCE");
+        frException.put("state", "ScannedRecordReceived");
+        frException.put("version", null);
+        frException.put("case_type_id", "FINREM_ExceptionRecord");
+        frException.put("created_date", null);
+        frException.put("last_modified", "2020-07-20T14:36:20.962");
+        frException.put("security_classification", "PUBLIC");
     }
 
     @Test
@@ -225,6 +247,32 @@ public class TaskTest {
         task = Task.fromCcdCase(probateException, CcdConnectorService.PROBATE_CASE_TYPE_ID_BSP_EXCEPTION, null);
         assertEquals("BulkScanSupplementaryEvidenceWithoutPayments", task.getState());
         assertEquals("PROBATE", task.getJurisdiction());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void frTask() throws CaseTransformException {
+        Task task = Task.fromCcdCase(fr, CcdConnectorService.FR_CASE_TYPE, null);
+        assertEquals("ConsentAppSubmitted", task.getState());
+        assertEquals("DIVORCE", task.getJurisdiction());
+
+        fr.put("state", "consentOrderApproved");
+        task = Task.fromCcdCase(fr, CcdConnectorService.FR_CASE_TYPE, null);
+        assertEquals("consentOrderApproved", task.getState());
+        assertEquals("DIVORCE", task.getJurisdiction());
+
+        fr.put("state", "orderMade");
+        task = Task.fromCcdCase(fr, CcdConnectorService.FR_CASE_TYPE, null);
+        assertEquals("consentOrderNotApproved", task.getState());
+        assertEquals("DIVORCE", task.getJurisdiction());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void frExceptionTask() throws CaseTransformException {
+        Task task = Task.fromCcdCase(frException, CcdConnectorService.FR_EXCEPTION_CASE_TYPE, null);
+        assertEquals("ScannedRecordReceivedFormA", task.getState());
+        assertEquals("DIVORCE", task.getJurisdiction());
     }
 
     @Test(expected = CaseTransformException.class)

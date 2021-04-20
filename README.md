@@ -35,7 +35,6 @@ You can run the tests using 'gradle test or ./gradlew test'
 
 
 ### Deployment
-
 See Jenkinsfile for the deployment details
 
 ### Run the application
