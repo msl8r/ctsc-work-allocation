@@ -101,6 +101,16 @@ public class CcdPollingServiceTest {
         when(ccdConnectorService.findProbateCases(anyString(), anyString(), anyString(), anyString(),
                 eq("PROBATE_ExceptionRecord"))).thenReturn(probateExpResponse);
 
+        Map<String, Object> frResponse = frSearchResult();
+        frResponse.put("case_type_id", "FinancialRemedyMVP2");
+        when(ccdConnectorService.findFinancialRemedyCases(anyString(), anyString(), anyString(), anyString(),
+                eq("FinancialRemedyMVP2"))).thenReturn(frResponse);
+
+        Map<String, Object> frExpResponse = frExpSearchResult();
+        frExpResponse.put("case_type_id", "FINREM_ExceptionRecord");
+        when(ccdConnectorService.findFinancialRemedyCases(anyString(), anyString(), anyString(), anyString(),
+                eq("FINREM_ExceptionRecord"))).thenReturn(frExpResponse);
+
         when(idamService.generateServiceAuthorization()).thenReturn("service_token");
         when(idamService.getIdamOauth2Token()).thenReturn("idam_token");
         when(lastRunTimeService.getMinDate()).thenReturn(LocalDateTime.of(2019, 9, 20, 12, 0, 0, 0));
@@ -118,15 +128,18 @@ public class CcdPollingServiceTest {
         Task task4 = getProbateTask();
         Task task5 = getProbateCaveatTask();
         Task task6 = getProbateExceptionTask();
-
+        Task task7 = getFrTask();
+        Task task8 = getFrExceptionTask();
         verify(ccdConnectorService, times(2))
             .searchDivorceCases(eq("idam_token"), eq("service_token"), eq(queryFromDate), anyString(), anyString());
         verify(ccdConnectorService, times(1)).searchDivorceEvidenceHandledCases(eq("idam_token"),
                 eq("service_token"), eq(queryFromDate), anyString(), anyString());
         verify(ccdConnectorService, times(3)).findProbateCases(eq("idam_token"),
                 eq("service_token"), eq(queryFromDate), anyString(), anyString());
+        verify(ccdConnectorService, times(2)).findFinancialRemedyCases(eq("idam_token"),
+                eq("service_token"), eq(queryFromDate), anyString(), anyString());
         verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2, task3, task4,
-                task5, task6)), any());
+                task5, task6, task7, task8)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -142,15 +155,18 @@ public class CcdPollingServiceTest {
         Task task4 = getProbateTask();
         Task task5 = getProbateCaveatTask();
         Task task6 = getProbateExceptionTask();
-
+        Task task7 = getFrTask();
+        Task task8 = getFrExceptionTask();
         verify(ccdConnectorService, times(2))
             .searchDivorceCases(eq("idam_token"), eq("service_token"), eq(queryDate), anyString(), anyString());
         verify(ccdConnectorService, times(1)).searchDivorceEvidenceHandledCases(eq("idam_token"),
                 eq("service_token"), eq(queryDate), anyString(), anyString());
         verify(ccdConnectorService, times(3)).findProbateCases(eq("idam_token"),
                 eq("service_token"), eq(queryDate), anyString(), anyString());
+        verify(ccdConnectorService, times(2)).findFinancialRemedyCases(eq("idam_token"),
+                eq("service_token"), eq(queryDate), anyString(), anyString());
         verify(queueProducer, times(1))
-                .placeItemsInQueue(eq(Arrays.asList(task1, task2, task3, task4, task5, task6)), any());
+                .placeItemsInQueue(eq(Arrays.asList(task1, task2, task3, task4, task5, task6, task7, task8)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -168,7 +184,8 @@ public class CcdPollingServiceTest {
         Task task4 = getProbateTask();
         Task task5 = getProbateCaveatTask();
         Task task6 = getProbateExceptionTask();
-
+        Task task7 = getFrTask();
+        Task task8 = getFrExceptionTask();
         verify(ccdConnectorService, times(2))
             .searchDivorceCases(eq("idam_token"), eq("service_token"), eq("2019-09-25T11:55"),
                     anyString(), anyString());
@@ -176,8 +193,10 @@ public class CcdPollingServiceTest {
                 eq("service_token"), eq("2019-09-25T11:55"), anyString(), anyString());
         verify(ccdConnectorService, times(3)).findProbateCases(eq("idam_token"),
                 eq("service_token"), eq("2019-09-25T11:55"), anyString(), anyString());
+        verify(ccdConnectorService, times(2)).findFinancialRemedyCases(eq("idam_token"),
+                eq("service_token"), eq("2019-09-25T11:55"), anyString(), anyString());
         verify(queueProducer, times(1))
-                .placeItemsInQueue(eq(Arrays.asList(task1, task2, task3, task4, task5, task6)), any());
+                .placeItemsInQueue(eq(Arrays.asList(task1, task2, task3, task4, task5, task6, task7, task8)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -195,7 +214,8 @@ public class CcdPollingServiceTest {
         Task task4 = getProbateTask();
         Task task5 = getProbateCaveatTask();
         Task task6 = getProbateExceptionTask();
-
+        Task task7 = getFrTask();
+        Task task8 = getFrExceptionTask();
         verify(ccdConnectorService, times(2))
             .searchDivorceCases(eq("idam_token"), eq("service_token"), eq("2019-09-25T11:55"),
                     anyString(), anyString());
@@ -203,8 +223,10 @@ public class CcdPollingServiceTest {
                 eq("service_token"), eq("2019-09-25T11:55"), anyString(), anyString());
         verify(ccdConnectorService, times(3)).findProbateCases(eq("idam_token"),
                 eq("service_token"), eq("2019-09-25T11:55"), anyString(), anyString());
+        verify(ccdConnectorService, times(2)).findFinancialRemedyCases(eq("idam_token"),
+                eq("service_token"), eq("2019-09-25T11:55"), anyString(), anyString());
         verify(queueProducer, times(1))
-                .placeItemsInQueue(eq(Arrays.asList(task1, task2, task3, task4, task5, task6)), any());
+                .placeItemsInQueue(eq(Arrays.asList(task1, task2, task3, task4, task5, task6, task7, task8)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -225,13 +247,16 @@ public class CcdPollingServiceTest {
         Task task1 = getProbateTask();
         Task task2 = getProbateCaveatTask();
         Task task3 = getProbateExceptionTask();
-
+        Task task4 = getFrTask();
+        Task task5 = getFrExceptionTask();
         verify(ccdConnectorService, times(2))
             .searchDivorceCases(eq("idam_token"), eq("service_token"), eq("2019-09-20T11:55"),
                     anyString(), anyString());
         verify(ccdConnectorService, times(3)).findProbateCases(eq("idam_token"),
                 eq("service_token"), eq("2019-09-20T11:55"), anyString(), anyString());
-        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2, task3)), any());
+        verify(ccdConnectorService, times(2)).findFinancialRemedyCases(eq("idam_token"),
+                eq("service_token"), eq("2019-09-20T11:55"), anyString(), anyString());
+        verify(queueProducer, times(1)).placeItemsInQueue(eq(Arrays.asList(task1, task2, task3, task4, task5)), any());
         verify(lastRunTimeService, times(1)).updateLastRuntime(any(LocalDateTime.class));
     }
 
@@ -241,6 +266,7 @@ public class CcdPollingServiceTest {
         ccdPollingService.pollCcdEndpoint();
         verify(ccdConnectorService, times(0)).searchDivorceCases(any(), any(), any(), any(), any());
         verify(ccdConnectorService, times(0)).findProbateCases(any(), any(), any(), any(), any());
+        verify(ccdConnectorService, times(0)).findFinancialRemedyCases(any(), any(), any(), any(), any());
         verify(queueProducer, times(0)).placeItemsInQueue(any(), any());
         verify(lastRunTimeService, times(0)).updateLastRuntime(any(LocalDateTime.class));
     }
@@ -400,14 +426,76 @@ public class CcdPollingServiceTest {
         return new ObjectMapper().readValue(json, Map.class);
     }
 
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> frSearchResult() throws IOException {
+        String json = "{\n"
+            + "\"total\": 1,\n"
+            + "  \"cases\": [\n"
+            + "  {\n"
+            + "     \"id\": 1544448226693576,\n"
+            + "     \"jurisdiction\": \"DIVORCE\",\n"
+            + "     \"state\": \"ConsentAppSubmitted\",\n"
+            + "     \"version\": null,\n"
+            + "     \"case_type_id\": null,\n"
+            + "     \"created_date\": null,\n"
+            + "     \"last_modified\": \"2019-10-25T21:24:18.143\",\n"
+            + "     \"security_classification\": null,\n"
+            + "     \"case_data\":{\n"
+            + "         \"evidenceHandled\": \"Yes\",\n"
+            + "         \"applicationType\": \"Personal\"\n"
+            + "     },\n"
+            + "     \"data_classification\": null,\n"
+            + "     \"after_submit_callback_response\": null,\n"
+            + "     \"callback_response_status_code\": null,\n"
+            + "     \"callback_response_status\": null,\n"
+            + "     \"delete_draft_response_status_code\": null,\n"
+            + "     \"delete_draft_response_status\": null,\n"
+            + "     \"security_classifications\": null\n"
+            + "     }\n"
+            + "]\n"
+            + "}";
+        return new ObjectMapper().readValue(json, Map.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> frExpSearchResult() throws IOException {
+        String json = "{\n"
+            + "\"total\": 1,\n"
+            + "  \"cases\": [\n"
+            + "  {\n"
+            + "     \"id\": 1555558555593576,\n"
+            + "     \"jurisdiction\": \"DIVORCE\",\n"
+            + "     \"state\": \"ScannedRecordReceived\",\n"
+            + "     \"version\": null,\n"
+            + "     \"case_type_id\": null,\n"
+            + "     \"created_date\": null,\n"
+            + "     \"last_modified\": \"2019-10-25T21:24:18.143\",\n"
+            + "     \"security_classification\": null,\n"
+            + "     \"case_data\":{\n"
+            + "         \"containsPayments\": \"No\",\n"
+            + "         \"applicationType\": \"Personal\"\n"
+            + "     },\n"
+            + "     \"data_classification\": null,\n"
+            + "     \"after_submit_callback_response\": null,\n"
+            + "     \"callback_response_status_code\": null,\n"
+            + "     \"callback_response_status\": null,\n"
+            + "     \"delete_draft_response_status_code\": null,\n"
+            + "     \"delete_draft_response_status\": null,\n"
+            + "     \"security_classifications\": null\n"
+            + "     }\n"
+            + "]\n"
+            + "}";
+        return new ObjectMapper().readValue(json, Map.class);
+    }
+
     private Task getDivorceExceptionTask() {
         return Task.builder()
-                .caseTypeId("DIVORCE_ExceptionRecord")
-                .id("1563460551495377")
-                .jurisdiction("DIVORCE")
-                .state("ScannedRecordReceived")
-                .lastModifiedDate(LocalDateTime.of(2019,7,18,14,36,25, 862000000))
-                .build();
+            .caseTypeId("DIVORCE_ExceptionRecord")
+            .id("1563460551495377")
+            .jurisdiction("DIVORCE")
+            .state("ScannedRecordReceived")
+            .lastModifiedDate(LocalDateTime.of(2019, 7, 18, 14, 36, 25, 862000000))
+            .build();
     }
 
     private Task getDivorceTask() {
@@ -432,31 +520,51 @@ public class CcdPollingServiceTest {
 
     private Task getProbateCaveatTask() {
         return Task.builder()
-                .caseTypeId("Caveat")
-                .id("1572044446693576")
-                .jurisdiction("PROBATE")
-                .state("CaveatPersonal")
-                .lastModifiedDate(LocalDateTime.of(2019,10,25,21,24,18, 143000000))
-                .build();
+            .caseTypeId("Caveat")
+            .id("1572044446693576")
+            .jurisdiction("PROBATE")
+            .state("CaveatPersonal")
+            .lastModifiedDate(LocalDateTime.of(2019, 10, 25, 21, 24, 18, 143000000))
+            .build();
     }
 
     private Task getProbateExceptionTask() {
         return Task.builder()
-                .caseTypeId("PROBATE_ExceptionRecord")
-                .id("1572038555593576")
-                .jurisdiction("PROBATE")
-                .state("ScannedRecordReceived")
-                .lastModifiedDate(LocalDateTime.of(2019,10,25,21,24,18, 143000000))
-                .build();
+            .caseTypeId("PROBATE_ExceptionRecord")
+            .id("1572038555593576")
+            .jurisdiction("PROBATE")
+            .state("ScannedRecordReceived")
+            .lastModifiedDate(LocalDateTime.of(2019, 10, 25, 21, 24, 18, 143000000))
+            .build();
+    }
+
+    private Task getFrTask() {
+        return Task.builder()
+            .caseTypeId("FinancialRemedyMVP2")
+            .id("1544448226693576")
+            .jurisdiction("DIVORCE")
+            .state("ConsentAppSubmitted")
+            .lastModifiedDate(LocalDateTime.of(2019,10,25,21,24,18, 143000000))
+            .build();
+    }
+
+    private Task getFrExceptionTask() {
+        return Task.builder()
+            .caseTypeId("FINREM_ExceptionRecord")
+            .id("1555558555593576")
+            .jurisdiction("DIVORCE")
+            .state("ScannedRecordReceivedFormA")
+            .lastModifiedDate(LocalDateTime.of(2019,10,25,21,24,18, 143000000))
+            .build();
     }
 
     private Task getDivorceEvidenceHandledTask() {
         return Task.builder()
-                .caseTypeId("DIVORCE")
-                .id("1563460551495399")
-                .jurisdiction("DIVORCE")
-                .state("SupplementaryEvidence")
-                .lastModifiedDate(LocalDateTime.of(2019,7,18,14,36,25, 862000000))
-                .build();
+            .caseTypeId("DIVORCE")
+            .id("1563460551495399")
+            .jurisdiction("DIVORCE")
+            .state("SupplementaryEvidence")
+            .lastModifiedDate(LocalDateTime.of(2019, 7, 18, 14, 36, 25, 862000000))
+            .build();
     }
 }
