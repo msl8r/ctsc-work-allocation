@@ -57,7 +57,7 @@ variable "liquibase_enabled" {
 }
 
 variable "deeplink_base_url" {
-  default = "https://www-ccd.demo.platform.hmcts.net/case/"
+  default = "https://manage-case.demo.platform.hmcts.net/case/"
 }
 
 variable "service_bus_queue_name" {

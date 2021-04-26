@@ -78,7 +78,7 @@ auth:
 ccd:
   dry_run: ${CCD_DRY_RUN:true}
   baseUrl: ${CCD_API_URL:http://localhost:23443}
-  deeplinkBaseUrl: ${DEEPLINK_BASE_URL:https://www-ccd.demo.platform.hmcts.net/case/}
+  deeplinkBaseUrl: ${DEEPLINK_BASE_URL:https://manage-case.demo.platform.hmcts.net/case/}
   ctids: DIVORCE
   minus_time_from_current: ${MINUS_TIME_FROM_CURRENT:7}
   enable_probate: false
