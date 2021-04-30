@@ -121,7 +121,7 @@ public class CcdConnectorService {
         + "\"data.journeyClassification\"],\"size\":1000}";
 
     private static final String FR_QUERY = DATE_RANGE
-        + "{\"match\":{\"state\":{\"query\":\"consentOrderApproved orderMade\","
+        + "{\"match\":{\"state\":{\"query\":\"applicationSubmitted consentOrderApproved orderMade\","
         + "\"operator\":\"or\"}}}]}},\"_source\":[\"reference\",\"jurisdiction\",\"state\","
         + "\"last_modified\"],\"size\":1000}";
 
