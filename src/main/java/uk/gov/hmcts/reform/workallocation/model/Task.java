@@ -191,9 +191,6 @@ public class Task {
     @SuppressWarnings("unchecked")
     private static String getFrState(Map<String, Object> caseData) {
         String state = (String) caseData.get("state");
-        if ("applicationSubmitted".equals(state)) {
-            return "ConsentAppSubmitted";
-        }
         if ("consentOrderApproved".equals(state)) {
             return "consentOrderApproved";
         }
