@@ -434,7 +434,7 @@ public class CcdPollingServiceTest {
             + "  {\n"
             + "     \"id\": 1544448226693576,\n"
             + "     \"jurisdiction\": \"DIVORCE\",\n"
-            + "     \"state\": \"ConsentAppSubmitted\",\n"
+            + "     \"state\": \"ConsentAppCreated\",\n"
             + "     \"version\": null,\n"
             + "     \"case_type_id\": null,\n"
             + "     \"created_date\": null,\n"
@@ -543,7 +543,7 @@ public class CcdPollingServiceTest {
             .caseTypeId("FinancialRemedyMVP2")
             .id("1544448226693576")
             .jurisdiction("DIVORCE")
-            .state("ConsentAppSubmitted")
+            .state("ConsentAppCreated")
             .lastModifiedDate(LocalDateTime.of(2019,10,25,21,24,18, 143000000))
             .build();
     }
