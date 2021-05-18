@@ -320,7 +320,7 @@ public class CcdConnectorServiceTest {
             + "  {\n"
             + "     \"id\": 1544448226693576,\n"
             + "     \"jurisdiction\": \"DIVORCE\",\n"
-            + "     \"state\": \"consentOrderApproved\",\n"
+            + "     \"state\": \"ConsentAppCreated\",\n"
             + "     \"version\": null,\n"
             + "     \"case_type_id\": null,\n"
             + "     \"created_date\": null,\n"
