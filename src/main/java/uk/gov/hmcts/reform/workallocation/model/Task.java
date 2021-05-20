@@ -192,7 +192,7 @@ public class Task {
     private static String getFrState(Map<String, Object> caseData) {
         String state = (String) caseData.get("state");
         if ("applicationSubmitted".equals(state)) {
-            return "ConsentAppSubmitted";
+            return "ConsentAppCreated";
         }
         if ("consentOrderApproved".equals(state)) {
             return "consentOrderApproved";

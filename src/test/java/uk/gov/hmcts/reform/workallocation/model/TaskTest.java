@@ -253,7 +253,7 @@ public class TaskTest {
     @SuppressWarnings("unchecked")
     public void frTask() throws CaseTransformException {
         Task task = Task.fromCcdCase(fr, CcdConnectorService.FR_CASE_TYPE, null);
-        assertEquals("ConsentAppSubmitted", task.getState());
+        assertEquals("ConsentAppCreated", task.getState());
         assertEquals("DIVORCE", task.getJurisdiction());
 
         fr.put("state", "consentOrderApproved");
