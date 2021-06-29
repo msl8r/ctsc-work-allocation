@@ -77,6 +77,140 @@
       <cve>CVE-2020-9548</cve>
       <cve>CVE-2020-10663</cve>
       <cve>CVE-2020-7712</cve>
+      <cve>CVE-2018-18385</cve>
+      <cve>CVE-2014-0114</cve>
+      <cve>CVE-2020-11023</cve>
+      <cve>CVE-2020-11022</cve>
+      <cve>CVE-2005-0406</cve>
+      <cve>CVE-2020-15171</cve>
+      <cve>CVE-2020-13654</cve>
+      <cve>CVE-2021-29459</cve>
+      <cve>CVE-2018-16277</cve>
+      <cve>CVE-2010-4642</cve>
+      <cve>CVE-2007-4898</cve>
+      <cve>CVE-2010-4641</cve>
+      <cve>CVE-2020-15252</cve>
+      <cve>CVE-2020-17521</cve>
+      <cve>CVE-2020-5529</cve>
+      <cve>CVE-2021-28165</cve>
+      <cve>CVE-2019-10247</cve>
+      <cve>CVE-2020-27218</cve>
+      <cve>CVE-2021-28169</cve>
+      <cve>CVE-2020-27216</cve>
+      <cve>CVE-2019-10241</cve>
+      <cve>CVE-2020-27223</cve>
+      <cve>CVE-2011-4838</cve>
+      <cve>CVE-2010-1330</cve>
+      <cve>CVE-2017-18640</cve>
+      <cve>CVE-2016-1000338</cve>
+      <cve>CVE-2016-1000339</cve>
+      <cve>CVE-2016-1000345</cve>
+      <cve>CVE-2017-13098</cve>
+      <cve>CVE-2016-1000344</cve>
+      <cve>CVE-2018-1000180</cve>
+      <cve>CVE-2016-1000346</cve>
+      <cve>CVE-2016-1000341</cve>
+      <cve>CVE-2016-1000352</cve>
+      <cve>CVE-2016-1000340</cve>
+      <cve>CVE-2018-1000613</cve>
+      <cve>CVE-2016-1000343</cve>
+      <cve>CVE-2016-1000342</cve>
+      <cve>CVE-2016-2427</cve>
+      <cve>CVE-2020-26939</cve>
+      <cve>CVE-2010-4180</cve>
+      <cve>CVE-2016-7056</cve>
+      <cve>CVE-2011-4108</cve>
+      <cve>CVE-2015-0292</cve>
+      <cve>CVE-2015-0293</cve>
+      <cve>CVE-2008-5077</cve>
+      <cve>CVE-2010-0742</cve>
+      <cve>CVE-2009-0789</cve>
+      <cve>CVE-2011-1473</cve>
+      <cve>CVE-2013-0169</cve>
+      <cve>CVE-2016-0704</cve>
+      <cve>CVE-2016-0703</cve>
+      <cve>CVE-2014-3470</cve>
+      <cve>CVE-2015-1789</cve>
+      <cve>CVE-2012-1165</cve>
+      <cve>CVE-2006-7250</cve>
+      <cve>CVE-2012-2333</cve>
+      <cve>CVE-2015-1788</cve>
+      <cve>CVE-2015-0289</cve>
+      <cve>CVE-2015-0287</cve>
+      <cve>CVE-2015-0288</cve>
+      <cve>CVE-2015-0286</cve>
+      <cve>CVE-2015-3195</cve>
+      <cve>CVE-2010-4252</cve>
+      <cve>CVE-2014-0195</cve>
+      <cve>CVE-2011-4354</cve>
+      <cve>CVE-2014-0076</cve>
+      <cve>CVE-2015-4000</cve>
+      <cve>CVE-2009-4355</cve>
+      <cve>CVE-2015-0209</cve>
+      <cve>CVE-2009-0590</cve>
+      <cve>CVE-2014-8275</cve>
+      <cve>CVE-2012-0884</cve>
+      <cve>CVE-2015-0204</cve>
+      <cve>CVE-2010-5298</cve>
+      <cve>CVE-2014-0224</cve>
+      <cve>CVE-2016-2106</cve>
+      <cve>CVE-2009-1378</cve>
+      <cve>CVE-2014-3571</cve>
+      <cve>CVE-2009-1377</cve>
+      <cve>CVE-2014-3572</cve>
+      <cve>CVE-2009-3555</cve>
+      <cve>CVE-2014-0221</cve>
+      <cve>CVE-2016-2107</cve>
+      <cve>CVE-2016-2108</cve>
+      <cve>CVE-2016-2109</cve>
+      <cve>CVE-2013-6449</cve>
+      <cve>CVE-2012-2110</cve>
+      <cve>CVE-2007-3108</cve>
+      <cve>CVE-2014-3570</cve>
+      <cve>CVE-2011-1945</cve>
+      <cve>CVE-2015-1792</cve>
+      <cve>CVE-2011-4619</cve>
+      <cve>CVE-2015-1790</cve>
+      <cve>CVE-2015-1791</cve>
+      <cve>CVE-2014-3568</cve>
+      <cve>CVE-2011-4577</cve>
+      <cve>CVE-2016-2176</cve>
+      <cve>CVE-2008-7270</cve>
+      <cve>CVE-2010-0433</cve>
+      <cve>CVE-2011-4576</cve>
+      <cve>CVE-2014-3567</cve>
+      <cve>CVE-1999-0428</cve>
+      <cve>CVE-2014-8176</cve>
+      <cve>CVE-2009-3245</cve>
+      <cve>CVE-2009-1387</cve>
+      <cve>CVE-2012-0027</cve>
+      <cve>CVE-2012-6708</cve>
+      <cve>CVE-2015-6748</cve>
+      <cve>CVE-2021-27807</cve>
+      <cve>CVE-2021-27906</cve>
+      <cve>CVE-2018-8036</cve>
+      <cve>CVE-2021-31812</cve>
+      <cve>CVE-2021-31811</cve>
+      <cve>CVE-2018-11797</cve>
+      <cve>CVE-2019-17221</cve>
+      <cve>CVE-2016-7103</cve>
+      <cve>CVE-2011-4969</cve>
+      <cve>CVE-2021-21349</cve>
+      <cve>CVE-2021-21348</cve>
+      <cve>CVE-2020-26217</cve>
+      <cve>CVE-2021-21347</cve>
+      <cve>CVE-2021-21346</cve>
+      <cve>CVE-2021-21345</cve>
+      <cve>CVE-2021-21344</cve>
+      <cve>CVE-2021-21343</cve>
+      <cve>CVE-2021-21342</cve>
+      <cve>CVE-2021-21341</cve>
+      <cve>CVE-2021-21351</cve>
+      <cve>CVE-2021-21350</cve>
+      <cve>CVE-2020-26259</cve>
+      <cve>CVE-2020-26258</cve>
+      <cve>CVE-2017-7957</cve>
+      <cve>CVE-2021-29505</cve>
     </suppress>
     <suppress>
       <notes><![CDATA[file name: commons-collections-3.2.1.jar]]></notes>
@@ -139,5 +273,10 @@
      ]]></notes>
       <packageUrl regex="true">^pkg:maven/commons\-io/commons\-io@.*$</packageUrl>
       <cve>CVE-2021-29425</cve>
+    </suppress>
+    <suppress until="2021-09-02">
+      <notes><![CDATA[file name: hibernate-validator-6.2.0.Final.jar]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.hibernate\.validator/hibernate\-validator@.*$</packageUrl>
+      <vulnerabilityName>CVE-2020-10693</vulnerabilityName>
     </suppress>
 </suppressions>
