@@ -234,7 +234,7 @@ dependencies {
   implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.3'
 
   implementation group: 'io.vavr', name: 'vavr', version: '0.10.3'
-  implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.8.0'
+  implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.5.5'
 
 
   testCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.3.3'
